@@ -1,7 +1,8 @@
 #lang info
 (define collection "lambda-blog")
 (define deps '("base"
-               "rackunit-lib"))
+               "rackunit-lib"
+               "scribble-html-lib"))
 (define build-deps '("scribble-lib" "racket-doc"))
 (define scribblings '(("scribblings/lambda-blog.scrbl" ())))
 (define pkg-desc "A static blog generator.")
