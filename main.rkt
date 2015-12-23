@@ -1,8 +1,12 @@
 #lang racket/base
 
 (module+ test
-  (require rackunit))
+  (require rackunit
+           "private/html.rkt")
+
+  (check-equal? (hello)
+                "<html>Hello.</html>"))
 
 (module+ main
-  ;; TODO Code the thing.
-  )
+  (require "private/html.rkt")
+  (provide (all-from-out "private/html.rkt")))
