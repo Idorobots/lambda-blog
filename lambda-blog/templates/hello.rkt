@@ -3,12 +3,12 @@
 (require "../html.rkt")
 
 (define (hello)
-  (xml->string (html "Hello.")))
+  (html "Hello."))
 
 (provide hello)
 
 (module+ test
   (require rackunit)
 
-  (check-equal? (hello)
+  (check-equal? (xml->string (hello))
                 "<html>Hello.</html>"))
