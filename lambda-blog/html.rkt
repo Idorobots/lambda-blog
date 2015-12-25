@@ -8,6 +8,11 @@
 
 (provide nav)
 
+(define (header . args)
+  (apply element 'header args))
+
+(provide header)
+
 (define (footer . args)
   (apply element 'footer args))
 
