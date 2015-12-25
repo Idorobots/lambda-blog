@@ -1,6 +1,6 @@
 #lang racket/base
 
-(require scribble/html)
+(require "../html.rkt")
 
 (define (hello)
   (xml->string (html "Hello.")))
