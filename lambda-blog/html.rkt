@@ -3,6 +3,11 @@
 (require scribble/html)
 (provide (all-from-out scribble/html))
 
+(define (nav . args)
+  (apply element 'nav args))
+
+(provide nav)
+
 (define (footer . args)
   (apply element 'footer args))
 
