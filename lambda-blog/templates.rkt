@@ -1,7 +1,9 @@
 #lang racket
 
-(require "templates/hello.rkt"
-         "templates/header.rkt")
+(require "templates/footer.rkt"
+         "templates/header.rkt"
+         "templates/hello.rkt")
 
-(provide (all-from-out "templates/hello.rkt"
-                       "templates/header.rkt"))
+(provide (all-from-out "templates/footer.rkt"
+                       "templates/header.rkt"
+                       "templates/hello.rkt"))
