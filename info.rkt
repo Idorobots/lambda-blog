@@ -1,5 +1,6 @@
 #lang info
-(define collection "lambda-blog")
+
+(define collection 'multi)
 (define deps '("base"
                "rackunit-lib"
                "scribble-html-lib"))
