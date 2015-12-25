@@ -13,6 +13,11 @@
 
 (provide header)
 
+(define (article . args)
+  (apply element 'article args))
+
+(provide article)
+
 (define (footer . args)
   (apply element 'footer args))
 
