@@ -7,7 +7,7 @@
                       :dropdown-menu
                       "nav navbar-nav")}
          (map (fn [[f s]]
-                (if (map? s)
+                (if (sequential? s)
                   (li {:class :dropdown}
                       (a {:href "#"}
                          f
