@@ -1,10 +1,9 @@
 (ns lambda-blog.templates.nav
   (:require [lambda-blog.utils :refer [path]]
-            [s-html.tags :refer [a button div img li nav ol span]]))
+            [s-html.tags :refer [a button div img li nav span ul]]))
 
 (defn listify [links & [nested?]]
-  ;; FIXME Should use an ul element.
-  (apply ol {:class (if nested?
+  (apply ul {:class (if nested?
                       :dropdown-menu
                       "nav navbar-nav")}
          (map (fn [[f s]]
