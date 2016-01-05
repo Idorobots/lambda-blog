@@ -36,7 +36,7 @@
            (tags/footer
             (hr))))
 
-(defn filtered-articles [filter {:keys [entries] :as ent}]
+(defn filtered-articles [entry-filter {:keys [entries] :as ent}]
   [(doctype :html)
    (html (header ent)
          (body (navigation ent)
@@ -45,7 +45,7 @@
                              (div {:class :container}
                                   (banner ent)
                                   (map entry-summary
-                                       (filter entries))
+                                       (entry-filter entries))
                                   (div {:class :well}
                                        (div {:class :row}
                                             (div {:class :text-center}
