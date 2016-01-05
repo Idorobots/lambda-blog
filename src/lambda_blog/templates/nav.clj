@@ -17,8 +17,8 @@
                   (li (a {:href s} f))))
               links)))
 
-(defn navigation [{:keys [brand navigation path-to-root]}]
-  (let [l (list (img {:src (path path-to-root "media/logo-button.png")})
+(defn navigation [{:keys [brand logo-button navigation path-to-root]}]
+  (let [l (list (img {:src (path path-to-root logo-button)})
                 (span {:style "margin-left: 3px;"}
                       brand))]
     (nav {:class "navbar navbar-default navbar-fixed-top"}

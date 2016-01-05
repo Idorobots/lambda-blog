@@ -2,7 +2,7 @@
   (:require [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [head link meta script] :as tags]))
 
-(defn header [{:keys [path-to-root scripts stylesheets title]}]
+(defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
   (head (meta {:charset :utf-8})
         (tags/title title)
         (map #(link {:rel :stylesheet
@@ -15,7 +15,7 @@
                :href (path path-to-root "index.xml")})
         (link {:rel :icon
                :type "image/png"
-               :href (path path-to-root "media/favicon.png")})
+               :href (path path-to-root favicon)})
         (map #(script {:type "text/javascript"
                        :src (path path-to-root %)})
              scripts)
