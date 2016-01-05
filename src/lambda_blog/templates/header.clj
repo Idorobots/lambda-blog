@@ -11,6 +11,9 @@
         (link {:rel :stylesheet
                :type "text/css"
                :href (path path-to-root "style/lambda-blog.css")})
+        (link {:rel :stylesheet
+               :type "text/css"
+               :href (path path-to-root "style/font-awesome.min.css")})
         (link {:rel :alternate
                :type "application/rss+xhtml"
                :title "RSS Feed"
