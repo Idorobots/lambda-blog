@@ -1,26 +1,24 @@
 (ns lambda-blog.templates.header
   (:require [lambda-blog.utils :refer [path]]
-            [s-html.tags :refer [head link meta] :as tags]))
+            [s-html.tags :refer [head link meta script] :as tags]))
 
-(defn header [{:keys [path-to-root title]}]
+(defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
   (head (meta {:charset :utf-8})
         (tags/title title)
-        (link {:rel :stylesheet
-               :type "text/css"
-               :href (path path-to-root "style/theme.css")})
-        (link {:rel :stylesheet
-               :type "text/css"
-               :href (path path-to-root "style/lambda-blog.css")})
-        (link {:rel :stylesheet
-               :type "text/css"
-               :href (path path-to-root "style/font-awesome.min.css")})
+        (map #(link {:rel :stylesheet
+                     :type "text/css"
+                     :href (path path-to-root %)})
+             stylesheets)
         (link {:rel :alternate
                :type "application/rss+xhtml"
                :title "RSS Feed"
                :href (path path-to-root "index.xml")})
         (link {:rel :icon
                :type "image/png"
-               :href (path path-to-root "media/favicon.png")})
+               :href (path path-to-root favicon)})
+        (map #(script {:type "text/javascript"
+                       :src (path path-to-root %)})
+             scripts)
         (meta {:name :viewport
                :content "width=device-width, initial-scale=1.0"})
         (meta {:name :generator
