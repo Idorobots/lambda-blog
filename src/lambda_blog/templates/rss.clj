@@ -2,13 +2,13 @@
   (:require [clj-time.core :refer [now]]
             [lambda-blog.utils :refer [path]]
             [ring.util.codec :refer [url-encode]]
-            [s-html.tags :refer [deftags link] :as tags]))
+            [s-html.tags :refer [deftags link xml] :as tags]))
 
 (deftags [author category content entry feed id name published updated])
 (def _author author)
 
 (defn rss-feed [{:keys [entries title url]}]
-  ["<?xml version=\"1.0\" encoding=\"utf-8\"?>" ;; FIXME Should be (doctype xml)
+  [(xml)
    (feed {:xmlns "http://www.w3.org/2005/Atom"}
          (tags/title title)
          (link {:rel :self

@@ -6,7 +6,7 @@
   :dependencies [[clj-time "0.10.0"]
                  [org.clojure/clojure "1.6.0"]
                  [ring/ring-codec "1.0.0"]
-                 [s-html "0.1.1"]]
+                 [s-html "0.1.3"]]
   :plugins [[jonase/eastwood "0.1.5"]
             [lein-ancient "0.5.4"]
             [lein-cloverage "1.0.2"]])
