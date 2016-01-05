@@ -6,13 +6,15 @@
             [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [article body div doctype html]]))
 
-(defn static-page [{:keys [contents] :as ent}]
+(defn static-page-template [contents-template entity]
   [(doctype :html)
-   (html (header ent)
-         (body (navigation ent)
+   (html (header entity)
+         (body (navigation entity)
                (div {:class :body-wrap}
                     (article {:id :page}
                              (div {:class :container}
-                                  (banner ent)
-                                  contents
-                                  (footer ent))))))])
+                                  (banner entity)
+                                  (contents-template entity)
+                                  (footer entity))))))])
+
+(def static-page (partial static-page-template :contents))
