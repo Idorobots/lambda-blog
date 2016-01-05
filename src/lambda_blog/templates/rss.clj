@@ -4,8 +4,10 @@
             [ring.util.codec :refer [url-encode]]
             [s-html.tags :refer [deftags link xml] :as tags]))
 
-(deftags [author category content entry feed id name published updated])
-(def _author author)
+(deftags [author category entry feed id name published summary updated])
+
+(def _author author) ;; FIXME Loose the _.
+(def _summary summary)
 
 (defn rss-feed [{:keys [entries title url]}]
   [(xml)
@@ -16,11 +18,11 @@
          (link {:href url})
          (updated (now))
          (id url)
-         (map (fn [{:keys [author contents filename path-to-root tags timestamp title]}]
+         (map (fn [{:keys [author filename path-to-root summary tags timestamp title]}]
                 (entry (tags/title {:type :html}
                                    title)
                        (id filename)
-                       (_author (name author)) ;; FIXME Loose the _author.
+                       (_author (name author))
                        (updated timestamp)
                        (published timestamp)
                        (link {:href (path path-to-root filename)})
@@ -29,6 +31,6 @@
                                          :term t
                                          :label t}))
                             tags)
-                       (content {:type :html}
-                                contents)))
+                       (_summary {:type :html}
+                                summary)))
               entries))])
