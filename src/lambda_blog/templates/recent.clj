@@ -27,7 +27,7 @@
                                                  :href (path path-to-root
                                                              (format "/tags/%s.html" (url-encode t)))}
                                                 t)))
-                                     tags))))))
+                                     (sort tags)))))))
            (div {:class :article-content}
                 summary
                 (p (a {:href url}
