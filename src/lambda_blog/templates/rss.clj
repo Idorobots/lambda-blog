@@ -9,25 +9,25 @@
 (def _author author) ;; FIXME Loose the _.
 (def _summary summary)
 
-(defn rss-feed [{:keys [entries title url]}]
+(defn rss-feed [{:keys [entries root title]}]
   [(xml)
    (feed {:xmlns "http://www.w3.org/2005/Atom"}
          (tags/title title)
          (link {:rel :self
-                :href (path url "index.xml")})
-         (link {:href url})
+                :href (path root "index.xml")})
+         (link {:href root})
          (updated (now))
-         (id url)
-         (map (fn [{:keys [author filename path-to-root summary tags timestamp title]}]
+         (id root)
+         (map (fn [{:keys [author summary tags timestamp title url]}]
                 (entry (tags/title {:type :html}
                                    title)
-                       (id filename)
+                       (id url)
                        (_author (name author))
                        (updated timestamp)
                        (published timestamp)
-                       (link {:href (path path-to-root filename)})
+                       (link {:href url})
                        (map (fn [t]
-                              (category {:scheme (path url (format "/tags/%s.html" (url-encode t)))
+                              (category {:scheme (path root (format "/tags/%s.html" (url-encode t)))
                                          :term t
                                          :label t}))
                             tags)
