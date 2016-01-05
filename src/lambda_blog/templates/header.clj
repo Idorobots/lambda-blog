@@ -2,18 +2,13 @@
   (:require [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [head link meta] :as tags]))
 
-(defn header [{:keys [path-to-root title]}]
+(defn header [{:keys [path-to-root stylesheets title]}]
   (head (meta {:charset :utf-8})
         (tags/title title)
-        (link {:rel :stylesheet
-               :type "text/css"
-               :href (path path-to-root "style/theme.css")})
-        (link {:rel :stylesheet
-               :type "text/css"
-               :href (path path-to-root "style/lambda-blog.css")})
-        (link {:rel :stylesheet
-               :type "text/css"
-               :href (path path-to-root "style/font-awesome.min.css")})
+        (map #(link {:rel :stylesheet
+                     :type "text/css"
+                     :href (path path-to-root %)})
+             stylesheets)
         (link {:rel :alternate
                :type "application/rss+xhtml"
                :title "RSS Feed"
