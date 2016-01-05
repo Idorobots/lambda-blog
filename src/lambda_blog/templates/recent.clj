@@ -36,7 +36,7 @@
            (tags/footer
             (hr))))
 
-(defn recent-articles [{:keys [entries] :as ent}]
+(defn filtered-articles [filter {:keys [entries] :as ent}]
   [(doctype :html)
    (html (header ent)
          (body (navigation ent)
@@ -44,7 +44,8 @@
                     (article {:id :page}
                              (div {:class :container}
                                   (banner ent)
-                                  (map entry-summary entries)
+                                  (map entry-summary
+                                       (filter entries))
                                   (div {:class :well}
                                        (div {:class :row}
                                             (div {:class :text-center}
@@ -52,3 +53,13 @@
                                                         "Archives")))))
                                   (hr)
                                   (footer ent))))))])
+
+(def recent-articles
+  (partial filtered-articles
+           #(take 15 %)))
+
+(defn articles-by-tag [tag entity]
+  (filtered-articles #(filter (fn [{:keys [tags]}]
+                                (contains? tags tag))
+                              %)
+                     entity))
