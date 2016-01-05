@@ -17,10 +17,10 @@
                   (li (a {:href s} f))))
               links)))
 
-(defn navigation [{:keys [navigation path-to-root title]}]
+(defn navigation [{:keys [brand navigation path-to-root]}]
   (let [l (list (img {:src (path path-to-root "media/logo-button.png")})
                 (span {:style "margin-left: 3px;"}
-                      title))]
+                      brand))]
     (nav {:class "navbar navbar-default navbar-fixed-top"}
          (div {:class "container navbar-inner"}
               (div (:class "navbar-header")
