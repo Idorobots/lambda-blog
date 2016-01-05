@@ -6,7 +6,7 @@
             [lambda-blog.templates.nav :refer [navigation]] ;; FIXME REALLY find a way to make this less verbose.
             [lambda-blog.utils :refer [path]]
             [ring.util.codec :refer [url-encode]]
-            [s-html.tags :refer [a article body div doctype h1 h4 hr html i nav p span time] :as tags]))
+            [s-html.tags :refer [a article body div doctype h1 hr html i nav p span time] :as tags]))
 
 (defn format-date [timestamp]
   (unparse (formatter "YYYY-MM-dd HH:mm")
@@ -29,7 +29,10 @@
                                                 t)))
                                      tags))))))
            (div {:class :article-content}
-                summary)
+                summary
+                (p (a {:href url}
+                      "Continue reading "
+                      (i {:class "fa fa-arrow-right"}))))
            (tags/footer
             (hr))))
 
@@ -46,6 +49,6 @@
                                        (div {:class :row}
                                             (div {:class :text-center}
                                                  (h1 (a {:href "./archives.html"}
-                                                   "Archives")))))
+                                                        "Archives")))))
                                   (hr)
                                   (footer ent))))))])
