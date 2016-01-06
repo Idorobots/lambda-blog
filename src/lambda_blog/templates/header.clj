@@ -1,4 +1,5 @@
 (ns lambda-blog.templates.header
+  (:refer-clojure :exclude [meta])
   (:require [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [head link meta script] :as tags]))
 

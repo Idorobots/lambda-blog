@@ -1,4 +1,5 @@
 (ns lambda-blog.templates.entry
+  (:refer-clojure :exclude [time])
   (:require [clj-time.format :refer [formatter parse unparse]]
             [lambda-blog.templates.static :refer [static-page-template]]
             [lambda-blog.utils :refer [path]]
