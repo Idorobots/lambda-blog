@@ -1,4 +1,5 @@
 (ns lambda-blog.templates.rss
+  (:refer-clojure :exclude [name])
   (:require [clj-time.core :refer [now]]
             [lambda-blog.utils :refer [path]]
             [ring.util.codec :refer [url-encode]]
