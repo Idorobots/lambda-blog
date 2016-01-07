@@ -1,6 +1,6 @@
 (ns lambda-blog.templates.entry
   (:refer-clojure :exclude [time])
-  (:require [lambda-blog.templates.bits :refer [row text-centered well]]
+  (:require [lambda-blog.templates.bits :refer [info-label row text-centered well]]
             [lambda-blog.templates.static :refer [static-page-template]]
             [lambda-blog.utils :refer [format-date path]]
             [ring.util.codec :refer [url-encode]]
@@ -14,11 +14,11 @@
       (text-centered
        (h1 (a {:href url} title))
        (p "Posted on " (time (format-date timestamp)))
-       (nav (map #(span {:class "label label-info small"}
-                        (a {:class :tag
-                            :href (path path-to-root
-                                        (format "/tags/%s.html" (url-encode %)))}
-                           %))
+       (nav (map #(info-label
+                   (a {:class :tag
+                       :href (path path-to-root
+                                   (format "/tags/%s.html" (url-encode %)))}
+                      %))
                  (sort tags)))))))
    (div {:class :article-content}
         (contents-template ent))))

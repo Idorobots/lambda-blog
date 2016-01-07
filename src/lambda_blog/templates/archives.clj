@@ -1,5 +1,5 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.bits :refer [row text-centered well]]
+  (:require [lambda-blog.templates.bits :refer [info-label row text-centered warning-label well]]
             [lambda-blog.templates.static :refer [static-page-template]]
             [lambda-blog.utils :refer [format-date path]]
             [ring.util.codec :refer [url-encode]]
@@ -8,10 +8,10 @@
 (defn archive-entry [{:keys [path-to-root summary tags timestamp title url]}]
   (tr (td (format-date timestamp))
       (td (a {:href url} title))
-      (td (map #(span {:class "label label-info small"}
-                      (a {:class "tag"
-                          :href (path path-to-root (format "/tags/%s.html" (url-encode %)))}
-                         %))
+      (td (map #(info-label
+                 (a {:class "tag"
+                     :href (path path-to-root (format "/tags/%s.html" (url-encode %)))}
+                    %))
                (sort tags)))
       (td {:class "hidden-xs hidden-sm"} summary)))
 
@@ -38,8 +38,7 @@
                                                           (span "Summary"))))
                                            (tbody (map archive-entry entries))))
                                (p {:class "hidden-xs hidden-sm"}
-                                  (span {:class "label label-warning"}
-                                        "ProTip:")
+                                  (warning-label "ProTip: ")
                                   "Hold " (kbd "Shift") " to sort by several columns at the same time.")
                                (script {:type "application/javascript"}
                                        tablesorter-script))])))
