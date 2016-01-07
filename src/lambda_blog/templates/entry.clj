@@ -1,14 +1,9 @@
 (ns lambda-blog.templates.entry
   (:refer-clojure :exclude [time])
-  (:require [clj-time.format :refer [formatter parse unparse]]
-            [lambda-blog.templates.static :refer [static-page-template]]
-            [lambda-blog.utils :refer [path]]
+  (:require [lambda-blog.templates.static :refer [static-page-template]]
+            [lambda-blog.utils :refer [format-date path]]
             [ring.util.codec :refer [url-encode]]
             [s-html.tags :refer [a article div footer h1 header i nav p span time] :as tags]))
-
-(defn format-date [timestamp]
-  (unparse (formatter "YYYY-MM-dd HH:mm")
-           (parse timestamp)))
 
 (defn entry-template [contents-template {:keys [path-to-root tags timestamp title url] :as ent}]
   (article

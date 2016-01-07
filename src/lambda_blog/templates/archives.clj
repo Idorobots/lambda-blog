@@ -1,7 +1,6 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.entry :refer [format-date]]
-            [lambda-blog.templates.static :refer [static-page-template]]
-            [lambda-blog.utils :refer [path]]
+  (:require [lambda-blog.templates.static :refer [static-page-template]]
+            [lambda-blog.utils :refer [format-date path]]
             [ring.util.codec :refer [url-encode]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 

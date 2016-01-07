@@ -1,5 +1,6 @@
 (ns lambda-blog.utils
-  (:require [clojure.string :refer [split]]))
+  (:require [clojure.string :refer [split]]
+            [clj-time.format :as f]))
 
 (defn parse [separator path]
   (split path (re-pattern separator)))
@@ -10,3 +11,7 @@
           (filter (partial not= "")
                   (flatten (map (partial parse "/")
                                 parts)))))
+
+(defn format-date [timestamp]
+  (f/unparse (f/formatter "YYYY-MM-dd HH:mm")
+             (f/parse timestamp)))
