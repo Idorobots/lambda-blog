@@ -28,17 +28,15 @@
 (def archives (partial static-page-template
                        (fn [{:keys [entries path-to-root]}]
                          [(-> "Archives" h1 text-centered row well)
-                          (div {:class :article-content}
-                               (nav {:class :archives}
-                                    (table {:class "table table-bordered table-striped tablesorter"}
-                                           (thead (tr (th (span "Posted on"))
-                                                      (th (span "Title"))
-                                                      (th (span "Tags"))
-                                                      (th {:class "sorter-false hidden-xs hidden-sm"}
-                                                          (span "Summary"))))
-                                           (tbody (map archive-entry entries))))
-                               (p {:class "hidden-xs hidden-sm"}
-                                  (warning-label "ProTip: ")
-                                  "Hold " (kbd "Shift") " to sort by several columns at the same time.")
-                               (script {:type "application/javascript"}
-                                       tablesorter-script))])))
+                          (nav (table {:class "table table-bordered table-striped tablesorter"}
+                                      (thead (tr (th (span "Posted on"))
+                                                 (th (span "Title"))
+                                                 (th (span "Tags"))
+                                                 (th {:class "sorter-false hidden-xs hidden-sm"}
+                                                     (span "Summary"))))
+                                      (tbody (map archive-entry entries))))
+                          (p {:class "hidden-xs hidden-sm"}
+                             (warning-label "ProTip:")
+                             " Hold " (kbd "Shift") " to sort by several columns at the same time.")
+                          (script {:type "application/javascript"}
+                                  tablesorter-script)])))

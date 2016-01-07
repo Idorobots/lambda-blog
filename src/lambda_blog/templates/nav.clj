@@ -33,6 +33,5 @@
                         (a {:class :navbar-brand
                             :href path-to-root}
                            l)))
-              (div {:class "hidden navbar-display-fix"}
-                   (div {:class "collapse navbar-collapse navbar-right navbar-responsive-collapse"}
-                        (listify navigation)))))))
+              (div {:class "collapse navbar-collapse navbar-right navbar-responsive-collapse"}
+                   (listify navigation))))))

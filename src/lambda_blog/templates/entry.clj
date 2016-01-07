@@ -20,8 +20,7 @@
                                    (format "/tags/%s.html" (url-encode %)))}
                       %))
                  (sort tags)))))))
-   (div {:class :article-content}
-        (contents-template ent))))
+   (contents-template ent)))
 
 (def entry-summary (partial entry-template
                             (fn [{:keys [summary url]}]
