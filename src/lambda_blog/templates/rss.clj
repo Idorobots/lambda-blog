@@ -20,7 +20,7 @@
          (updated (now))
          (id root)
          (map (fn [{:keys [author summary tags timestamp title url]}]
-                (entry (tags/title {:type :html} title)
+                (entry (tags/title title)
                        (id url)
                        (_author (name author))
                        (updated timestamp)
