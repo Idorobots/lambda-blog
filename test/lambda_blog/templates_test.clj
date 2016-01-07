@@ -18,7 +18,6 @@
              (li {:class :dropdown}
                  (a {:href "#"}
                     2
-                    (span {:class :caret
-                           :style "margin-left: 3px;"}))
+                    (span {:class :caret}))
                  (ul {:class :dropdown-menu}
                      (li (a {:href 4} 3))))))))

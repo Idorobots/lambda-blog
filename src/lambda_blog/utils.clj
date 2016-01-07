@@ -1,5 +1,7 @@
 (ns lambda-blog.utils
-  (:require [clojure.string :refer [split]]))
+  (:require [clj-time.format :as f]
+            [clojure.string :refer [split]]
+            [ring.util.codec :refer [url-encode]]))
 
 (defn parse [separator path]
   (split path (re-pattern separator)))
@@ -10,3 +12,11 @@
           (filter (partial not= "")
                   (flatten (map (partial parse "/")
                                 parts)))))
+
+(defn format-date [timestamp]
+  (f/unparse (f/formatter "YYYY-MM-dd HH:mm")
+             (f/parse timestamp)))
+
+(defn sanitize [name]
+  ;; FIXME Probably needs to be FS safe in addition to being URL-safe.
+  (url-encode name))

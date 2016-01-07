@@ -1,6 +1,7 @@
 (ns lambda-blog.templates.header
   (:refer-clojure :exclude [meta])
-  (:require [lambda-blog.utils :refer [path]]
+  (:require [lambda-blog.templates.bits :refer [javascript]]
+            [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [head link meta script] :as tags]))
 
 (defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
@@ -17,9 +18,7 @@
         (link {:rel :icon
                :type "image/png"
                :href (path path-to-root favicon)})
-        (map #(script {:type "text/javascript"
-                       :src (path path-to-root %)})
-             scripts)
+        (map #(javascript (path path-to-root %)) scripts)
         (meta {:name :viewport
                :content "width=device-width, initial-scale=1.0"})
         (meta {:name :generator

@@ -11,16 +11,14 @@
                   (li {:class :dropdown}
                       (a {:href "#"}
                          f
-                         (span {:class :caret
-                                :style "margin-left: 3px;"}))
+                         (span {:class :caret}))
                       (listify s true))
                   (li (a {:href s} f))))
               links)))
 
 (defn navigation [{:keys [brand logo-button navigation path-to-root]}]
-  (let [l (list (img {:src (path path-to-root logo-button)})
-                (span {:style "margin-left: 3px;"}
-                      brand))]
+  (let [l [(img {:src (path path-to-root logo-button)})
+           brand]]
     (nav {:class "navbar navbar-default navbar-fixed-top"}
          (div {:class "container navbar-inner"}
               (div (:class "navbar-header")
@@ -33,6 +31,5 @@
                         (a {:class :navbar-brand
                             :href path-to-root}
                            l)))
-              (div {:class "hidden navbar-display-fix"}
-                   (div {:class "collapse navbar-collapse navbar-right navbar-responsive-collapse"}
-                        (listify navigation)))))))
+              (div {:class "collapse navbar-collapse navbar-right navbar-responsive-collapse"}
+                   (listify navigation))))))
