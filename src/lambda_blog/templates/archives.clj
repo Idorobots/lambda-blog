@@ -1,5 +1,5 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.bits :refer [info-label row text-centered warning-label well]]
+  (:require [lambda-blog.templates.bits :refer [info-label inline-javascript row text-centered warning-label well]]
             [lambda-blog.templates.static :refer [static-page-template]]
             [lambda-blog.utils :refer [format-date path]]
             [ring.util.codec :refer [url-encode]]
@@ -38,5 +38,4 @@
                           (p {:class "hidden-xs hidden-sm"}
                              (warning-label "ProTip:")
                              " Hold " (kbd "Shift") " to sort by several columns at the same time.")
-                          (script {:type "application/javascript"}
-                                  tablesorter-script)])))
+                          (inline-javascript tablesorter-script)])))
