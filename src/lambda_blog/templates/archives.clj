@@ -47,5 +47,4 @@
                                         "ProTip:")
                                   "Hold " (kbd "Shift") " to sort by several columns at the same time.")
                                (script {:type "application/javascript"}
-                                       tablesorter-script))
-                          (hr)])))
+                                       tablesorter-script))])))

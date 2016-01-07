@@ -4,7 +4,7 @@
             [lambda-blog.templates.static :refer [static-page-template]]
             [lambda-blog.utils :refer [path]]
             [ring.util.codec :refer [url-encode]]
-            [s-html.tags :refer [a article div footer h1 header hr i nav p span time] :as tags]))
+            [s-html.tags :refer [a article div footer h1 header i nav p span time] :as tags]))
 
 (defn format-date [timestamp]
   (unparse (formatter "YYYY-MM-dd HH:mm")
@@ -28,9 +28,7 @@
                                         t)))
                              (sort tags)))))))
    (div {:class :article-content}
-        (contents-template ent))
-   (footer
-    (hr))))
+        (contents-template ent))))
 
 (def entry-summary (partial entry-template
                             (fn [{:keys [summary url]}]

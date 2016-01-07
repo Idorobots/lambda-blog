@@ -7,14 +7,13 @@
 (defn filtered-articles [entry-filter]
   (partial static-page-template
            (fn [{:keys [entries]}]
-             [(map entry-summary
+             [(map (juxt entry-summary (constantly (hr)))
                    (entry-filter entries))
               (div {:class :well}
                    (div {:class :row}
                         (div {:class :text-center}
                              (h1 (a {:href "./archives.html"}
-                                    "Archives")))))
-              (hr)])))
+                                    "Archives")))))])))
 
 (def recent-articles (filtered-articles #(take 15 %)))
 
