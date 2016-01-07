@@ -5,7 +5,7 @@
             [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [a div h1 hr]]))
 
-(defn filtered-articles [entry-filter]
+(defn filtered-entries [entry-filter]
   (partial static-page-template
            (fn [{:keys [entries]}]
              [(map (juxt entry-summary (constantly (hr)))
@@ -16,10 +16,10 @@
                   row
                   well)])))
 
-(def recent-articles (filtered-articles #(take 15 %)))
+(def recent-entries (filtered-entries #(take 15 %)))
 
-(defn articles-by-tag [tag entity]
-  ((filtered-articles #(filter (fn [{:keys [tags]}]
-                                 (contains? tags tag))
-                               %))
+(defn entries-by-tag [tag entity]
+  ((filtered-entries #(filter (fn [{:keys [tags]}]
+                                (contains? tags tag))
+                              %))
    entity))
