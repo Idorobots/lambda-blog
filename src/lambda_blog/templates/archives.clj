@@ -1,5 +1,6 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.static :refer [static-page-template]]
+  (:require [lambda-blog.templates.bits :refer [row well]]
+            [lambda-blog.templates.static :refer [static-page-template]]
             [lambda-blog.utils :refer [format-date path]]
             [ring.util.codec :refer [url-encode]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
@@ -28,10 +29,8 @@
 
 (def archives (partial static-page-template
                        (fn [{:keys [entries path-to-root]}]
-                         [(div {:class :well}
-                               (div {:class :row}
-                                    (h1 {:class :text-center}
-                                        "Archives")))
+                         [(well (row (h1 {:class :text-center}
+                                         "Archives")))
                           (div {:class :article-content}
                                (nav {:class :archives}
                                     (table {:class "table table-bordered table-striped tablesorter"}
