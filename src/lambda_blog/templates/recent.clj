@@ -10,16 +10,16 @@
            (fn [{:keys [entries]}]
              [(map (juxt entry-summary (constantly (hr)))
                    (entry-filter entries))
-              (well
-               (row
-                (text-centered
-                 (h1 (a {:href "./archives.html"}
-                        "Archives")))))])))
+              (-> (a {:href "./archives.html"} "Archives")
+                  h1
+                  text-centered
+                  row
+                  well)])))
 
 (def recent-articles (filtered-articles #(take 15 %)))
 
 (defn articles-by-tag [tag entity]
   ((filtered-articles #(filter (fn [{:keys [tags]}]
-                                (contains? tags tag))
+                                 (contains? tags tag))
                                %))
    entity))

@@ -12,16 +12,13 @@
     (well
      (row
       (text-centered
-       (h1 (a {:href url}
-              title))
-       (p "Posted on "
-          (time (format-date timestamp)))
-       (nav (map (fn [t]
-                   (span {:class "label label-info small"}
-                         (a {:class :tag
-                             :href (path path-to-root
-                                         (format "/tags/%s.html" (url-encode t)))}
-                            t)))
+       (h1 (a {:href url} title))
+       (p "Posted on " (time (format-date timestamp)))
+       (nav (map #(span {:class "label label-info small"}
+                        (a {:class :tag
+                            :href (path path-to-root
+                                        (format "/tags/%s.html" (url-encode %)))}
+                           %))
                  (sort tags)))))))
    (div {:class :article-content}
         (contents-template ent))))

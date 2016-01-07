@@ -1,5 +1,5 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.bits :refer [row well]]
+  (:require [lambda-blog.templates.bits :refer [row text-centered well]]
             [lambda-blog.templates.static :refer [static-page-template]]
             [lambda-blog.utils :refer [format-date path]]
             [ring.util.codec :refer [url-encode]]
@@ -7,15 +7,13 @@
 
 (defn archive-entry [{:keys [path-to-root summary tags timestamp title url]}]
   (tr (td (format-date timestamp))
-      (td (a {:href url}
-             title))
+      (td (a {:href url} title))
       (td (map #(span {:class "label label-info small"}
                       (a {:class "tag"
                           :href (path path-to-root (format "/tags/%s.html" (url-encode %)))}
                          %))
                (sort tags)))
-      (td {:class "hidden-xs hidden-sm"}
-          summary)))
+      (td {:class "hidden-xs hidden-sm"} summary)))
 
 (def tablesorter-script
   ;; FIXME This ought to be ClojureScript.
@@ -29,8 +27,7 @@
 
 (def archives (partial static-page-template
                        (fn [{:keys [entries path-to-root]}]
-                         [(well (row (h1 {:class :text-center}
-                                         "Archives")))
+                         [(-> "Archives" h1 text-centered row well)
                           (div {:class :article-content}
                                (nav {:class :archives}
                                     (table {:class "table table-bordered table-striped tablesorter"}

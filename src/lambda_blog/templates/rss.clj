@@ -20,18 +20,15 @@
          (updated (now))
          (id root)
          (map (fn [{:keys [author summary tags timestamp title url]}]
-                (entry (tags/title {:type :html}
-                                   title)
+                (entry (tags/title {:type :html} title)
                        (id url)
                        (_author (name author))
                        (updated timestamp)
                        (published timestamp)
                        (link {:href url})
-                       (map (fn [t]
-                              (category {:scheme (path root (format "/tags/%s.html" (url-encode t)))
-                                         :term t
-                                         :label t}))
+                       (map #(category {:scheme (path root (format "/tags/%s.html" (url-encode %)))
+                                        :term %
+                                        :label %})
                             tags)
-                       (_summary {:type :html}
-                                summary)))
+                       (_summary {:type :html} summary)))
               entries))])
