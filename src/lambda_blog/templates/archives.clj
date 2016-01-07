@@ -1,8 +1,7 @@
 (ns lambda-blog.templates.archives
   (:require [lambda-blog.templates.bits :refer [info-label inline-javascript row text-centered warning-label well]]
             [lambda-blog.templates.static :refer [static-page-template]]
-            [lambda-blog.utils :refer [format-date path]]
-            [ring.util.codec :refer [url-encode]]
+            [lambda-blog.utils :refer [format-date path sanitize]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 
 (defn archive-entry [{:keys [path-to-root summary tags timestamp title url]}]
@@ -10,7 +9,10 @@
       (td (a {:href url} title))
       (td (map #(info-label
                  (a {:class "tag"
-                     :href (path path-to-root (format "/tags/%s.html" (url-encode %)))}
+                     :href (->> %
+                                sanitize
+                                (format "/tags/%s.html")
+                                (path path-to-root))}
                     %))
                (sort tags)))
       (td {:class "hidden-xs hidden-sm"} summary)))

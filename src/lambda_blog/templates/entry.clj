@@ -2,8 +2,7 @@
   (:refer-clojure :exclude [time])
   (:require [lambda-blog.templates.bits :refer [info-label row text-centered well]]
             [lambda-blog.templates.static :refer [static-page-template]]
-            [lambda-blog.utils :refer [format-date path]]
-            [ring.util.codec :refer [url-encode]]
+            [lambda-blog.utils :refer [format-date path sanitize]]
             [s-html.tags :refer [a article div footer h1 header i nav p span time] :as tags]))
 
 (defn entry-template [contents-template {:keys [path-to-root tags timestamp title url] :as ent}]
@@ -16,8 +15,10 @@
        (p "Posted on " (time (format-date timestamp)))
        (nav (map #(info-label
                    (a {:class :tag
-                       :href (path path-to-root
-                                   (format "/tags/%s.html" (url-encode %)))}
+                       :href (->> %
+                                  sanitize
+                                  (format "/tags/%s.html")
+                                  (path path-to-root))}
                       %))
                  (sort tags)))))))
    (contents-template ent)))
