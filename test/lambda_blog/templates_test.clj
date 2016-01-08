@@ -5,7 +5,7 @@
 
 (deftest navigation-is-properly-rendered
   (is (= (listify [[1 2] [2 3]])
-         (ul {:class "nav navbar-nav"}
+         (ul {:class [:nav :navbar-nav]}
              (li (a {:href 2} 1))
              (li (a {:href 3} 2)))))
   (is (= (listify [[1 2] [2 3]] true)
@@ -13,7 +13,7 @@
              (li (a {:href 2} 1))
              (li (a {:href 3} 2)))))
   (is (= (listify [[1 2] [2 [[3 4]]]])
-         (ul {:class "nav navbar-nav"}
+         (ul {:class [:nav :navbar-nav]}
              (li (a {:href 2} 1))
              (li {:class :dropdown}
                  (a {:href "#"}

@@ -4,8 +4,8 @@
 (def well (partial div {:class :well}))
 (def row (partial div {:class :row}))
 (def text-centered (partial div {:class :text-center}))
-(def warning-label (partial span {:class "label label-warning small"}))
-(def info-label (partial span {:class "label label-info small"}))
+(def warning-label (partial span {:class [:label :label-warning :small]}))
+(def info-label (partial span {:class [:label :label-info :small]}))
 
 (defn javascript [src]
   (script {:type "text/javascript"
