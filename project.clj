@@ -4,6 +4,7 @@
   :license {:name "MIT License"
             :url "http://www.opensource.org/licenses/mit-license.php"}
   :dependencies [[clj-time "0.10.0"]
+                 [me.raynes/fs "1.4.6"]
                  [org.clojure/clojure "1.6.0"]
                  [ring/ring-codec "1.0.0"]
                  [s-html "0.1.6"]]
