@@ -4,13 +4,14 @@
             [ring.util.codec :refer [url-encode]]))
 
 (defn parse [separator path]
-  (split path (re-pattern separator)))
+  (when path
+    (split path separator)))
 
 (defn path [& parts]
   (reduce #(str %1 "/" %2)
           "."
-          (filter (partial not= "")
-                  (flatten (map (partial parse "/")
+          (filter (complement empty?)
+                  (flatten (map (partial parse #"/")
                                 parts)))))
 
 (defn format-date [timestamp]
