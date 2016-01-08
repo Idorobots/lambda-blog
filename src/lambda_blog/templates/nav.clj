@@ -5,7 +5,7 @@
 (defn listify [links & [nested?]]
   (apply ul {:class (if nested?
                       :dropdown-menu
-                      "nav navbar-nav")}
+                      [:nav :navbar-nav])}
          (map (fn [[f s]]
                 (if (sequential? s)
                   (li {:class :dropdown}
@@ -19,10 +19,10 @@
 (defn navigation [{:keys [brand logo-button navigation path-to-root]}]
   (let [l [(img {:src (path path-to-root logo-button)})
            brand]]
-    (nav {:class "navbar navbar-default navbar-fixed-top"}
-         (div {:class "container navbar-inner"}
-              (div (:class "navbar-header")
-                   (button {:class "navbar-toggle navbar-brand pull-left"
+    (nav {:class [:navbar :navbar-default :navbar-fixed-top]}
+         (div {:class [:container :navbar-inner]}
+              (div (:class :navbar-header)
+                   (button {:class [:navbar-toggle :navbar-brand :pull-left]
                             :type :button
                             :data-toggle :collapse
                             :data-target ".navbar-responsive-collapse"}
@@ -31,5 +31,5 @@
                         (a {:class :navbar-brand
                             :href path-to-root}
                            l)))
-              (div {:class "collapse navbar-collapse navbar-right navbar-responsive-collapse"}
+              (div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
                    (listify navigation))))))

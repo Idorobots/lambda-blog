@@ -8,14 +8,14 @@
   (tr (td (format-date timestamp))
       (td (a {:href url} title))
       (td (map #(info-label
-                 (a {:class "tag"
+                 (a {:class :tag
                      :href (->> %
                                 sanitize
                                 (format "/tags/%s.html")
                                 (path path-to-root))}
                     %))
                (sort tags)))
-      (td {:class "hidden-xs hidden-sm"} summary)))
+      (td {:class [:hidden-xs :hidden-sm]} summary)))
 
 (def tablesorter-script
   ;; FIXME This ought to be ClojureScript.
@@ -30,14 +30,14 @@
 (def archives (partial static-page-template
                        (fn [{:keys [entries path-to-root]}]
                          [(-> "Archives" h1 text-centered row well)
-                          (nav (table {:class "table table-bordered table-striped tablesorter"}
+                          (nav (table {:class [:table :table-bordered :table-striped :tablesorter]}
                                       (thead (tr (th (span "Posted on"))
                                                  (th (span "Title"))
                                                  (th (span "Tags"))
-                                                 (th {:class "sorter-false hidden-xs hidden-sm"}
+                                                 (th {:class [:sorter-false :hidden-xs :hidden-sm]}
                                                      (span "Summary"))))
                                       (tbody (map archive-entry entries))))
-                          (p {:class "hidden-xs hidden-sm"}
+                          (p {:class [:hidden-xs :hidden-sm]}
                              (warning-label "ProTip:")
                              " Hold " (kbd "Shift") " to sort by several columns at the same time.")
                           (inline-javascript tablesorter-script)])))

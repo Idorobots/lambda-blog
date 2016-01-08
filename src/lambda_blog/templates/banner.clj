@@ -5,9 +5,9 @@
 
 (defn banner [{:keys [banner-contents logo path-to-root]}]
   (header {:class :page-header}
-          (row (div {:class "hidden-xs col-sm2 col-md-1"}
+          (row (div {:class [:hidden-xs :col-sm-2 :col-md-1]}
                     (text-centered
-                     (img {:class "logo"
+                     (img {:class :logo
                            :src (path path-to-root logo)})))
-               (div {:class "col-xs-12 col-sm-8 col-md-10"}
+               (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
                     (text-centered banner-contents)))))
