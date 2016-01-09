@@ -8,32 +8,6 @@
             [lambda-blog.templates.rss :refer [rss-feed]]
             [lambda-blog.templates.static :refer [static-page]]))
 
-(def entry1 {:contents "Entry 1 contents"
-             :id 'entry-1
-             :summary "Entry 1 summary"
-             :tags #{'test 'entry 'foo}
-             :timestamp "2016-01-06T16:23:00"
-             :title "Test Entry 1"})
-
-(def entry2 {:author "somebody else"
-             :contents "Entry 2 contents"
-             :id 'entry-2
-             :summary "Entry 2 summary"
-             :tags #{'test 'entry 'bar}
-             :timestamp "2016-01-06T16:53:00"
-             :title "Test Entry 2"})
-
-(def static1 {:contents "Static Page 1 contents"
-              :id 'static-1
-              :timestamp "2015-12-31T18:00:00"
-              :title "Static Page 1"})
-
-(def static2 {:banner-contents "Custom banner contents"
-              :contents "Static Page 2 contents"
-              :id 'static-2
-              :timestamp "2015-12-31T18:01:00"
-              :title "Static Page 2"})
-
 (def blog {:author "me"
            :banner-contents "Some banner contents"
            :brand "Test Blog"
@@ -59,10 +33,32 @@
            :title "Test Blog"})
 
 (defn read-static-pages []
-  [static1 static2]) ;; TODO Read statics.
+  ;; TODO Read statics.
+  [{:contents "Static Page 1 contents"
+    :id 'static-1
+    :timestamp "2015-12-31T18:00:00"
+    :title "Static Page 1"}
+   {:banner-contents "Custom banner contents"
+    :contents "Static Page 2 contents"
+    :id 'static-2
+    :timestamp "2015-12-31T18:01:00"
+    :title "Static Page 2"}])
 
 (defn read-entries []
-  [entry1 entry2]) ;; TODO Read entries.
+  ;; TODO Read entries.
+  [{:contents "Entry 1 contents"
+    :id 'entry-1
+    :summary "Entry 1 summary"
+    :tags #{'test 'entry 'foo}
+    :timestamp "2016-01-06T16:23:00"
+    :title "Test Entry 1"}
+   {:author "somebody else"
+    :contents "Entry 2 contents"
+    :id 'entry-2
+    :summary "Entry 2 summary"
+    :tags #{'test 'entry 'bar}
+    :timestamp "2016-01-06T16:53:00"
+    :title "Test Entry 2"}])
 
 (defn generate-tags [entries]
   (->> entries

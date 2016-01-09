@@ -3,7 +3,7 @@
             [clojure.string :refer [split]]
             [ring.util.codec :refer [url-encode]]))
 
-(defn parse [separator path]
+(defn- parse [separator path]
   (when path
     (split path separator)))
 
