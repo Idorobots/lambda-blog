@@ -20,4 +20,5 @@
 
 (defn sanitize [name]
   ;; FIXME Probably needs to be FS safe in addition to being URL-safe.
-  (url-encode name))
+  (when name
+    (url-encode name)))

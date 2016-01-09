@@ -16,19 +16,19 @@
 (defn- times [str n]
   (take n (repeat str)))
 
+(defn- path-to-root [p]
+  (->> p
+       path
+       (re-seq #"/")
+       count
+       (times "../")
+       (apply str)))
+
 (defn add-paths [path-spec entity]
-  (let [ptr (->> path-spec
-                 path
-                 (re-seq #"/")
-                 count
-                 (times "../")
-                 (apply str))
-        p (fmt path-spec entity)
-        url (str ptr p)]
+  (let [p (fmt path-spec entity)]
     (assoc entity
-           :path-to-root ptr
-           :path p
-           :url url)))
+           :path-to-root (path-to-root path-spec)
+           :path p)))
 
 (defn- spit-file [file contents]
   (make-parents file)
@@ -44,21 +44,10 @@
     (println "Cleaning" d)
     (delete-dir d)))
 
-(defn export
-  ([blog path-spec template]
-   (export blog path-spec template blog identity))
-
-  ([blog path-spec template entity]
-   (export blog path-spec template entity identity))
-
-  ([blog path-spec template entity middleware]
-   (let [{:keys [output-dir path] :as ent} (->> entity
-                                                (merge blog)
-                                                middleware
-                                                (add-paths path-spec))
-         f (utils/path output-dir path)]
-     (println "Exporting file" f)
-     (->> ent
-          template
-          html->str
-          (spit-file f)))))
+(defn generate [template {:keys [output-dir path] :as ent} & args]
+  (let [f (utils/path output-dir path)]
+    (println "Generating" f)
+    (->> ent
+         template ;; FIXME Pass additional args here.
+         html->str
+         (spit-file f))))

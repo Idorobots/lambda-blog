@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [replace])
   (:require [clojure.set :refer [union]]
             [lambda-blog.utils :refer [path]]
-            [lambda-blog.export :refer [add-paths clean copy export]]
+            [lambda-blog.export :refer [add-paths clean copy generate]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entry :refer [entry-page]]
             [lambda-blog.templates.recent :refer [entries-by-tag recent-entries]]
@@ -82,11 +82,12 @@
        (into #{})
        (assoc entry :tags)))
 
-(defn export-blog []
+(defn generate-blog []
   (let [static (read-static-pages)
         entries (read-entries)
         tags (generate-tags entries)
         tags1 (->> tags
+                   (map (partial merge blog))
                    (map (partial add-paths "tags/<id>.html")))
         entries1 (->> entries
                       (map (partial update-tags tags1))
@@ -100,12 +101,26 @@
     (copy blog "resources/style" "style")
     (copy blog "resources/fonts" "fonts")
     (copy blog "resources/js" "js")
-    (export blog "index.html" recent-entries)
-    (export blog "index.xml" rss-feed)
-    (export blog "archives.html" archives)
+    (->> blog
+         (add-paths "index.html")
+         (generate recent-entries))
+    (->> blog
+         (add-paths "index.xml")
+         (generate rss-feed))
+    (->> blog
+         (add-paths "archives.html")
+         (generate archives))
     (doseq [e entries1]
-      (export blog "posts/<id>.html" entry-page e))
+      (->> e
+           (merge blog)
+           (update-tags tags1)
+           (add-paths "posts/<id>.html")
+           (generate entry-page)))
     (doseq [s static1]
-      (export blog "<id>.html" static-page s))
-    (doseq [t tags1]
-      (export blog "tags/<tag>.html" (partial entries-by-tag t) blog #(assoc % :tag t)))))
+      (->> s
+           (merge blog)
+           (add-paths "<id>.html")
+           (generate entry-page)))
+    (doseq [{:keys [id] :as t} tags1]
+      (->> (assoc t :tag id)
+           (generate (partial entries-by-tag t))))))
