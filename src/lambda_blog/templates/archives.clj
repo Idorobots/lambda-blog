@@ -4,9 +4,9 @@
             [lambda-blog.utils :refer [format-date] :as utils]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 
-(defn archive-entry [{:keys [path-to-root summary tags timestamp title url]}]
+(defn archive-entry [{:keys [path path-to-root summary tags timestamp title]}]
   (tr (td (format-date timestamp))
-      (td (a {:href url} title))
+      (td (a {:href (utils/path path)} title))
       (td (map #(info-label
                  (a {:class :tag
                      :href (utils/path path-to-root (:path %))}

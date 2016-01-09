@@ -29,7 +29,7 @@
                            l)
                    (div {:class :hidden-xs}
                         (a {:class :navbar-brand
-                            :href path-to-root}
+                            :href (path path-to-root)}
                            l)))
               (div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
                    (listify navigation))))))
