@@ -1,7 +1,7 @@
 (ns lambda-blog.templates.rss
   (:refer-clojure :exclude [name])
   (:require [clj-time.core :refer [now]]
-            [lambda-blog.utils :refer [path sanitize]]
+            [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [deftags link xml] :as tags]))
 
 (deftags [author category entry feed id name published summary updated])
@@ -25,12 +25,9 @@
                        (updated timestamp)
                        (published timestamp)
                        (link {:href url})
-                       (map #(category {:scheme (->> %
-                                                     sanitize
-                                                     (format "/tags/%s.html")
-                                                     (path root))
-                                        :term %
-                                        :label %})
-                            tags)
+                       (map #(category {:scheme (path root (:path %))
+                                        :term (:id %)
+                                        :label (:id %)})
+                            (sort-by :id tags))
                        (_summary {:type :html} summary)))
               entries))])
