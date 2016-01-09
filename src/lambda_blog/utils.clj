@@ -7,9 +7,13 @@
   (when path
     (split path separator)))
 
+(defn- join
+  ([] ".")
+  ([a] a)
+  ([a b] (str a "/" b)))
+
 (defn path [& parts]
-  (reduce #(str %1 "/" %2)
-          "."
+  (reduce join
           (filter (complement empty?)
                   (flatten (map (partial parse #"/")
                                 parts)))))
