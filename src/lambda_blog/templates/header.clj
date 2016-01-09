@@ -14,7 +14,7 @@
         (link {:rel :alternate
                :type "application/rss+xhtml"
                :title "RSS Feed"
-               :href (pathcat path-to-root "index.xml")})
+               :href (pathcat path-to-root "index.xml")}) ;; FIXME Pass the string in here somehow.
         (link {:rel :icon
                :type "image/png"
                :href (pathcat path-to-root favicon)})
@@ -22,4 +22,4 @@
         (meta {:name :viewport
                :content "width=device-width, initial-scale=1.0"})
         (meta {:name :generator
-               :content "λ-blog"})))
+               :content "λ-blog"}))) ;; FIXME Add version string in here.

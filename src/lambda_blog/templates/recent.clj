@@ -10,7 +10,7 @@
    (fn [_]
      [(map (juxt entry-summary (constantly (hr)))
            entries)
-      (-> (a {:href (pathcat path-to-root "./archives.html")} "Archives")
+      (-> (a {:href (pathcat path-to-root "./archives.html")} "Archives") ;; FIXME Pass it in here instead.
           h1
           text-centered
           row
