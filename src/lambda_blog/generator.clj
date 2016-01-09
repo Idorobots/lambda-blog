@@ -1,4 +1,4 @@
-(ns lambda-blog.export
+(ns lambda-blog.generator
   (:refer-clojure :exclude [replace])
   (:require [clojure.java.io :refer [make-parents]]
             [clojure.string :refer [replace]]

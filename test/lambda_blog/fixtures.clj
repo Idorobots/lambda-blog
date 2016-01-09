@@ -1,7 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
   (:require [clojure.set :refer [union]]
-            [lambda-blog.export :refer [add-paths clean copy generate]]
+            [lambda-blog.generator :refer [add-paths clean copy generate]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entry :refer [entry-page]]
             [lambda-blog.templates.recent :refer [entries-by-tag recent-entries]]
