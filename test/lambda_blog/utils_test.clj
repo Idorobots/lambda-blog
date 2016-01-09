@@ -3,6 +3,10 @@
             [lambda-blog.utils :refer [path]]))
 
 (deftest path-renders-properly
+  (is (= (path "foo" nil "bar")
+         "./foo/bar"))
+  (is (= (path nil nil)
+         "."))
   (is (= (path "foo" "bar")
          "./foo/bar"))
   (is (= (path "" "foo")
