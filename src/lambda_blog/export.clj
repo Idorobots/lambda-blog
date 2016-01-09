@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [replace])
   (:require [clojure.java.io :refer [make-parents]]
             [clojure.string :refer [replace]]
-            [lambda-blog.utils :refer [path sanitize] :as utils]
+            [lambda-blog.utils :refer [pathcat sanitize]]
             [me.raynes.fs :refer [copy-dir delete-dir]]
             [s-html.print :refer [html->str]]))
 
@@ -18,7 +18,7 @@
 
 (defn- path-to-root [p]
   (->> p
-       path
+       pathcat
        (re-seq #"/")
        count
        (times "../")
@@ -35,17 +35,17 @@
   (spit file contents))
 
 (defn copy [{:keys [output-dir]} what where]
-  (let [to (path output-dir where)]
+  (let [to (pathcat output-dir where)]
     (println "Copying" what to)
     (copy-dir what to)))
 
 (defn clean [{:keys [output-dir]}]
-  (let [d (path output-dir)]
+  (let [d (pathcat output-dir)]
     (println "Cleaning" d)
     (delete-dir d)))
 
 (defn generate [template {:keys [output-dir path] :as ent} & args]
-  (let [f (utils/path output-dir path)]
+  (let [f (pathcat output-dir path)]
     (println "Generating" f)
     (->> ent
          template ;; FIXME Pass additional args here.

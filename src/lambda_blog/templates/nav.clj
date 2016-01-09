@@ -1,5 +1,5 @@
 (ns lambda-blog.templates.nav
-  (:require [lambda-blog.utils :refer [path]]
+  (:require [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a button div img li nav span ul]]))
 
 (defn listify [links & [nested?]]
@@ -17,7 +17,7 @@
               links)))
 
 (defn navigation [{:keys [brand logo-button navigation path-to-root]}]
-  (let [l [(img {:src (path path-to-root logo-button)})
+  (let [l [(img {:src (pathcat path-to-root logo-button)})
            brand]]
     (nav {:class [:navbar :navbar-default :navbar-fixed-top]}
          (div {:class [:container :navbar-inner]}
@@ -29,7 +29,7 @@
                            l)
                    (div {:class :hidden-xs}
                         (a {:class :navbar-brand
-                            :href (path path-to-root)}
+                            :href (pathcat path-to-root)}
                            l)))
               (div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
                    (listify navigation))))))

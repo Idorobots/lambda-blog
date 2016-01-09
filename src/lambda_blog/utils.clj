@@ -12,7 +12,7 @@
   ([a] a)
   ([a b] (str a "/" b)))
 
-(defn path [& parts]
+(defn pathcat [& parts]
   (reduce join
           (filter (complement empty?)
                   (flatten (map (partial parse #"/")

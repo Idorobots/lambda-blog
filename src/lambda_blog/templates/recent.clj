@@ -2,7 +2,6 @@
   (:require [lambda-blog.templates.bits :refer [row text-centered well]]
             [lambda-blog.templates.entry :refer [entry-summary]]
             [lambda-blog.templates.static :refer [static-page-template]]
-            [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [a div h1 hr]]))
 
 (defn filtered-entries [entry-filter]

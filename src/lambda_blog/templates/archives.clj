@@ -1,15 +1,15 @@
 (ns lambda-blog.templates.archives
   (:require [lambda-blog.templates.bits :refer [info-label inline-javascript row text-centered warning-label well]]
             [lambda-blog.templates.static :refer [static-page-template]]
-            [lambda-blog.utils :refer [format-date] :as utils]
+            [lambda-blog.utils :refer [format-date pathcat]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 
 (defn archive-entry [{:keys [path path-to-root summary tags timestamp title]}]
   (tr (td (format-date timestamp))
-      (td (a {:href (utils/path path)} title))
+      (td (a {:href (pathcat path)} title))
       (td (map #(info-label
                  (a {:class :tag
-                     :href (utils/path path-to-root (:path %))}
+                     :href (pathcat path-to-root (:path %))}
                     (:id %)))
                (sort-by :id tags)))
       (td {:class [:hidden-xs :hidden-sm]} summary)))

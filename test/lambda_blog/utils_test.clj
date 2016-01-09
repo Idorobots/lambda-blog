@@ -1,17 +1,17 @@
 (ns lambda-blog.utils-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.utils :refer [path]]))
+            [lambda-blog.utils :refer [pathcat]]))
 
 (deftest path-renders-properly
-  (is (= (path "")
+  (is (= (pathcat "")
          "."))
-  (is (= (path "foo")
+  (is (= (pathcat "foo")
          "foo"))
-  (is (= (path "foo" "bar")
+  (is (= (pathcat "foo" "bar")
          "foo/bar"))
-  (is (= (path "" "foo")
+  (is (= (pathcat "" "foo")
          "foo"))
-  (is (= (path "foo" "bar/baz")
+  (is (= (pathcat "foo" "bar/baz")
          "foo/bar/baz"))
-  (is (= (path "foo/bar" "baz")
+  (is (= (pathcat "foo/bar" "baz")
          "foo/bar/baz")))

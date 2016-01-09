@@ -1,7 +1,7 @@
 (ns lambda-blog.templates.header
   (:refer-clojure :exclude [meta])
   (:require [lambda-blog.templates.bits :refer [javascript]]
-            [lambda-blog.utils :refer [path]]
+            [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [head link meta script] :as tags]))
 
 (defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
@@ -9,16 +9,16 @@
         (tags/title title)
         (map #(link {:rel :stylesheet
                      :type "text/css"
-                     :href (path path-to-root %)})
+                     :href (pathcat path-to-root %)})
              stylesheets)
         (link {:rel :alternate
                :type "application/rss+xhtml"
                :title "RSS Feed"
-               :href (path path-to-root "index.xml")})
+               :href (pathcat path-to-root "index.xml")})
         (link {:rel :icon
                :type "image/png"
-               :href (path path-to-root favicon)})
-        (map #(javascript (path path-to-root %)) scripts)
+               :href (pathcat path-to-root favicon)})
+        (map #(javascript (pathcat path-to-root %)) scripts)
         (meta {:name :viewport
                :content "width=device-width, initial-scale=1.0"})
         (meta {:name :generator

@@ -3,7 +3,6 @@
             [lambda-blog.templates.footer :refer [footer]]
             [lambda-blog.templates.header :refer [header]]
             [lambda-blog.templates.nav :refer [navigation]] ;; FIXME Find a way to make this less verbose.
-            [lambda-blog.utils :refer [path]]
             [s-html.tags :refer [article body div doctype html]]))
 
 (defn static-page-template [contents-template entity]

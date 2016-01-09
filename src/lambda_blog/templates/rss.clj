@@ -1,7 +1,7 @@
 (ns lambda-blog.templates.rss
   (:refer-clojure :exclude [name])
   (:require [clj-time.core :refer [now]]
-            [lambda-blog.utils :as utils]
+            [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [deftags link xml] :as tags]))
 
 (deftags [author category entry feed id name published summary updated])
@@ -14,7 +14,7 @@
    (feed {:xmlns "http://www.w3.org/2005/Atom"}
          (tags/title title)
          (link {:rel :self
-                :href (utils/path root path)})
+                :href (pathcat root path)})
          (link {:href root})
          (updated (now))
          (id root)
@@ -24,8 +24,8 @@
                        (_author (name author))
                        (updated timestamp)
                        (published timestamp)
-                       (link {:href (utils/path root path)})
-                       (map #(category {:scheme (utils/path root (:path %))
+                       (link {:href (pathcat root path)})
+                       (map #(category {:scheme (pathcat root (:path %))
                                         :term (:id %)
                                         :label (:id %)})
                             (sort-by :id tags))
