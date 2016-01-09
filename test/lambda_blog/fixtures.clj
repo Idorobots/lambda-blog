@@ -1,7 +1,8 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
   (:require [clojure.set :refer [union]]
-            [lambda-blog.export :refer [clean copy export]]
+            [lambda-blog.utils :refer [path]]
+            [lambda-blog.export :refer [add-paths clean copy export]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entry :refer [entry-page]]
             [lambda-blog.templates.recent :refer [entries-by-tag recent-entries]]
@@ -60,18 +61,51 @@
                          "style/font-awesome.min.css"]
            :title "Test Blog"})
 
-(defn export-blog [{:keys [entries output-dir static] :as blog}]
-  (clean blog)
-  (copy blog "resources/media" "media")
-  (copy blog "resources/style" "style")
-  (copy blog "resources/fonts" "fonts")
-  (copy blog "resources/js" "js")
-  (doseq [e entries]
-    (export blog "posts/<id>.html" entry-page e))
-  (doseq [s static]
-    (export blog "<id>.html" static-page s))
-  (export blog "index.html" recent-entries)
-  (export blog "index.xml" rss-feed)
-  (export blog "archives.html" archives)
-  (doseq [t (apply union (map :tags entries))]
-    (export blog "tags/<tag>.html" (partial entries-by-tag t) blog #(assoc % :tag t) )))
+(defn read-static-pages []
+  [static1 static2]) ;; TODO Read statics.
+
+(defn read-entries []
+  [entry1 entry2]) ;; TODO Read entries.
+
+(defn generate-tags [entries]
+  (->> entries
+       (map :tags)
+       (apply union)
+       (map #(assoc {} :id %))))
+
+(defn update-tags [tags entry]
+  (->> entry
+       :tags
+       (map (->> tags
+                 (map (juxt :id identity))
+                 (into {})))
+       (into #{})
+       (assoc entry :tags)))
+
+(defn export-blog []
+  (let [static (read-static-pages)
+        entries (read-entries)
+        tags (generate-tags entries)
+        tags1 (->> tags
+                   (map (partial add-paths "tags/<id>.html")))
+        entries1 (->> entries
+                      (map (partial update-tags tags1))
+                      (map (partial merge blog))
+                      (map (partial add-paths "posts/<id>.html")))
+        static1 (->> static
+                     (map (partial merge blog))
+                     (map (partial add-paths "<id>.html")))]
+    (clean blog)
+    (copy blog "resources/media" "media")
+    (copy blog "resources/style" "style")
+    (copy blog "resources/fonts" "fonts")
+    (copy blog "resources/js" "js")
+    (export blog "index.html" recent-entries)
+    (export blog "index.xml" rss-feed)
+    (export blog "archives.html" archives)
+    (doseq [e entries1]
+      (export blog "posts/<id>.html" entry-page e))
+    (doseq [s static1]
+      (export blog "<id>.html" static-page s))
+    (doseq [t tags1]
+      (export blog "tags/<tag>.html" (partial entries-by-tag t) blog #(assoc % :tag t)))))

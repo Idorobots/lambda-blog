@@ -16,7 +16,7 @@
 (defn- times [str n]
   (take n (repeat str)))
 
-(defn- add-paths [path-spec entity]
+(defn add-paths [path-spec entity]
   (let [ptr (->> path-spec
                  path
                  (re-seq #"/")

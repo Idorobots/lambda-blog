@@ -20,7 +20,7 @@
                                   (format "/tags/%s.html")
                                   (path path-to-root))}
                       %))
-                 (sort tags)))))))
+                 tags))))))
    (contents-template ent)))
 
 (def entry-summary (partial entry-template
