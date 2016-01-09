@@ -9,7 +9,7 @@
 (def _author author) ;; FIXME Loose the _.
 (def _summary summary)
 
-(defn rss-feed [{:keys [entries path root title]}]
+(defn rss-feed [{:keys [path root title]} entries]
   [(xml)
    (feed {:xmlns "http://www.w3.org/2005/Atom"}
          (tags/title title)

@@ -24,7 +24,7 @@
        (times "../")
        (apply str)))
 
-(defn add-paths [path-spec entity]
+(defn add-paths [entity path-spec]
   (let [p (fmt path-spec entity)]
     (assoc entity
            :path-to-root (path-to-root path-spec)
@@ -47,7 +47,5 @@
 (defn generate [template {:keys [output-dir path] :as ent} & args]
   (let [f (pathcat output-dir path)]
     (println "Generating" f)
-    (->> ent
-         template ;; FIXME Pass additional args here.
-         html->str
-         (spit-file f))))
+    (spit-file f
+               (html->str (apply template ent args)))))

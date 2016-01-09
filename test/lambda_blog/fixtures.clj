@@ -37,7 +37,6 @@
 (def blog {:author "me"
            :banner-contents "Some banner contents"
            :brand "Test Blog"
-           :entries [entry1 entry2]
            :favicon "media/favicon.png"
            :footer-contents "Some footer contents"
            :footer-scripts ["js/bootstrap.min.js"
@@ -54,7 +53,6 @@
            :root "localhost:8000"
            :scripts ["js/jquery-1.11.0.min.js"
                      "js/jquery.tablesorter.min.js"]
-           :static [static1 static2]
            :stylesheets ["style/theme.css"
                          "style/lambda-blog.css"
                          "style/font-awesome.min.css"]
@@ -72,7 +70,7 @@
        (apply union)
        (map #(assoc {} :id %))))
 
-(defn update-tags [tags entry]
+(defn update-tags [entry tags]
   (->> entry
        :tags
        (map (->> tags
@@ -84,42 +82,34 @@
 (defn generate-blog []
   (let [static (read-static-pages)
         entries (read-entries)
-        tags (generate-tags entries)
-        tags1 (->> tags
-                   (map (partial merge blog))
-                   (map (partial add-paths "tags/<id>.html")))
+        tags (->> entries
+                  generate-tags
+                  (map #(merge blog %))
+                  (map #(add-paths % "tags/<id>.html")))
         entries1 (->> entries
-                      (map (partial update-tags tags1))
-                      (map (partial merge blog))
-                      (map (partial add-paths "posts/<id>.html")))
+                      (map #(update-tags % tags))
+                      (map #(merge blog %))
+                      (map #(add-paths % "posts/<id>.html")))
         static1 (->> static
-                     (map (partial merge blog))
-                     (map (partial add-paths "<id>.html")))]
+                     (map #(merge blog %))
+                     (map #(add-paths % "<id>.html")))]
     (clean blog)
     (copy blog "resources/media" "media")
     (copy blog "resources/style" "style")
     (copy blog "resources/fonts" "fonts")
     (copy blog "resources/js" "js")
-    (->> blog
-         (add-paths "index.html")
-         (generate recent-entries))
-    (->> blog
-         (add-paths "index.xml")
-         (generate rss-feed))
-    (->> blog
-         (add-paths "archives.html")
-         (generate archives))
+    (-> blog
+        (add-paths "index.html")
+        ((partial generate recent-entries) entries1))
+    (-> blog
+        (add-paths "index.xml")
+        ((partial generate rss-feed) entries1))
+    (-> blog
+        (add-paths "archives.html")
+        ((partial generate archives) entries1))
     (doseq [e entries1]
-      (->> e
-           (merge blog)
-           (update-tags tags1)
-           (add-paths "posts/<id>.html")
-           (generate entry-page)))
+      (generate entry-page e))
     (doseq [s static1]
-      (->> s
-           (merge blog)
-           (add-paths "<id>.html")
-           (generate entry-page)))
-    (doseq [{:keys [id] :as t} tags1]
-      (->> (assoc t :tag id)
-           (generate (partial entries-by-tag t))))))
+      (generate entry-page s))
+    (doseq [t tags]
+      (generate (partial entries-by-tag t) t entries1))))
