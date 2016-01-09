@@ -1,6 +1,7 @@
 (ns lambda-blog.generator
   (:refer-clojure :exclude [replace])
   (:require [clojure.java.io :refer [make-parents]]
+            [clojure.set :refer [union]]
             [clojure.string :refer [replace]]
             [lambda-blog.utils :refer [pathcat sanitize]]
             [me.raynes.fs :refer [copy-dir delete-dir]]
@@ -43,6 +44,12 @@
   (let [d (pathcat output-dir)]
     (println "Cleaning" d)
     (delete-dir d)))
+
+(defn generate-tags [entries]
+  (->> entries
+       (map :tags)
+       (apply union)
+       (map #(assoc {} :id %))))
 
 (defn generate [template {:keys [output-dir path] :as ent} & args]
   (let [f (pathcat output-dir path)]
