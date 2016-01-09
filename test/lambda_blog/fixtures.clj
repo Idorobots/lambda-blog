@@ -1,7 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
-  (:require [clojure.set :refer [union]]
-            [lambda-blog.generator :refer [add-paths clean copy generate generate-tags]]
+  (:require [lambda-blog.generator :refer [clean copy generate generate-tags]]
+            [lambda-blog.middleware :refer [add-paths update-tags]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entry :refer [entry-page]]
             [lambda-blog.templates.recent :refer [entries-by-tag recent-entries]]
@@ -59,15 +59,6 @@
     :tags #{'test 'entry 'bar}
     :timestamp "2016-01-06T16:53:00"
     :title "Test Entry 2"}])
-
-(defn update-tags [entry tags]
-  (->> entry
-       :tags
-       (map (->> tags
-                 (map (juxt :id identity))
-                 (into {})))
-       (into #{})
-       (assoc entry :tags)))
 
 (defn generate-blog []
   (let [static (read-static-pages)
