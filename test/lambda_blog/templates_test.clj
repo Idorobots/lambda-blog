@@ -1,6 +1,6 @@
 (ns lambda-blog.templates-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.templates.nav :refer [listify]]
+            [lambda-blog.templates.page :refer [listify]]
             [s-html.tags :refer [a li ul span] :as tags]))
 
 (deftest navigation-is-properly-rendered

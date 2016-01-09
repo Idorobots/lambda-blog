@@ -1,6 +1,7 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.bits :refer [info-label inline-javascript row text-centered warning-label well]]
-            [lambda-blog.templates.static :refer [static-page-template]]
+  (:require [lambda-blog.templates.bits :refer [info-label inline-javascript row
+                                                text-centered warning-label well]]
+            [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [format-date pathcat]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 
@@ -25,7 +26,7 @@
    });")
 
 (defn archives [env entries]
-  (static-page-template
+  (page
    (fn [_]
      [(-> "Archives" h1 text-centered row well)
       (nav (table {:class [:table :table-bordered :table-striped :tablesorter]}

@@ -3,10 +3,9 @@
   (:require [lambda-blog.generator :refer [clean-dir copy-dir generate generate-tags]]
             [lambda-blog.middleware :refer [add-paths update-tags]]
             [lambda-blog.templates.archives :refer [archives]]
-            [lambda-blog.templates.entry :refer [entry-page]]
-            [lambda-blog.templates.recent :refer [entries-by-tag recent-entries]]
-            [lambda-blog.templates.rss :refer [rss-feed]]
-            [lambda-blog.templates.static :refer [static-page]]))
+            [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
+            [lambda-blog.templates.page :refer [static-page]]
+            [lambda-blog.templates.rss :refer [rss-feed]]))
 
 (def blog {:author "me"
            :banner-contents "Some banner contents"
