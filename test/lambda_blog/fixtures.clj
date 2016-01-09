@@ -1,6 +1,6 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
-  (:require [lambda-blog.generator :refer [clean copy generate generate-tags]]
+  (:require [lambda-blog.generator :refer [clean-dir copy-dir generate generate-tags]]
             [lambda-blog.middleware :refer [add-paths update-tags]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entry :refer [entry-page]]
@@ -74,11 +74,11 @@
         static1 (->> static
                      (map #(merge blog %))
                      (map #(add-paths % "<id>.html")))]
-    (clean blog)
-    (copy blog "resources/media" "media")
-    (copy blog "resources/style" "style")
-    (copy blog "resources/fonts" "fonts")
-    (copy blog "resources/js" "js")
+    (clean-dir blog)
+    (copy-dir blog "resources/media" "media")
+    (copy-dir blog "resources/style" "style")
+    (copy-dir blog "resources/fonts" "fonts")
+    (copy-dir blog "resources/js" "js")
     (-> blog
         (add-paths "index.html")
         ((partial generate recent-entries) entries1))

@@ -2,28 +2,28 @@
   (:require [clojure.java.io :refer [make-parents]]
             [clojure.set :refer [union]]
             [lambda-blog.utils :refer [pathcat]]
-            [me.raynes.fs :refer [copy-dir delete-dir]]
+            [me.raynes.fs :as fs]
             [s-html.print :refer [html->str]]))
 
-(defn- spit-file [file contents]
-  (make-parents file)
-  (spit file contents))
-
-(defn copy [{:keys [output-dir]} what where]
+(defn copy-dir [{:keys [output-dir]} what where]
   (let [to (pathcat output-dir where)]
-    (println "Copying" what to)
-    (copy-dir what to)))
+    (println "Copying" what "to" to)
+    (fs/copy-dir what to)))
 
-(defn clean [{:keys [output-dir]}]
+(defn clean-dir [{:keys [output-dir]}]
   (let [d (pathcat output-dir)]
     (println "Cleaning" d)
-    (delete-dir d)))
+    (fs/delete-dir d)))
 
 (defn generate-tags [entries]
   (->> entries
        (map :tags)
        (apply union)
        (map #(assoc {} :id %))))
+
+(defn- spit-file [file contents]
+  (make-parents file)
+  (spit file contents))
 
 (defn generate [template {:keys [output-dir path] :as ent} & args]
   (let [f (pathcat output-dir path)]
