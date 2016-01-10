@@ -3,13 +3,17 @@
             [clojure.string :refer [split]]
             [ring.util.codec :refer [url-encode]]))
 
-(defn parse [separator path]
+(defn- parse [separator path]
   (when path
     (split path separator)))
 
-(defn path [& parts]
-  (reduce #(str %1 "/" %2)
-          "."
+(defn- join
+  ([] ".")
+  ([a] a)
+  ([a b] (str a "/" b)))
+
+(defn pathcat [& parts]
+  (reduce join
           (filter (complement empty?)
                   (flatten (map (partial parse #"/")
                                 parts)))))
@@ -20,4 +24,5 @@
 
 (defn sanitize [name]
   ;; FIXME Probably needs to be FS safe in addition to being URL-safe.
-  (url-encode name))
+  (when name
+    (url-encode name)))
