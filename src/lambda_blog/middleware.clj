@@ -21,11 +21,12 @@
        (times "../")
        (apply str)))
 
-(defn add-paths [entity path-spec]
-  (let [p (fmt path-spec entity)]
-    (assoc entity
-           :path-to-root (path-to-root path-spec)
-           :path p)))
+(defn add-paths [path-spec]
+  (fn [_ entity]
+    (let [p (fmt path-spec entity)]
+      (assoc entity
+             :path-to-root (path-to-root path-spec)
+             :path p))))
 
 (defn update-tags [entity tags]
   (->> entity

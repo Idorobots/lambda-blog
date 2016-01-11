@@ -68,8 +68,8 @@
       ;; (update-all :static-pages
       ;;             (add-paths "<id>.html")
       ;;             (generate static-page))
-      ;; (update-all :tags
-      ;;             (add-paths "tags/<id>.hmtl"))
+      (update-all :tags
+                  (add-paths "tags/<id>.hmtl"))
       ;; (update-all :entries
       ;;             update-tags
       ;;             (add-paths "posts/<id>.html")
