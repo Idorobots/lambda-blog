@@ -31,7 +31,7 @@
 
 (def entry-page (partial page entry))
 
-(defn filtered-entries [{:keys [path-to-root] :as env} entries]
+(defn filtered-entries [{:keys [path-to-root] :as ent} entries]
   (page
    (fn [_]
      [(map (juxt entry-summary (constantly (hr)))
@@ -41,14 +41,14 @@
           text-centered
           row
           well)])
-   env))
+   ent))
 
-(defn recent-entries [env entries]
-  (filtered-entries env
+(defn recent-entries [{:keys [entries] :as ent}]
+  (filtered-entries ent
                     (take 15 entries)))
 
-(defn entries-by-tag [tag env entries]
+(defn entries-by-tag [{:keys [entries id] :as env}]
   (filtered-entries env
                     (filter (fn [{:keys [tags]}]
-                              (contains? tags tag))
+                              (contains? (into #{} (map :id tags)) id))
                             entries)))

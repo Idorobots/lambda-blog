@@ -1,6 +1,6 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
-  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-tags update update-all]]
+  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! generate-tags update update-all]]
             [lambda-blog.middleware :refer [add-paths update-tags]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
@@ -61,36 +61,29 @@
 
 (defn generate-blog []
   (-> blog
-      clean-dir!
       (assoc :static-pages (read-static-pages))
       (assoc :entries (read-entries))
       generate-tags
       (update-all :static-pages
-                  (add-paths "<id>.html")
-                  (partial merge blog)
-                  (generate! static-page))
+                  (add-paths "<id>.html"))
       (update-all :tags
-                  (partial merge blog)
-                  (add-paths "tags/<id>.hmtl"))
+                  (add-paths "tags/<id>.html"))
       (update-all :entries
                   update-tags
-                  (add-paths "posts/<id>.html")
-                  (partial merge blog)
-                  (generate! entry-page))
-      ;; (update-all :tags
-      ;;             (generate! entries-by-tag))
-      ;; (update :index
-      ;;         (add-paths "index.html")
-      ;;         (partial merge blog)
-      ;;         (generate! recent-entries))
-      ;; (update :rss
-      ;;         (add-paths "index.xml")
-      ;;         (partial merge blog)
-      ;;         (generate! rss-feed))
-      ;; (update :archives
-      ;;         (add-paths "archives.html")
-      ;;         (partial merge blog)
-      ;;         (generate! archives))
+                  (add-paths "posts/<id>.html"))
+      (update :index
+              (add-paths "index.html"))
+      (update :rss
+              (add-paths "index.xml"))
+      (update :archives
+              (add-paths "archives.html"))
+      clean-dir!
+      (generate! :index recent-entries)
+      (generate! :rss rss-feed)
+      (generate! :archives archives)
+      (generate-all! :static-pages static-page)
+      (generate-all! :entries entry-page)
+      (generate-all! :tags entries-by-tag)
       (copy-dir! "resources/media" "media")
       (copy-dir! "resources/style" "style")
       (copy-dir! "resources/fonts" "fonts")

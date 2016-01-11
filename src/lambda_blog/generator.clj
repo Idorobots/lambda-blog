@@ -45,10 +45,18 @@
   (make-parents file)
   (spit file contents))
 
-(defn generate! [template & args]
-  (fn [{:keys [output-dir]} {:keys [path] :as ent}]
-    (let [f (pathcat output-dir path)]
-      (println "Generating" f)
-      (spit-file f
-                 (html->str (apply template ent args)))
-      ent)))
+(defn- do-generate! [template {:keys [output-dir path] :as ent} args]
+  (let [f (pathcat output-dir path)]
+    (println "Generating" f)
+    (->> (apply template ent args)
+         html->str
+         (spit-file f))))
+
+(defn generate! [env what template & args]
+  (do-generate! template (merge env (env what)) args)
+  env)
+
+(defn generate-all! [env what template & args]
+  (doseq [ent (env what)]
+    (do-generate! template (merge env ent) args))
+  env)

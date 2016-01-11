@@ -25,7 +25,7 @@
      }});
    });")
 
-(defn archives [env entries]
+(defn archives [{:keys [entries] :as ent}]
   (page
    (fn [_]
      [(-> "Archives" h1 text-centered row well)
@@ -40,4 +40,4 @@
          (warning-label "ProTip:")
          " Hold " (kbd "Shift") " to sort by several columns at the same time.")
       (inline-javascript tablesorter-script)])
-   env))
+   ent))
