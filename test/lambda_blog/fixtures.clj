@@ -1,6 +1,6 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
-  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate generate-tags update update-all]]
+  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-tags update update-all]]
             [lambda-blog.middleware :refer [add-paths update-tags]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
@@ -65,27 +65,32 @@
       (assoc :static-pages (read-static-pages))
       (assoc :entries (read-entries))
       generate-tags
-      ;; (update-all :static-pages
-      ;;             (add-paths "<id>.html")
-      ;;             (generate static-page))
+      (update-all :static-pages
+                  (add-paths "<id>.html")
+                  (partial merge blog)
+                  (generate! static-page))
       (update-all :tags
+                  (partial merge blog)
                   (add-paths "tags/<id>.hmtl"))
       (update-all :entries
                   update-tags
-                  (add-paths "posts/<id>.html"))
-      ;; (update-all :entries
-      ;;             (generate entry-page))
+                  (add-paths "posts/<id>.html")
+                  (partial merge blog)
+                  (generate! entry-page))
       ;; (update-all :tags
-      ;;             (generate entries-by-tag))
+      ;;             (generate! entries-by-tag))
       ;; (update :index
       ;;         (add-paths "index.html")
-      ;;         (generate recent-entries))
+      ;;         (partial merge blog)
+      ;;         (generate! recent-entries))
       ;; (update :rss
       ;;         (add-paths "index.xml")
-      ;;         (generate rss-feed))
+      ;;         (partial merge blog)
+      ;;         (generate! rss-feed))
       ;; (update :archives
       ;;         (add-paths "archives.html")
-      ;;         (generate archives))
+      ;;         (partial merge blog)
+      ;;         (generate! archives))
       (copy-dir! "resources/media" "media")
       (copy-dir! "resources/style" "style")
       (copy-dir! "resources/fonts" "fonts")

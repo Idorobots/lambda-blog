@@ -45,8 +45,10 @@
   (make-parents file)
   (spit file contents))
 
-(defn generate [template {:keys [output-dir path] :as ent} & args]
-  (let [f (pathcat output-dir path)]
-    (println "Generating" f)
-    (spit-file f
-               (html->str (apply template ent args)))))
+(defn generate! [template & args]
+  (fn [{:keys [output-dir]} {:keys [path] :as ent}]
+    (let [f (pathcat output-dir path)]
+      (println "Generating" f)
+      (spit-file f
+                 (html->str (apply template ent args)))
+      ent)))
