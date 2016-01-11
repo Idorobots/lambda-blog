@@ -1,7 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
   (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
-            [lambda-blog.middleware :refer [add-paths collect-tags]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
@@ -70,6 +70,7 @@
                   #(update-all % :tags
                                (add-paths "tags/<id>.html")))
       collect-tags
+      ((link :entries)) ;; FIXME Looks bad.
       (update :index
               (add-paths "index.html"))
       (update :rss

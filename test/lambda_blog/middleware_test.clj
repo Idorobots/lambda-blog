@@ -1,6 +1,6 @@
 (ns lambda-blog.middleware-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.middleware :refer [add-paths collect-tags]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link]]
             [lambda-blog.generator :refer [update-all]]))
 
 (deftest can-generate-paths-from-spec
@@ -51,3 +51,18 @@
     (let [ent {:entries [entry1 entry2 entry3]}]
       (is (= (collect-tags ent)
              (assoc ent :tags #{{:id :foo} {:id :bar}}))))))
+
+(deftest linking-entries-works
+  (let [es [{:title 1} {:title 2} {:title 3}]
+        linked ((link :entries) {:entries es})
+        les (:entries linked)]
+    (is (= (:previous (first les))
+           nil))
+    (is (= (:next (first les))
+           {:title 2}))
+    (is (= (:previous (second les))
+           {:title 1}))
+    (is (= (:next (second les))
+           {:title 3}))
+    (is (= (:next (nth les 2))
+           nil))))

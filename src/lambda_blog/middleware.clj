@@ -34,3 +34,16 @@
        (map :tags)
        (apply union)
        (assoc ent :tags)))
+
+(defn link [what]
+  (fn [entity]
+    (let [es (entity what)]
+      (assoc entity
+             what
+             (map (fn [prev curr next]
+                    (assoc curr
+                           :previous prev
+                           :next next))
+                  (list* nil es)
+                  es
+                  (concat (next es) '(nil)))))))
