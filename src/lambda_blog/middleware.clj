@@ -1,6 +1,7 @@
 (ns lambda-blog.middleware
   (:refer-clojure :exclude [replace])
-  (:require [clojure.string :refer [replace]]
+  (:require [clojure.set :refer [union]]
+            [clojure.string :refer [replace]]
             [lambda-blog.utils :refer [pathcat sanitize]]))
 
 (defn- fmt [f args]
@@ -36,3 +37,11 @@
                  (into {})))
        (into #{})
        (assoc entity :tags)))
+
+(defn collect-tags [{:keys [entries] :as ent}]
+  (->> entries
+       (map :tags)
+       (apply union)
+       (map #(assoc {} :id %))
+       (into #{})
+       (assoc ent :tags)))

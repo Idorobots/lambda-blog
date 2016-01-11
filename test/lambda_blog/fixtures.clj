@@ -1,7 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
-  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! generate-tags update update-all]]
-            [lambda-blog.middleware :refer [add-paths update-tags]]
+  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
+            [lambda-blog.middleware :refer [add-paths collect-tags update-tags]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
@@ -63,7 +63,7 @@
   (-> blog
       (assoc :static-pages (read-static-pages))
       (assoc :entries (read-entries))
-      generate-tags
+      collect-tags
       (update-all :static-pages
                   (add-paths "<id>.html"))
       (update-all :tags

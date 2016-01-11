@@ -1,6 +1,5 @@
 (ns lambda-blog.generator
   (:require [clojure.java.io :refer [make-parents]]
-            [clojure.set :refer [union]]
             [lambda-blog.utils :refer [pathcat]]
             [me.raynes.fs :as fs]
             [s-html.print :refer [html->str]]))
@@ -32,14 +31,6 @@
                                (reverse (map #(partial % e)
                                              funs)))
                        vs)))))
-
-(defn generate-tags [{:keys [entries] :as ent}]
-  (->> entries
-       (map :tags)
-       (apply union)
-       (map #(assoc {} :id %))
-       (into #{})
-       (assoc ent :tags)))
 
 (defn- spit-file [file contents]
   (make-parents file)
