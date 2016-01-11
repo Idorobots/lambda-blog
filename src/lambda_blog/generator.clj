@@ -1,32 +1,50 @@
 (ns lambda-blog.generator
   (:require [clojure.java.io :refer [make-parents]]
-            [clojure.set :refer [union]]
             [lambda-blog.utils :refer [pathcat]]
             [me.raynes.fs :as fs]
             [s-html.print :refer [html->str]]))
 
-(defn copy-dir [{:keys [output-dir]} what where]
+(defn copy-dir! [{:keys [output-dir] :as ent} what where]
   (let [to (pathcat output-dir where)]
     (println "Copying" what "to" to)
-    (fs/copy-dir what to)))
+    (fs/copy-dir what to)
+    ent))
 
-(defn clean-dir [{:keys [output-dir]}]
+(defn clean-dir! [{:keys [output-dir] :as ent}]
   (let [d (pathcat output-dir)]
     (println "Cleaning" d)
-    (fs/delete-dir d)))
+    (fs/delete-dir d)
+    ent))
 
-(defn generate-tags [entries]
-  (->> entries
-       (map :tags)
-       (apply union)
-       (map #(assoc {} :id %))))
+(defn update [entity key & funs]
+  (assoc entity
+         key ((reduce comp (reverse funs))
+              (entity key))))
+
+(defn update-all [entity key & funs]
+  (let [vs (entity key)]
+    (assoc entity
+           key
+           (into (empty vs)
+                 (map (reduce comp (reverse funs))
+                      vs)))))
 
 (defn- spit-file [file contents]
   (make-parents file)
   (spit file contents))
 
-(defn generate [template {:keys [output-dir path] :as ent} & args]
+(defn- do-generate! [template {:keys [output-dir path] :as ent} args]
   (let [f (pathcat output-dir path)]
     (println "Generating" f)
-    (spit-file f
-               (html->str (apply template ent args)))))
+    (->> (apply template ent args)
+         html->str
+         (spit-file f))))
+
+(defn generate! [env what template & args]
+  (do-generate! template (merge env (env what)) args)
+  env)
+
+(defn generate-all! [env what template & args]
+  (doseq [ent (env what)]
+    (do-generate! template (merge env ent) args))
+  env)

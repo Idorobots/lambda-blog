@@ -1,7 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
-  (:require [lambda-blog.generator :refer [clean-dir copy-dir generate generate-tags]]
-            [lambda-blog.middleware :refer [add-paths update-tags]]
+  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
+            [lambda-blog.middleware :refer [add-paths collect-tags]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
@@ -48,48 +48,42 @@
   [{:contents "Entry 1 contents"
     :id 'entry-1
     :summary "Entry 1 summary"
-    :tags #{'test 'entry 'foo}
+    :tags #{{:id 'test} {:id 'entry} {:id 'foo}}
     :timestamp "2016-01-06T16:23:00"
     :title "Test Entry 1"}
    {:author "somebody else"
     :contents "Entry 2 contents"
     :id 'entry-2
     :summary "Entry 2 summary"
-    :tags #{'test 'entry 'bar}
+    :tags #{{:id 'test} {:id 'entry} {:id 'bar}}
     :timestamp "2016-01-06T16:53:00"
     :title "Test Entry 2"}])
 
 (defn generate-blog []
-  (let [static (read-static-pages)
-        entries (read-entries)
-        tags (->> entries
-                  generate-tags
-                  (map #(merge blog %))
-                  (map #(add-paths % "tags/<id>.html")))
-        entries1 (->> entries
-                      (map #(update-tags % tags))
-                      (map #(merge blog %))
-                      (map #(add-paths % "posts/<id>.html")))
-        static1 (->> static
-                     (map #(merge blog %))
-                     (map #(add-paths % "<id>.html")))]
-    (clean-dir blog)
-    (copy-dir blog "resources/media" "media")
-    (copy-dir blog "resources/style" "style")
-    (copy-dir blog "resources/fonts" "fonts")
-    (copy-dir blog "resources/js" "js")
-    (-> blog
-        (add-paths "index.html")
-        ((partial generate recent-entries) entries1))
-    (-> blog
-        (add-paths "index.xml")
-        ((partial generate rss-feed) entries1))
-    (-> blog
-        (add-paths "archives.html")
-        ((partial generate archives) entries1))
-    (doseq [e entries1]
-      (generate entry-page e))
-    (doseq [s static1]
-      (generate entry-page s))
-    (doseq [t tags]
-      (generate (partial entries-by-tag t) t entries1))))
+  (-> blog
+      (assoc :static-pages (read-static-pages))
+      (assoc :entries (read-entries))
+      (update-all :static-pages
+                  (add-paths "<id>.html"))
+      (update-all :entries
+                  (add-paths "posts/<id>.html")
+                  #(update-all % :tags
+                               (add-paths "tags/<id>.html")))
+      collect-tags
+      (update :index
+              (add-paths "index.html"))
+      (update :rss
+              (add-paths "index.xml"))
+      (update :archives
+              (add-paths "archives.html"))
+      clean-dir!
+      (generate! :index recent-entries)
+      (generate! :rss rss-feed)
+      (generate! :archives archives)
+      (generate-all! :static-pages static-page)
+      (generate-all! :entries entry-page)
+      (generate-all! :tags entries-by-tag)
+      (copy-dir! "resources/media" "media")
+      (copy-dir! "resources/style" "style")
+      (copy-dir! "resources/fonts" "fonts")
+      (copy-dir! "resources/js" "js")))

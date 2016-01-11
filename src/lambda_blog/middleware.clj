@@ -1,6 +1,7 @@
 (ns lambda-blog.middleware
   (:refer-clojure :exclude [replace])
-  (:require [clojure.string :refer [replace]]
+  (:require [clojure.set :refer [union]]
+            [clojure.string :refer [replace]]
             [lambda-blog.utils :refer [pathcat sanitize]]))
 
 (defn- fmt [f args]
@@ -21,17 +22,15 @@
        (times "../")
        (apply str)))
 
-(defn add-paths [entity path-spec]
-  (let [p (fmt path-spec entity)]
-    (assoc entity
-           :path-to-root (path-to-root path-spec)
-           :path p)))
+(defn add-paths [path-spec]
+  (fn [entity]
+    (let [p (fmt path-spec entity)]
+      (assoc entity
+             :path-to-root (path-to-root path-spec)
+             :path (pathcat p)))))
 
-(defn update-tags [entity tags]
-  (->> entity
-       :tags
-       (map (->> tags
-                 (map (juxt :id identity))
-                 (into {})))
-       (into #{})
-       (assoc entity :tags)))
+(defn collect-tags [{:keys [entries] :as ent}]
+  (->> entries
+       (map :tags)
+       (apply union)
+       (assoc ent :tags)))
