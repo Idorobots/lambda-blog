@@ -70,9 +70,10 @@
       ;;             (generate static-page))
       (update-all :tags
                   (add-paths "tags/<id>.hmtl"))
+      (update-all :entries
+                  update-tags
+                  (add-paths "posts/<id>.html"))
       ;; (update-all :entries
-      ;;             update-tags
-      ;;             (add-paths "posts/<id>.html")
       ;;             (generate entry-page))
       ;; (update-all :tags
       ;;             (generate entries-by-tag))

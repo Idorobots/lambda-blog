@@ -28,7 +28,7 @@
              :path-to-root (path-to-root path-spec)
              :path (pathcat p)))))
 
-(defn update-tags [entity tags]
+(defn update-tags [{:keys [tags]} entity]
   (->> entity
        :tags
        (map (->> tags
