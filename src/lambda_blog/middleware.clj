@@ -42,6 +42,4 @@
   (->> entries
        (map :tags)
        (apply union)
-       (map #(assoc {} :id %))
-       (into #{})
        (assoc ent :tags)))

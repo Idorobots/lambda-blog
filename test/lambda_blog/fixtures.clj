@@ -48,14 +48,14 @@
   [{:contents "Entry 1 contents"
     :id 'entry-1
     :summary "Entry 1 summary"
-    :tags #{'test 'entry 'foo}
+    :tags #{{:id 'test} {:id 'entry} {:id 'foo}}
     :timestamp "2016-01-06T16:23:00"
     :title "Test Entry 1"}
    {:author "somebody else"
     :contents "Entry 2 contents"
     :id 'entry-2
     :summary "Entry 2 summary"
-    :tags #{'test 'entry 'bar}
+    :tags #{{:id 'test} {:id 'entry} {:id 'bar}}
     :timestamp "2016-01-06T16:53:00"
     :title "Test Entry 2"}])
 
@@ -63,14 +63,13 @@
   (-> blog
       (assoc :static-pages (read-static-pages))
       (assoc :entries (read-entries))
-      collect-tags
       (update-all :static-pages
                   (add-paths "<id>.html"))
-      (update-all :tags
-                  (add-paths "tags/<id>.html"))
       (update-all :entries
-                  update-tags
-                  (add-paths "posts/<id>.html"))
+                  (add-paths "posts/<id>.html")
+                  #(update-all %2 :tags
+                               (add-paths "tags/<id>.html")))
+      collect-tags
       (update :index
               (add-paths "index.html"))
       (update :rss

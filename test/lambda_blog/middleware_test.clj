@@ -34,30 +34,28 @@
 (deftest can-update-folded-tags
   (let [entries [{:tags #{:foo :bar}}
                  {:tags #{:bar :baz}}]
-        ent {:entries entries}
-        ent1 (collect-tags ent)
-        updated-ent (update-all ent1 :entries update-tags)]
-    (is (= (:tags ent1) #{{:id :foo} {:id :bar} {:id :baz}}))
+        ent {:entries entries
+             :tags #{{:id :foo} {:id :bar} {:id :baz}}}
+        updated-ent (update-all ent :entries update-tags)]
     (is (= (first (:entries updated-ent))
            {:tags #{{:id :foo} {:id :bar}}}))
     (is (= (second (:entries updated-ent))
            {:tags #{{:id :bar} {:id :baz}}}))))
 
 (deftest tags-are-collected-properly
-  (let [entries [{:tags #{:foo :bar}}
-                 {:tags #{:bar :baz}}]
+  (let [entries [{:tags #{{:id :foo} {:id :bar}}}
+                 {:tags #{{:id :bar} {:id :baz}}}]
         ent {:entries entries}]
     (is (= (collect-tags ent)
            {:entries entries
             :tags #{{:id :foo} {:id :bar} {:id :baz}}}))))
 
 (deftest tags-are-collected-properly-without-actual-tags
-  (let [entry1 {:tags #{:foo :bar}}
+  (let [entry1 {:tags #{{:id :foo} {:id :bar}}}
         entry2 {:tags #{}}
         entry3 {}]
     (let [ent {:entries [entry3]}]
-      (is (= (collect-tags ent)
-             (assoc ent :tags #{}))))
+      (is (nil? (:tags (collect-tags ent)))))
     (let [ent {:entries [entry2]}]
       (is (= (collect-tags ent)
              (assoc ent :tags #{}))))
