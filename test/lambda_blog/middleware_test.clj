@@ -1,6 +1,6 @@
 (ns lambda-blog.middleware-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.middleware :refer [add-paths collect-tags update-tags]]
+            [lambda-blog.middleware :refer [add-paths collect-tags]]
             [lambda-blog.generator :refer [update-all]]))
 
 (deftest can-generate-paths-from-spec
@@ -30,17 +30,6 @@
            (assoc ent
                   :path "some/nested/path/test"
                   :path-to-root "../../../")))))
-
-(deftest can-update-folded-tags
-  (let [entries [{:tags #{:foo :bar}}
-                 {:tags #{:bar :baz}}]
-        ent {:entries entries
-             :tags #{{:id :foo} {:id :bar} {:id :baz}}}
-        updated-ent (update-all ent :entries update-tags)]
-    (is (= (first (:entries updated-ent))
-           {:tags #{{:id :foo} {:id :bar}}}))
-    (is (= (second (:entries updated-ent))
-           {:tags #{{:id :bar} {:id :baz}}}))))
 
 (deftest tags-are-collected-properly
   (let [entries [{:tags #{{:id :foo} {:id :bar}}}

@@ -29,15 +29,6 @@
              :path-to-root (path-to-root path-spec)
              :path (pathcat p)))))
 
-(defn update-tags [{:keys [tags]} entity]
-  (->> entity
-       :tags
-       (map (->> tags
-                 (map (juxt :id identity))
-                 (into {})))
-       (into #{})
-       (assoc entity :tags)))
-
 (defn collect-tags [{:keys [entries] :as ent}]
   (->> entries
        (map :tags)
