@@ -18,19 +18,16 @@
 
 (defn update [entity key & funs]
   (assoc entity
-         key (reduce #(%2 entity %1)
-                     (entity key)
-                     funs)))
+         key ((reduce comp (reverse funs))
+              (entity key))))
 
 (defn update-all [entity key & funs]
-  (update entity
-          key
-          (fn [e vs]
-            (into (empty vs)
-                  (map (reduce comp
-                               (reverse (map #(partial % e)
-                                             funs)))
-                       vs)))))
+  (let [vs (entity key)]
+    (assoc entity
+           key
+           (into (empty vs)
+                 (map (reduce comp (reverse funs))
+                      vs)))))
 
 (defn- spit-file [file contents]
   (make-parents file)

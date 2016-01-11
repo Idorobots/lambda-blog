@@ -23,7 +23,7 @@
        (apply str)))
 
 (defn add-paths [path-spec]
-  (fn [_ entity]
+  (fn [entity]
     (let [p (fmt path-spec entity)]
       (assoc entity
              :path-to-root (path-to-root path-spec)

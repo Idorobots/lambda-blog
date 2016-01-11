@@ -67,7 +67,7 @@
                   (add-paths "<id>.html"))
       (update-all :entries
                   (add-paths "posts/<id>.html")
-                  #(update-all %2 :tags
+                  #(update-all % :tags
                                (add-paths "tags/<id>.html")))
       collect-tags
       (update :index
