@@ -1,6 +1,6 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace])
-  (:require [lambda-blog.generator :refer [clean-dir copy-dir generate generate-tags]]
+  (:require [lambda-blog.generator :refer [clean-dir copy-dir generate generate-tags update update-all]]
             [lambda-blog.middleware :refer [add-paths update-tags]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]

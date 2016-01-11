@@ -15,6 +15,21 @@
     (println "Cleaning" d)
     (fs/delete-dir d)))
 
+(defn update [entity key & funs]
+  (assoc entity
+         key (reduce #(%2 entity %1)
+                     (entity key)
+                     funs)))
+
+(defn update-all [entity key & funs]
+  (update entity
+          key
+          (fn [e vs]
+            (map (reduce comp
+                         (reverse (map #(partial % e)
+                                       funs)))
+                 vs))))
+
 (defn generate-tags [entries]
   (->> entries
        (map :tags)
