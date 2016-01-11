@@ -5,15 +5,17 @@
             [me.raynes.fs :as fs]
             [s-html.print :refer [html->str]]))
 
-(defn copy-dir [{:keys [output-dir]} what where]
+(defn copy-dir! [{:keys [output-dir] :as ent} what where]
   (let [to (pathcat output-dir where)]
     (println "Copying" what "to" to)
-    (fs/copy-dir what to)))
+    (fs/copy-dir what to)
+    ent))
 
-(defn clean-dir [{:keys [output-dir]}]
+(defn clean-dir! [{:keys [output-dir] :as ent}]
   (let [d (pathcat output-dir)]
     (println "Cleaning" d)
-    (fs/delete-dir d)))
+    (fs/delete-dir d)
+    ent))
 
 (defn update [entity key & funs]
   (assoc entity
