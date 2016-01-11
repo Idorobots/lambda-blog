@@ -64,7 +64,7 @@
       clean-dir!
       (assoc :static-pages (read-static-pages))
       (assoc :entries (read-entries))
-      ;; (update :tags generate-tags)
+      generate-tags
       ;; (update-all :static-pages
       ;;             (add-paths "<id>.html")
       ;;             (generate static-page))

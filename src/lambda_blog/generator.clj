@@ -32,11 +32,13 @@
                                        funs)))
                  vs))))
 
-(defn generate-tags [entries]
+(defn generate-tags [{:keys [entries] :as ent}]
   (->> entries
        (map :tags)
        (apply union)
-       (map #(assoc {} :id %))))
+       (map #(assoc {} :id %))
+       (into #{})
+       (assoc ent :tags)))
 
 (defn- spit-file [file contents]
   (make-parents file)
