@@ -26,7 +26,7 @@
     (let [p (fmt path-spec entity)]
       (assoc entity
              :path-to-root (path-to-root path-spec)
-             :path p))))
+             :path (pathcat p)))))
 
 (defn update-tags [entity tags]
   (->> entity
