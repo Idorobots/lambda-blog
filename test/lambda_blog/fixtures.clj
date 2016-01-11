@@ -60,36 +60,32 @@
     :title "Test Entry 2"}])
 
 (defn generate-blog []
-  (let [static (read-static-pages)
-        entries (read-entries)
-        tags (->> entries
-                  generate-tags
-                  (map #(merge blog %))
-                  (map #(add-paths % "tags/<id>.html")))
-        entries1 (->> entries
-                      (map #(update-tags % tags))
-                      (map #(merge blog %))
-                      (map #(add-paths % "posts/<id>.html")))
-        static1 (->> static
-                     (map #(merge blog %))
-                     (map #(add-paths % "<id>.html")))]
-    (clean-dir! blog)
-    (copy-dir! blog "resources/media" "media")
-    (copy-dir! blog "resources/style" "style")
-    (copy-dir! blog "resources/fonts" "fonts")
-    (copy-dir! blog "resources/js" "js")
-    (-> blog
-        (add-paths "index.html")
-        ((partial generate recent-entries) entries1))
-    (-> blog
-        (add-paths "index.xml")
-        ((partial generate rss-feed) entries1))
-    (-> blog
-        (add-paths "archives.html")
-        ((partial generate archives) entries1))
-    (doseq [e entries1]
-      (generate entry-page e))
-    (doseq [s static1]
-      (generate static-page s))
-    (doseq [t tags]
-      (generate (partial entries-by-tag t) t entries1))))
+  (-> blog
+      clean-dir!
+      (assoc :static-pages (read-static-pages))
+      (assoc :entries (read-entries))
+      ;; (update :tags generate-tags)
+      ;; (update-all :static-pages
+      ;;             (add-paths "<id>.html")
+      ;;             (generate static-page))
+      ;; (update-all :tags
+      ;;             (add-paths "tags/<id>.hmtl"))
+      ;; (update-all :entries
+      ;;             update-tags
+      ;;             (add-paths "posts/<id>.html")
+      ;;             (generate entry-page))
+      ;; (update-all :tags
+      ;;             (generate entries-by-tag))
+      ;; (update :index
+      ;;         (add-paths "index.html")
+      ;;         (generate recent-entries))
+      ;; (update :rss
+      ;;         (add-paths "index.xml")
+      ;;         (generate rss-feed))
+      ;; (update :archives
+      ;;         (add-paths "archives.html")
+      ;;         (generate archives))
+      (copy-dir! "resources/media" "media")
+      (copy-dir! "resources/style" "style")
+      (copy-dir! "resources/fonts" "fonts")
+      (copy-dir! "resources/js" "js")))
