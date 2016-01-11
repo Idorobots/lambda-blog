@@ -27,10 +27,11 @@
   (update entity
           key
           (fn [e vs]
-            (map (reduce comp
-                         (reverse (map #(partial % e)
-                                       funs)))
-                 vs))))
+            (into (empty vs)
+                  (map (reduce comp
+                               (reverse (map #(partial % e)
+                                             funs)))
+                       vs)))))
 
 (defn generate-tags [{:keys [entries] :as ent}]
   (->> entries

@@ -38,7 +38,11 @@
   (is (= (update {} :key (constantly 23))
          {:key 23}))
   (is (= (update-all {} :key (constantly 23)) ;; NOTE There'se no key so there's no collection to update.
-         {:key ()})))
+         {:key nil})))
+
+(deftest update-preserves-collection-type
+  (is (vector? (:v (update-all {:v [1 2 3]} :v (constantly 23)))))
+  (is (set? (:s (update-all {:s #{1 2 3}} :s (constantly 5))))))
 
 (deftest tags-are-generated-properly
   (let [entries [{:tags #{:foo :bar}}
