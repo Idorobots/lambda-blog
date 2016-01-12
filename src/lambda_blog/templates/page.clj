@@ -72,8 +72,9 @@
               links)))
 
 (defn navigation [{:keys [brand logo-button navigation path-to-root]}]
-  (let [l [(t/img {:src (pathcat path-to-root logo-button)})
-           brand]]
+  (let [l (div
+           (t/img {:src (pathcat path-to-root logo-button)})
+           brand)]
     (t/nav {:class [:navbar :navbar-default :navbar-fixed-top]}
            (t/div {:class [:container :navbar-inner]}
                   (t/div (:class :navbar-header)
