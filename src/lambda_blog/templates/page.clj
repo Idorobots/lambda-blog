@@ -4,13 +4,22 @@
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a article body button div doctype head hr html img li link meta nav p script span ul] :as t]))
 
+(defn- javascripts [path-to-root scripts]
+  (map #(javascript (or (re-matches #"^https?://.*$" %)
+                        (pathcat path-to-root %)))
+       scripts))
+
+(defn- css [path-to-root stylesheets]
+  (map #(t/link {:rel :stylesheet
+                 :type "text/css"
+                 :href (or (re-matches #"^https?://.*$" %)
+                           (pathcat path-to-root %))})
+       stylesheets))
+
 (defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
   (t/head (t/meta {:charset :utf-8})
           (t/title title)
-          (map #(t/link {:rel :stylesheet
-                         :type "text/css"
-                         :href (pathcat path-to-root %)})
-               stylesheets)
+          (css path-to-root stylesheets)
           (t/link {:rel :alternate
                    :type "application/rss+xhtml"
                    :title "RSS Feed"
@@ -18,7 +27,7 @@
           (t/link {:rel :icon
                    :type "image/png"
                    :href (pathcat path-to-root favicon)})
-          (map #(javascript (pathcat path-to-root %)) scripts)
+          (javascripts path-to-root scripts)
           (t/meta {:name :viewport
                    :content "width=device-width, initial-scale=1.0"})
           (t/meta {:name :generator
@@ -46,7 +55,7 @@
      (text-centered
       footer-contents
       (powered-by))))
-   (map #(javascript (pathcat path-to-root %)) footer-scripts)])
+   (javascripts path-to-root footer-scripts)])
 
 (defn listify [links & [nested?]]
   (apply t/ul {:class (if nested?
