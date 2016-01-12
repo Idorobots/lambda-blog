@@ -5,9 +5,9 @@
             [lambda-blog.utils :refer [format-date pathcat]]
             [s-html.tags :refer [a article div footer h1 header hr i li nav p span time ul]]))
 
-(defn entry-title [{:keys [path path-to-root tags timestamp title]}]
+(defn entry-header [{:keys [path-to-root tags timestamp]} title]
   (text-centered
-   (h1 (a {:href (pathcat path-to-root path)} title))
+   (h1 title)
    (p "Posted on " (time (format-date timestamp)))
    (nav (map #(info-label
                (a {:class :tag
@@ -30,23 +30,24 @@
                        (i {:class [:fa :fa-chevron-right]})))))))))
 
 (defn entry
-  [{:keys [contents next previous] :as ent}]
+  [{:keys [contents next previous title] :as ent}]
   (article
    (header
     (well
      (row
       (pager ent previous :previous)
       (div {:class [:col-xs-8 :col-sm-6]}
-           (entry-title ent))
+           (entry-header ent title))
       (pager ent next :next))))
    contents))
 
 (def entry-page (partial page entry))
 
-(defn entry-summary [{:keys [path path-to-root summary tags] :as ent}]
+(defn entry-summary [{:keys [path path-to-root summary tags title] :as ent}]
   (article
    (-> ent
-       entry-title
+       (entry-header (a {:href (pathcat path-to-root path)}
+                        title))
        row
        well
        header)
