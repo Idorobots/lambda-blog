@@ -12,8 +12,6 @@
            :brand "Test Blog"
            :favicon "media/favicon.png"
            :footer-contents "Some footer contents"
-           :footer-scripts ["js/bootstrap.min.js"
-                            "js/lambda-blog.js"]
            :logo "media/logo-main.png"
            :logo-button "media/logo-button.png"
            :navigation [["Static Page 1" "./static-1.html"]
@@ -24,11 +22,13 @@
                         ["Archives" "./archives.html"]]
            :output-dir "/out/"
            :root "localhost:8000"
-           :scripts ["js/jquery-1.11.0.min.js"
-                     "js/jquery.tablesorter.min.js"]
-           :stylesheets ["style/theme.css"
-                         "style/lambda-blog.css"
-                         "style/font-awesome.min.css"]
+           :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
+                     "js/jquery.tablesorter.min.js"
+                     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"]
+           :stylesheets ["https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+                         "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+                         "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+                         "style/lambda-blog.css"]
            :title "Test Blog"})
 
 (defn read-static-pages []
@@ -86,5 +86,4 @@
       (generate-all! :tags entries-by-tag)
       (copy-dir! "resources/media" "media")
       (copy-dir! "resources/style" "style")
-      (copy-dir! "resources/fonts" "fonts")
       (copy-dir! "resources/js" "js")))
