@@ -70,7 +70,10 @@
 
 (defn recent-entries [{:keys [entries] :as ent}]
   (filtered-entries ent
-                    (take 15 entries)))
+                    (->> entries
+                         (sort-by :timestamp)
+                         reverse
+                         (take 15))))
 
 (defn entries-by-tag [{:keys [entries id] :as env}]
   (filtered-entries env
