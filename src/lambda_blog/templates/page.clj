@@ -35,14 +35,9 @@
           (t/meta {:name :generator
                    :content "λ-blog"}))) ;; FIXME Add version string in here.
 
-(defn banner [{:keys [banner-contents logo path-to-root]}]
+(defn banner [{:keys [banner-template] :as ent}]
   (t/header {:class :page-header}
-            (row (t/div {:class [:hidden-xs :col-sm-2 :col-md-1]}
-                        (text-centered
-                         (t/img {:class :logo
-                                 :src (pathcat path-to-root logo)})))
-                 (t/div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
-                        (text-centered banner-contents)))))
+            (banner-template ent)))
 
 (defn powered-by []
   (t/p "Powered by "
