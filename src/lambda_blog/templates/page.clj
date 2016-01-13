@@ -59,25 +59,9 @@
       (powered-by))))
    (javascripts path-to-root footer-scripts)])
 
-(defn listify [path-to-root links & [nested?]]
-  (apply t/ul {:class (if nested?
-                        :dropdown-menu
-                        [:nav :navbar-nav])}
-         (map (fn [[f s]]
-                (if (sequential? s)
-                  (t/li {:class :dropdown}
-                        (t/a {:href "#"}
-                             f
-                             (t/span {:class :caret}))
-                        (listify path-to-root s true))
-                  (t/li (t/a {:href (link-or-pathcat path-to-root s)}
-                             f))))
-              links)))
-
-(defn navigation [{:keys [brand logo-button navigation path-to-root]}]
-  (let [l (div
-           (t/img {:src (pathcat path-to-root logo-button)})
-           brand)]
+(defn navigation [{:keys [brand logo-button navigation-template path-to-root] :as ent}]
+  (let [l (div (t/img {:src (pathcat path-to-root logo-button)})
+               brand)]
     (t/nav {:class [:navbar :navbar-default :navbar-fixed-top]}
            (t/div {:class [:container :navbar-inner]}
                   (t/div (:class :navbar-header)
@@ -91,7 +75,7 @@
                                       :href (pathcat path-to-root)}
                                      l)))
                   (t/div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
-                         (listify path-to-root navigation))))))
+                         (navigation-template ent))))))
 
 (defn page [contents-template entity]
   [(doctype :html)

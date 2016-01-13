@@ -6,7 +6,8 @@
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
             [lambda-blog.templates.rss :refer [rss-feed]]
-            [lambda-blog.utils :refer [pathcat]]))
+            [lambda-blog.utils :refer [pathcat]]
+            [s-html.tags :refer [a li span ul]]))
 
 (def blog {:author "me"
            :banner-contents "Some banner contents"
@@ -54,18 +55,29 @@
     :timestamp "2016-01-07T16:53:00"
     :title "Test Entry 2"}])
 
-(defn- generate-navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
-  (assoc ent
-         :navigation
-         [["Google" "http://www.google.com"]
-          ["Static Pages" (map (juxt :title :path) static-pages)]
-          ["RSS Feed" (:path rss)]
-          ["Archives" (:path archives)]]))
+(defn- navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
+  (ul {:class [:nav :navbar-nav]}
+      (li (a {:href "https://github.com/Idorobots/lambda-blog"}
+             "λ-blog"))
+      (li {:class :dropdown}
+          (a {:href "#"}
+             "Static Pages"
+             (span {:class :caret}))
+          (ul {:class :dropdown-menu}
+              (map (fn [{:keys [path title]}]
+                     (li (a {:href (pathcat path-to-root path)}
+                            title)))
+                   static-pages)))
+      (li (a {:href (pathcat path-to-root (:path rss))}
+             "RSS Feed"))
+      (li (a {:href (pathcat path-to-root (:path archives))}
+             "Archives"))))
 
 (defn generate-blog []
   (-> blog
       (assoc :static-pages (read-static-pages))
       (assoc :entries (read-entries))
+      (assoc :navigation-template navigation)
       (update-all :static-pages
                   (add-paths "<id>.html"))
       (update-all :entries
@@ -80,7 +92,6 @@
               (add-paths "index.xml"))
       (update :archives
               (add-paths "archives.html"))
-      generate-navigation
       clean-dir!
       (generate! :index recent-entries)
       (generate! :rss rss-feed)
