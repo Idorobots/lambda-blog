@@ -33,7 +33,7 @@
           (t/meta {:name :viewport
                    :content "width=device-width, initial-scale=1.0"})
           (t/meta {:name :generator
-                   :content "λ-blog"}))) ;; FIXME Add version string in here.
+                   :content (str "λ-blog v." (System/getProperty "lambda-blog.version"))})))
 
 (defn banner [{:keys [banner-template] :as ent}]
   (t/header {:class :page-header}
