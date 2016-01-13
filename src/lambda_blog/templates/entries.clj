@@ -56,12 +56,13 @@
          "Continue reading "
          (i {:class [:fa :fa-arrow-right]})))))
 
-(defn filtered-entries [{:keys [path-to-root] :as ent} entries]
+(defn filtered-entries [{:keys [archives path-to-root] :as ent} entries]
   (page
    (fn [_]
      [(map (juxt entry-summary (constantly (hr)))
            entries)
-      (-> (a {:href (pathcat path-to-root "./archives.html")} "Archives") ;; FIXME Pass it in here instead.
+      (-> (a {:href (pathcat path-to-root (:path archives))}
+             "Further reading...")
           h1
           text-centered
           row
