@@ -35,11 +35,14 @@
        (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
             (text-centered "Some banner contents"))))
 
+(defn- footer [_]
+  (text-centered "Some footer contents"))
+
 (def blog {:author "me"
            :banner-template banner
            :brand "Test Blog"
            :favicon "media/favicon.png"
-           :footer-contents "Some footer contents"
+           :footer-template footer
            :logo-button "media/logo-button.png"
            :navigation-template navigation
            :output-dir "/out/"

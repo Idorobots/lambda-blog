@@ -45,13 +45,10 @@
             "λ-blog")
        "."))
 
-(defn footer [{:keys [footer-contents footer-scripts path-to-root]}]
-  [(t/footer
-    (t/hr)
-    (row
-     (text-centered
-      footer-contents
-      (powered-by))))
+(defn footer [{:keys [footer-scripts footer-template path-to-root] :as ent}]
+  [(t/footer (t/hr)
+             (row (footer-template ent)
+                  (text-centered (powered-by))))
    (javascripts path-to-root footer-scripts)])
 
 (defn navigation [{:keys [brand logo-button navigation-template path-to-root] :as ent}]
