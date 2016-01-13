@@ -4,16 +4,18 @@
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a article body button div doctype head hr html img li link meta nav p script span ul] :as t]))
 
+(defn- link-or-pathcat [path-to-root link]
+  (or (re-matches #"^https?://.*$" link)
+      (pathcat path-to-root link)))
+
 (defn- javascripts [path-to-root scripts]
-  (map #(javascript (or (re-matches #"^https?://.*$" %)
-                        (pathcat path-to-root %)))
+  (map #(javascript (link-or-pathcat path-to-root %))
        scripts))
 
 (defn- css [path-to-root stylesheets]
   (map #(t/link {:rel :stylesheet
                  :type "text/css"
-                 :href (or (re-matches #"^https?://.*$" %)
-                           (pathcat path-to-root %))})
+                 :href (link-or-pathcat path-to-root %)})
        stylesheets))
 
 (defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
@@ -57,7 +59,7 @@
       (powered-by))))
    (javascripts path-to-root footer-scripts)])
 
-(defn listify [links & [nested?]]
+(defn listify [path-to-root links & [nested?]]
   (apply t/ul {:class (if nested?
                         :dropdown-menu
                         [:nav :navbar-nav])}
@@ -67,8 +69,9 @@
                         (t/a {:href "#"}
                              f
                              (t/span {:class :caret}))
-                        (listify s true))
-                  (t/li (t/a {:href s} f))))
+                        (listify path-to-root s true))
+                  (t/li (t/a {:href (link-or-pathcat path-to-root s)}
+                             f))))
               links)))
 
 (defn navigation [{:keys [brand logo-button navigation path-to-root]}]
@@ -88,7 +91,7 @@
                                       :href (pathcat path-to-root)}
                                      l)))
                   (t/div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
-                         (listify navigation))))))
+                         (listify path-to-root navigation))))))
 
 (defn page [contents-template entity]
   [(doctype :html)

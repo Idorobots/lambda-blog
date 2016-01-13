@@ -5,7 +5,8 @@
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
-            [lambda-blog.templates.rss :refer [rss-feed]]))
+            [lambda-blog.templates.rss :refer [rss-feed]]
+            [lambda-blog.utils :refer [pathcat]]))
 
 (def blog {:author "me"
            :banner-contents "Some banner contents"
@@ -14,12 +15,6 @@
            :footer-contents "Some footer contents"
            :logo "media/logo-main.png"
            :logo-button "media/logo-button.png"
-           :navigation [["Static Page 1" "./static-1.html"]
-                        ["Static Page 2" "./static-2.html"]
-                        ["Dropdown" [["test1" "test1"]
-                                     ["test2" "test2"]]]
-                        ["RSS Feed" "./index.xml"]
-                        ["Archives" "./archives.html"]]
            :output-dir "/out/"
            :root "localhost:8000"
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
@@ -59,6 +54,14 @@
     :timestamp "2016-01-07T16:53:00"
     :title "Test Entry 2"}])
 
+(defn- generate-navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
+  (assoc ent
+         :navigation
+         [["Google" "http://www.google.com"]
+          ["Static Pages" (map (juxt :title :path) static-pages)]
+          ["RSS Feed" (:path rss)]
+          ["Archives" (:path archives)]]))
+
 (defn generate-blog []
   (-> blog
       (assoc :static-pages (read-static-pages))
@@ -77,6 +80,7 @@
               (add-paths "index.xml"))
       (update :archives
               (add-paths "archives.html"))
+      generate-navigation
       clean-dir!
       (generate! :index recent-entries)
       (generate! :rss rss-feed)
