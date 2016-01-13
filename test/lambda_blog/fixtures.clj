@@ -57,7 +57,8 @@
 (defn- generate-navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
   (assoc ent
          :navigation
-         [["Static Pages" (map (juxt :title :path) static-pages)]
+         [["Google" "http://www.google.com"]
+          ["Static Pages" (map (juxt :title :path) static-pages)]
           ["RSS Feed" (:path rss)]
           ["Archives" (:path archives)]]))
 
