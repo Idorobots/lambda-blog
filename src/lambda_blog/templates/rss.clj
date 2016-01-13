@@ -30,4 +30,4 @@
                                         :label (:id %)})
                             (sort-by :id tags))
                        (_summary {:type :html} summary)))
-              entries))])
+              (reverse (sort-by :timestamp entries))))])

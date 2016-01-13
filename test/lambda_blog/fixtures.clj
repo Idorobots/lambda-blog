@@ -56,7 +56,7 @@
     :id 'entry-2
     :summary "Entry 2 summary"
     :tags #{{:id 'test} {:id 'entry} {:id 'bar}}
-    :timestamp "2016-01-06T16:53:00"
+    :timestamp "2016-01-07T16:53:00"
     :title "Test Entry 2"}])
 
 (defn generate-blog []
