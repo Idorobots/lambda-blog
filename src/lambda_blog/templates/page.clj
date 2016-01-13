@@ -51,8 +51,9 @@
                   (text-centered (powered-by))))
    (javascripts path-to-root footer-scripts)])
 
-(defn navigation [{:keys [brand logo-button navigation-template path-to-root] :as ent}]
-  (let [l (div (t/img {:src (pathcat path-to-root logo-button)})
+(defn navigation [{:keys [brand brand-logo navigation-template path-to-root] :as ent}]
+  (let [l (div (when brand-logo
+                 (t/img {:src (pathcat path-to-root brand-logo)}))
                brand)]
     (t/nav {:class [:navbar :navbar-default :navbar-fixed-top]}
            (t/div {:class [:container :navbar-inner]}

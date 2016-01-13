@@ -41,9 +41,9 @@
 (def blog {:author "me"
            :banner-template banner
            :brand "Test Blog"
+           :brand-logo "media/logo-button.png"
            :favicon "media/favicon.png"
            :footer-template footer
-           :logo-button "media/logo-button.png"
            :navigation-template navigation
            :output-dir "/out/"
            :url "localhost:8000"
