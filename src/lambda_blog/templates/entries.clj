@@ -56,11 +56,11 @@
          "Continue reading "
          (i {:class [:fa :fa-arrow-right]})))))
 
-(defn filtered-entries [{:keys [archives path-to-root] :as ent} entries]
+(defn filtered-entries [entry-filter ent]
   (page
-   (fn [_]
+   (fn [{:keys [archives entries path-to-root]}]
      [(map (juxt entry-summary (constantly (hr)))
-           entries)
+           (entry-filter entries))
       (-> (a {:href (pathcat path-to-root (:path archives))}
              "Further reading...")
           h1
@@ -69,17 +69,18 @@
           well)])
    ent))
 
-(defn recent-entries [{:keys [entries] :as ent}]
-  (filtered-entries ent
-                    (->> entries
-                         (sort-by :timestamp)
-                         reverse
-                         (take 15))))
+(def recent-entries (partial filtered-entries
+                             #(->> %
+                                   (sort-by :timestamp)
+                                   reverse
+                                   (take 15))))
 
-(defn entries-by-tag [{:keys [entries id] :as env}]
-  (filtered-entries env
-                    (->> entries
-                         (filter (fn [{:keys [tags]}]
-                                   (contains? (into #{} (map :id tags)) id)))
-                         (sort-by :timestamp)
-                         reverse)))
+(defn entries-by-tag [{:keys [id] :as ent}]
+  (filtered-entries #(->> %
+                          (filter (fn [{:keys [tags]}]
+                                    (contains? (into #{}
+                                                     (map :id tags))
+                                               id)))
+                          (sort-by :timestamp)
+                          reverse)
+                    ent))
