@@ -35,14 +35,9 @@
           (t/meta {:name :generator
                    :content "λ-blog"}))) ;; FIXME Add version string in here.
 
-(defn banner [{:keys [banner-contents logo path-to-root]}]
+(defn banner [{:keys [banner-template] :as ent}]
   (t/header {:class :page-header}
-            (row (t/div {:class [:hidden-xs :col-sm-2 :col-md-1]}
-                        (text-centered
-                         (t/img {:class :logo
-                                 :src (pathcat path-to-root logo)})))
-                 (t/div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
-                        (text-centered banner-contents)))))
+            (banner-template ent)))
 
 (defn powered-by []
   (t/p "Powered by "
@@ -50,34 +45,15 @@
             "λ-blog")
        "."))
 
-(defn footer [{:keys [footer-contents footer-scripts path-to-root]}]
-  [(t/footer
-    (t/hr)
-    (row
-     (text-centered
-      footer-contents
-      (powered-by))))
+(defn footer [{:keys [footer-scripts footer-template path-to-root] :as ent}]
+  [(t/footer (t/hr)
+             (row (footer-template ent)
+                  (text-centered (powered-by))))
    (javascripts path-to-root footer-scripts)])
 
-(defn listify [path-to-root links & [nested?]]
-  (apply t/ul {:class (if nested?
-                        :dropdown-menu
-                        [:nav :navbar-nav])}
-         (map (fn [[f s]]
-                (if (sequential? s)
-                  (t/li {:class :dropdown}
-                        (t/a {:href "#"}
-                             f
-                             (t/span {:class :caret}))
-                        (listify path-to-root s true))
-                  (t/li (t/a {:href (link-or-pathcat path-to-root s)}
-                             f))))
-              links)))
-
-(defn navigation [{:keys [brand logo-button navigation path-to-root]}]
-  (let [l (div
-           (t/img {:src (pathcat path-to-root logo-button)})
-           brand)]
+(defn navigation [{:keys [brand logo-button navigation-template path-to-root] :as ent}]
+  (let [l (div (t/img {:src (pathcat path-to-root logo-button)})
+               brand)]
     (t/nav {:class [:navbar :navbar-default :navbar-fixed-top]}
            (t/div {:class [:container :navbar-inner]}
                   (t/div (:class :navbar-header)
@@ -91,7 +67,7 @@
                                       :href (pathcat path-to-root)}
                                      l)))
                   (t/div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
-                         (listify path-to-root navigation))))))
+                         (navigation-template ent))))))
 
 (defn page [contents-template entity]
   [(doctype :html)

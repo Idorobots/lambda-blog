@@ -2,19 +2,49 @@
   (:refer-clojure :exclude [replace])
   (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
             [lambda-blog.middleware :refer [add-paths collect-tags link]]
+            [lambda-blog.templates.bits :refer [row text-centered]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
             [lambda-blog.templates.rss :refer [rss-feed]]
-            [lambda-blog.utils :refer [pathcat]]))
+            [lambda-blog.utils :refer [pathcat]]
+            [s-html.tags :refer [a div img li span ul]]))
+
+(defn- navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
+  (ul {:class [:nav :navbar-nav]}
+      (li (a {:href "https://github.com/Idorobots/lambda-blog"}
+             "λ-blog"))
+      (li {:class :dropdown}
+          (a {:href "#"}
+             "Static Pages"
+             (span {:class :caret}))
+          (ul {:class :dropdown-menu}
+              (map (fn [{:keys [path title]}]
+                     (li (a {:href (pathcat path-to-root path)}
+                            title)))
+                   static-pages)))
+      (li (a {:href (pathcat path-to-root (:path rss))}
+             "RSS Feed"))
+      (li (a {:href (pathcat path-to-root (:path archives))}
+             "Archives"))))
+
+(defn- banner [{:keys [logo path-to-root]}]
+  (row (div {:class [:hidden-xs :col-sm-2 :col-md-1]}
+            (img {:class :logo
+                  :src (pathcat path-to-root "media/logo-main.png")}))
+       (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
+            (text-centered "Some banner contents"))))
+
+(defn- footer [_]
+  (text-centered "Some footer contents"))
 
 (def blog {:author "me"
-           :banner-contents "Some banner contents"
+           :banner-template banner
            :brand "Test Blog"
            :favicon "media/favicon.png"
-           :footer-contents "Some footer contents"
-           :logo "media/logo-main.png"
+           :footer-template footer
            :logo-button "media/logo-button.png"
+           :navigation-template navigation
            :output-dir "/out/"
            :root "localhost:8000"
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
@@ -32,7 +62,7 @@
     :id 'static-1
     :timestamp "2015-12-31T18:00:00"
     :title "Static Page 1"}
-   {:banner-contents "Custom banner contents"
+   {:banner-template (constantly (text-centered "Custom banner contents"))
     :contents "Static Page 2 contents"
     :id 'static-2
     :timestamp "2015-12-31T18:01:00"
@@ -54,14 +84,6 @@
     :timestamp "2016-01-07T16:53:00"
     :title "Test Entry 2"}])
 
-(defn- generate-navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
-  (assoc ent
-         :navigation
-         [["Google" "http://www.google.com"]
-          ["Static Pages" (map (juxt :title :path) static-pages)]
-          ["RSS Feed" (:path rss)]
-          ["Archives" (:path archives)]]))
-
 (defn generate-blog []
   (-> blog
       (assoc :static-pages (read-static-pages))
@@ -80,7 +102,6 @@
               (add-paths "index.xml"))
       (update :archives
               (add-paths "archives.html"))
-      generate-navigation
       clean-dir!
       (generate! :index recent-entries)
       (generate! :rss rss-feed)
