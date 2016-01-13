@@ -46,7 +46,7 @@
            :logo-button "media/logo-button.png"
            :navigation-template navigation
            :output-dir "/out/"
-           :root "localhost:8000"
+           :url "localhost:8000"
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
                      "js/jquery.tablesorter.min.js"
                      "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"]
