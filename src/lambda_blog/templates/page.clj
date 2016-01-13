@@ -18,14 +18,14 @@
                  :href (link-or-pathcat path-to-root %)})
        stylesheets))
 
-(defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
+(defn header [{:keys [favicon path-to-root rss scripts stylesheets title]}]
   (t/head (t/meta {:charset :utf-8})
           (t/title title)
           (css path-to-root stylesheets)
           (t/link {:rel :alternate
                    :type "application/rss+xhtml"
                    :title "RSS Feed"
-                   :href (pathcat path-to-root "index.xml")}) ;; FIXME Pass the string in here somehow.
+                   :href (pathcat path-to-root (:path rss))})
           (t/link {:rel :icon
                    :type "image/png"
                    :href (pathcat path-to-root favicon)})
