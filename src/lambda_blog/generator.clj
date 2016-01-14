@@ -1,4 +1,5 @@
 (ns lambda-blog.generator
+  (:refer-clojure :exclude [update])
   (:require [clojure.java.io :refer [make-parents]]
             [lambda-blog.utils :refer [pathcat]]
             [me.raynes.fs :as fs]

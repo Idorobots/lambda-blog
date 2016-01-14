@@ -1,5 +1,5 @@
 (ns lambda-blog.fixtures
-  (:refer-clojure :exclude [replace])
+  (:refer-clojure :exclude [replace update])
   (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
             [lambda-blog.middleware :refer [add-paths collect-tags link]]
             [lambda-blog.templates.bits :refer [row text-centered]]

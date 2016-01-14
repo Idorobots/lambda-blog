@@ -1,4 +1,5 @@
 (ns lambda-blog.generator-test
+  (:refer-clojure :exclude [update])
   (:require [clojure.test :refer :all]
             [lambda-blog.generator :refer [update update-all]]))
 
