@@ -18,14 +18,14 @@
                  :href (link-or-pathcat path-to-root %)})
        stylesheets))
 
-(defn header [{:keys [favicon path-to-root scripts stylesheets title]}]
+(defn header [{:keys [favicon path-to-root rss scripts stylesheets title]}]
   (t/head (t/meta {:charset :utf-8})
           (t/title title)
           (css path-to-root stylesheets)
           (t/link {:rel :alternate
                    :type "application/rss+xhtml"
                    :title "RSS Feed"
-                   :href (pathcat path-to-root "index.xml")}) ;; FIXME Pass the string in here somehow.
+                   :href (pathcat path-to-root (:path rss))})
           (t/link {:rel :icon
                    :type "image/png"
                    :href (pathcat path-to-root favicon)})
@@ -33,7 +33,7 @@
           (t/meta {:name :viewport
                    :content "width=device-width, initial-scale=1.0"})
           (t/meta {:name :generator
-                   :content "λ-blog"}))) ;; FIXME Add version string in here.
+                   :content (str "λ-blog v." (System/getProperty "lambda-blog.version"))})))
 
 (defn banner [{:keys [banner-template] :as ent}]
   (t/header {:class :page-header}
@@ -51,8 +51,9 @@
                   (text-centered (powered-by))))
    (javascripts path-to-root footer-scripts)])
 
-(defn navigation [{:keys [brand logo-button navigation-template path-to-root] :as ent}]
-  (let [l (div (t/img {:src (pathcat path-to-root logo-button)})
+(defn navigation [{:keys [brand brand-logo navigation-template path-to-root] :as ent}]
+  (let [l (div (when brand-logo
+                 (t/img {:src (pathcat path-to-root brand-logo)}))
                brand)]
     (t/nav {:class [:navbar :navbar-default :navbar-fixed-top]}
            (t/div {:class [:container :navbar-inner]}
