@@ -2,17 +2,18 @@
   (:require [clojure.java.io :refer [make-parents]]
             [lambda-blog.utils :refer [pathcat]]
             [me.raynes.fs :as fs]
-            [s-html.print :refer [html->str]]))
+            [s-html.print :refer [html->str]]
+            [taoensso.timbre :as log]))
 
 (defn copy-dir! [{:keys [output-dir] :as ent} what where]
   (let [to (pathcat output-dir where)]
-    (println "Copying" what "to" to)
+    (log/info "Copying" what "to" to)
     (fs/copy-dir what to)
     ent))
 
 (defn clean-dir! [{:keys [output-dir] :as ent}]
   (let [d (pathcat output-dir)]
-    (println "Cleaning" d)
+    (log/info "Cleaning" d)
     (fs/delete-dir d)
     ent))
 
@@ -35,7 +36,7 @@
 
 (defn- do-generate! [template {:keys [output-dir path] :as ent} args]
   (let [f (pathcat output-dir path)]
-    (println "Generating" f)
+    (log/info "Generating" f)
     (->> (apply template ent args)
          html->str
          (spit-file f))))
