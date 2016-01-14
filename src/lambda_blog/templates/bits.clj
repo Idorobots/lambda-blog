@@ -2,6 +2,10 @@
   (:require [s-html.tags :refer [div script span]]))
 
 (def well (partial div {:class :well}))
+(defn panel [& args]
+  (div {:class [:panel :panel-default]}
+       (apply div {:class :panel-body}
+              args)))
 (def row (partial div {:class :row}))
 (def text-centered (partial div {:class :text-center}))
 (def warning-label (partial span {:class [:label :label-warning :small]}))

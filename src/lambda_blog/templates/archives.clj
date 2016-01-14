@@ -1,6 +1,6 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.bits :refer [info-label inline-javascript row
-                                                text-centered warning-label well]]
+  (:require [lambda-blog.templates.bits :refer [info-label inline-javascript panel
+                                                row text-centered warning-label]]
             [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [format-date pathcat]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
@@ -28,7 +28,7 @@
 (defn archives [{:keys [entries] :as ent}]
   (page
    (fn [_]
-     [(-> "Archives" h1 text-centered row well)
+     [(-> "Archives" h1 text-centered row panel)
       (nav (table {:class [:table :table-bordered :table-striped :tablesorter]}
                   (thead (tr (th (span "Posted on"))
                              (th (span "Title"))
