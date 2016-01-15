@@ -1,5 +1,7 @@
 (ns lambda-blog.parsers.md
-  (:require [markdown.core :refer [md-to-html-string-with-meta]]))
+  (:require [clojure.stacktrace :refer [print-stack-trace]]
+            [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
+            [taoensso.timbre :as log]))
 
 (defn- parse-metadata [metadata]
   (->> metadata
@@ -10,7 +12,18 @@
                    v)]))
        (into {})))
 
+(defn- do-parse [contents]
+  (try (md-to-html-string-with-meta contents)
+       (catch java.lang.NullPointerException e
+         (log/warnf "Caught an exception while parsing input file (bad metadata format?): %s" e)
+         (log/debug (with-out-str (print-stack-trace e)))
+         {:metadata nil
+          :html (md-to-html-string contents)})))
+
 (defn parse [contents]
-  (let [{:keys [metadata html]} (md-to-html-string-with-meta contents)]
-    {:metadata (parse-metadata metadata)
-     :contents html}))
+  (if-not (empty? contents)
+    (let [{:keys [metadata html]} (do-parse contents)]
+      {:metadata (parse-metadata metadata)
+       :contents html})
+    {:metadata {}
+     :contents ""}))
