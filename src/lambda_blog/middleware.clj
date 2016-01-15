@@ -33,6 +33,7 @@
   (->> entries
        (map :tags)
        (apply union)
+       (into #{})
        (assoc ent :tags)))
 
 (defn link [what]

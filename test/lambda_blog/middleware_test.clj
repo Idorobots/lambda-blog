@@ -44,7 +44,8 @@
         entry2 {:tags #{}}
         entry3 {}]
     (let [ent {:entries [entry3]}]
-      (is (nil? (:tags (collect-tags ent)))))
+      (is (= (collect-tags ent)
+             (assoc ent :tags #{}))))
     (let [ent {:entries [entry2]}]
       (is (= (collect-tags ent)
              (assoc ent :tags #{}))))
