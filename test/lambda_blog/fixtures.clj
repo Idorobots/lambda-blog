@@ -1,6 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace update])
-  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
+  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all!
+                                           update update-all whenever]]
             [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
             [lambda-blog.templates.bits :refer [row text-centered]]
             [lambda-blog.templates.archives :refer [archives]]
@@ -62,8 +63,7 @@
     :metadata {:id 'static-1
                :timestamp "2015-12-31T18:00:00"
                :title "Static Page 1"}}
-   {:banner-template (constantly (text-centered "Custom banner contents"))
-    :contents "Static Page 2 contents"
+   {:contents "Static Page 2 contents"
     :metadata {:id 'static-2
                :timestamp "2015-12-31T18:01:00"
                :title "Static Page 2"}}])
@@ -90,6 +90,13 @@
       (assoc :entries (read-entries))
       (update-all :static-pages
                   (promote :metadata)
+                  #(whenever %
+                             (fn [{:keys [id]}]
+                               (= id 'static-2))
+                             (fn [ent]
+                               (assoc ent
+                                      :banner-template
+                                      (constantly (text-centered "Custom banner contents")))))
                   (add-paths "<id>.html"))
       (update-all :entries
                   (promote :metadata)

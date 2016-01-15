@@ -31,6 +31,12 @@
                  (map (reduce comp (reverse funs))
                       vs)))))
 
+(defn whenever [entity predicate & funs]
+  (if (predicate entity)
+    ((reduce comp (reverse funs))
+     entity)
+    entity))
+
 (defn- spit-file [file contents]
   (make-parents file)
   (spit file contents))
