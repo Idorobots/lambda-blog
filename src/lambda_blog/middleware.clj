@@ -47,3 +47,10 @@
                   (list* nil es)
                   es
                   (concat (next es) '(nil)))))))
+
+(defn promote [what]
+  (fn [entity]
+    (reduce (fn [e [k v]]
+              (assoc e k v))
+            entity
+            (entity what))))

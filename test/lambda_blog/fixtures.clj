@@ -1,7 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace update])
   (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
-            [lambda-blog.middleware :refer [add-paths collect-tags link]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
             [lambda-blog.templates.bits :refer [row text-centered]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
@@ -59,38 +59,40 @@
 (defn read-static-pages []
   ;; TODO Read statics.
   [{:contents "Static Page 1 contents"
-    :id 'static-1
-    :timestamp "2015-12-31T18:00:00"
-    :title "Static Page 1"}
+    :metadata {:id 'static-1
+               :timestamp "2015-12-31T18:00:00"
+               :title "Static Page 1"}}
    {:banner-template (constantly (text-centered "Custom banner contents"))
     :contents "Static Page 2 contents"
-    :id 'static-2
-    :timestamp "2015-12-31T18:01:00"
-    :title "Static Page 2"}])
+    :metadata {:id 'static-2
+               :timestamp "2015-12-31T18:01:00"
+               :title "Static Page 2"}}])
 
 (defn read-entries []
   ;; TODO Read entries.
   [{:contents "Entry 1 contents"
-    :id 'entry-1
-    :summary "Entry 1 summary"
-    :tags #{{:id 'test} {:id 'entry} {:id 'foo}}
-    :timestamp "2016-01-06T16:23:00"
-    :title "Test Entry 1"}
-   {:author "somebody else"
-    :contents "Entry 2 contents"
-    :id 'entry-2
-    :summary "Entry 2 summary"
-    :tags #{{:id 'test} {:id 'entry} {:id 'bar}}
-    :timestamp "2016-01-07T16:53:00"
-    :title "Test Entry 2"}])
+    :metadata {:id 'entry-1
+               :tags #{{:id 'test} {:id 'entry} {:id 'foo}}
+               :timestamp "2016-01-06T16:23:00"
+               :title "Test Entry 1"
+               :summary "Entry 1 summary"}}
+   {:contents "Entry 2 contents"
+    :metadata {:author "somebody else"
+               :id 'entry-2
+               :tags #{{:id 'test} {:id 'entry} {:id 'bar}}
+               :timestamp "2016-01-07T16:53:00"
+               :title "Test Entry 2"
+               :summary "Entry 2 summary"}}])
 
 (defn generate-blog []
   (-> blog
       (assoc :static-pages (read-static-pages))
       (assoc :entries (read-entries))
       (update-all :static-pages
+                  (promote :metadata)
                   (add-paths "<id>.html"))
       (update-all :entries
+                  (promote :metadata)
                   (add-paths "posts/<id>.html")
                   #(update-all % :tags
                                (add-paths "tags/<id>.html")))

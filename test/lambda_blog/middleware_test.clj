@@ -1,6 +1,6 @@
 (ns lambda-blog.middleware-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.middleware :refer [add-paths collect-tags link]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
             [lambda-blog.generator :refer [update-all]]))
 
 (deftest can-generate-paths-from-spec
@@ -66,3 +66,10 @@
            {:title 3}))
     (is (= (:next (nth les 2))
            nil))))
+
+(deftest promoting-maps-works
+  (let [vs {:k1 :v1 :k2 :v2 :k3 :v3}]
+    (is (= ((promote :vs) {:vs vs})
+           (assoc vs :vs vs)))
+    (is (= ((promote :vs) {:k1 :some-other-value :vs vs})
+           (assoc vs :vs vs)))))
