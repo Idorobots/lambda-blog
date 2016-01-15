@@ -8,6 +8,7 @@
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
             [lambda-blog.templates.rss :refer [rss-feed]]
+            [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a div img li span ul]]))
 
@@ -57,32 +58,24 @@
                          "style/lambda-blog.css"]
            :title "Test Blog"})
 
+(def static1 (str "ID: static-1\nTimestamp: 2015-12-31T18:00:00\nTitle: Static Page 1\n\n"
+                  "# Static Page 1 contents\nblahblah"))
+
+(def static2 (str "ID: static-2\nTimestamp: 2015-12-31T18:02:00\nTitle: Static Page 2\n\n"
+                  "# Static Page 2 contents\nblahblah"))
+
+(def entry1 (str "ID: entry-1\nTimestamp: 2016-01-06T16:23:00\nTags: test\n      entry\n      foo\n"
+                 "Title: Entry 1\nSummary: Entry 1 summary\n\n# Entry 1 contents\nblahblah"))
+
+(def entry2 (str "Author: somebody else\nID: entry-2\nTags: test\n      entry\n      bar\n"
+                 "Timestamp: 2016-01-07T16:53:00\nTitle: Entry 2\nSummary: Entry 2 summary\n\n"
+                 "# Entry 2 contents\nblahblah"))
+
 (defn read-static-pages []
-  ;; TODO Read statics.
-  [{:contents "Static Page 1 contents"
-    :metadata {:id 'static-1
-               :timestamp "2015-12-31T18:00:00"
-               :title "Static Page 1"}}
-   {:contents "Static Page 2 contents"
-    :metadata {:id 'static-2
-               :timestamp "2015-12-31T18:01:00"
-               :title "Static Page 2"}}])
+  (map parse [static1 static2]))
 
 (defn read-entries []
-  ;; TODO Read entries.
-  [{:contents "Entry 1 contents"
-    :metadata {:id 'entry-1
-               :tags #{{:id 'test} {:id 'entry} {:id 'foo}}
-               :timestamp "2016-01-06T16:23:00"
-               :title "Test Entry 1"
-               :summary "Entry 1 summary"}}
-   {:contents "Entry 2 contents"
-    :metadata {:author "somebody else"
-               :id 'entry-2
-               :tags #{{:id 'test} {:id 'entry} {:id 'bar}}
-               :timestamp "2016-01-07T16:53:00"
-               :title "Test Entry 2"
-               :summary "Entry 2 summary"}}])
+  (map parse [entry1 entry2]))
 
 (defn generate-blog []
   (-> blog
@@ -92,7 +85,7 @@
                   (promote :metadata)
                   #(whenever %
                              (fn [{:keys [id]}]
-                               (= id 'static-2))
+                               (= id "static-2"))
                              (fn [ent]
                                (assoc ent
                                       :banner-template
@@ -102,6 +95,7 @@
                   (promote :metadata)
                   (add-paths "posts/<id>.html")
                   #(update-all % :tags
+                               (fn [t] {:id t})
                                (add-paths "tags/<id>.html")))
       collect-tags
       ((link :entries)) ;; FIXME Looks bad.
