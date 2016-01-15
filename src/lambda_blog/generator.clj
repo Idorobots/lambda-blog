@@ -56,3 +56,11 @@
   (doseq [ent (env what)]
     (do-generate! template (merge env ent) args))
   env)
+
+(defn read-dir [env key path parser]
+  (->> path
+       fs/list-dir
+       (map (fn [file]
+              (log/info "Reading " file)
+              (parser (slurp file))))
+       (assoc env key)))

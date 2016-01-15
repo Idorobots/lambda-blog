@@ -1,7 +1,7 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace update])
   (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all!
-                                           update update-all whenever]]
+                                           read-dir update update-all whenever]]
             [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
             [lambda-blog.templates.bits :refer [row text-centered]]
             [lambda-blog.templates.archives :refer [archives]]
@@ -58,29 +58,9 @@
                          "style/lambda-blog.css"]
            :title "Test Blog"})
 
-(def static1 (str "ID: static-1\nTimestamp: 2015-12-31T18:00:00\nTitle: Static Page 1\n\n"
-                  "# Static Page 1 contents\nblahblah"))
-
-(def static2 (str "ID: static-2\nTimestamp: 2015-12-31T18:02:00\nTitle: Static Page 2\n\n"
-                  "# Static Page 2 contents\nblahblah"))
-
-(def entry1 (str "ID: entry-1\nTimestamp: 2016-01-06T16:23:00\nTags: test\n      entry\n      foo\n"
-                 "Title: Entry 1\nSummary: Entry 1 summary\n\n# Entry 1 contents\nblahblah"))
-
-(def entry2 (str "Author: somebody else\nID: entry-2\nTags: test\n      entry\n      bar\n"
-                 "Timestamp: 2016-01-07T16:53:00\nTitle: Entry 2\nSummary: Entry 2 summary\n\n"
-                 "# Entry 2 contents\nblahblah"))
-
-(defn read-static-pages []
-  (map parse [static1 static2]))
-
-(defn read-entries []
-  (map parse [entry1 entry2]))
-
 (defn generate-blog []
   (-> blog
-      (assoc :static-pages (read-static-pages))
-      (assoc :entries (read-entries))
+      (read-dir :static-pages "resources/static" parse)
       (update-all :static-pages
                   (promote :metadata)
                   #(whenever %
@@ -91,6 +71,7 @@
                                       :banner-template
                                       (constantly (text-centered "Custom banner contents")))))
                   (add-paths "<id>.html"))
+      (read-dir :entries "resources/entries" parse)
       (update-all :entries
                   (promote :metadata)
                   (add-paths "posts/<id>.html")
