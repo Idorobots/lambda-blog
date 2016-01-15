@@ -39,3 +39,16 @@
   (is (= (parse just-metadata2)
          {:metadata {}
           :contents "<p>Meta: Test</p>"})))
+
+(def metadata-multi "Meta: test1
+      test2
+      test3
+Data: foo bar baz
+
+# Header")
+
+(deftest can-add-multi-values-metadata
+  (is (= (parse metadata-multi)
+         {:metadata {:meta ["test1" "test2" "test3"]
+                     :data "foo bar baz"}
+          :contents "<h1>Header</h1>"})))
