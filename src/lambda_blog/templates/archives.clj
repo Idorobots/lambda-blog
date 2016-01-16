@@ -19,6 +19,11 @@
   ;; FIXME This ought to be ClojureScript.
   "$(document).ready(function() {
      $('table').tablesorter({
+     theme: 'bootstrap',
+     headerTemplate: '{content} {icon}',
+     cssIconAsc: 'fa fa-sort-asc',
+     cssIconDesc: 'fa fa-sort-desc',
+     cssIconNone: 'fa fa-sort',
      textExtraction: function(node) {
        var t = $(node).find('a').text();
        return t != \"\" ? t : node.innerHTML;
