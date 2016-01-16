@@ -1,8 +1,10 @@
 (ns lambda-blog.middleware
   (:refer-clojure :exclude [replace])
-  (:require [clojure.set :refer [union]]
+  (:require [clojure.pprint :refer [pprint]]
+            [clojure.set :refer [union]]
             [clojure.string :refer [replace]]
-            [lambda-blog.utils :refer [pathcat sanitize]]))
+            [lambda-blog.utils :refer [pathcat sanitize]]
+            [taoensso.timbre :as log]))
 
 (defn- fmt [f args]
   (->> f
@@ -33,6 +35,7 @@
   (->> entries
        (map :tags)
        (apply union)
+       (into #{})
        (assoc ent :tags)))
 
 (defn link [what]
@@ -47,3 +50,14 @@
                   (list* nil es)
                   es
                   (concat (next es) '(nil)))))))
+
+(defn promote [what]
+  (fn [entity]
+    (reduce (fn [e [k v]]
+              (assoc e k v))
+            entity
+            (entity what))))
+
+(defn inspect [entity]
+  (log/debug (with-out-str (pprint entity)))
+  entity)

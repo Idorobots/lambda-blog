@@ -1,12 +1,14 @@
 (ns lambda-blog.fixtures
-  (:refer-clojure :exclude [replace])
-  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all! update update-all]]
-            [lambda-blog.middleware :refer [add-paths collect-tags link]]
+  (:refer-clojure :exclude [replace update])
+  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all!
+                                           read-dir update update-all whenever]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
             [lambda-blog.templates.bits :refer [row text-centered]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
             [lambda-blog.templates.rss :refer [rss-feed]]
+            [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a div img li span ul]]))
 
@@ -44,55 +46,40 @@
            :brand-logo "media/logo-button.png"
            :favicon "media/favicon.png"
            :footer-template footer
+           :footer-scripts ["js/lambda-blog.js"]
            :navigation-template navigation
            :output-dir "/out/"
            :url "localhost:8000"
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
                      "js/jquery.tablesorter.min.js"
-                     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"]
+                     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                     "https://cdn.jsdelivr.net/highlight.js/9.1.0/highlight.min.js"]
            :stylesheets ["https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
                          "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
                          "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+                         "https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/default.min.css"
                          "style/lambda-blog.css"]
            :title "Test Blog"})
 
-(defn read-static-pages []
-  ;; TODO Read statics.
-  [{:contents "Static Page 1 contents"
-    :id 'static-1
-    :timestamp "2015-12-31T18:00:00"
-    :title "Static Page 1"}
-   {:banner-template (constantly (text-centered "Custom banner contents"))
-    :contents "Static Page 2 contents"
-    :id 'static-2
-    :timestamp "2015-12-31T18:01:00"
-    :title "Static Page 2"}])
-
-(defn read-entries []
-  ;; TODO Read entries.
-  [{:contents "Entry 1 contents"
-    :id 'entry-1
-    :summary "Entry 1 summary"
-    :tags #{{:id 'test} {:id 'entry} {:id 'foo}}
-    :timestamp "2016-01-06T16:23:00"
-    :title "Test Entry 1"}
-   {:author "somebody else"
-    :contents "Entry 2 contents"
-    :id 'entry-2
-    :summary "Entry 2 summary"
-    :tags #{{:id 'test} {:id 'entry} {:id 'bar}}
-    :timestamp "2016-01-07T16:53:00"
-    :title "Test Entry 2"}])
-
 (defn generate-blog []
   (-> blog
-      (assoc :static-pages (read-static-pages))
-      (assoc :entries (read-entries))
+      (read-dir :static-pages "resources/static" parse)
       (update-all :static-pages
+                  (promote :metadata)
+                  #(whenever %
+                             (fn [{:keys [id]}]
+                               (= id "static-2"))
+                             (fn [ent]
+                               (assoc ent
+                                      :banner-template
+                                      (constantly (text-centered "Custom banner contents")))))
                   (add-paths "<id>.html"))
+      (read-dir :entries "resources/entries" parse)
       (update-all :entries
+                  (promote :metadata)
                   (add-paths "posts/<id>.html")
                   #(update-all % :tags
+                               (fn [t] {:id t})
                                (add-paths "tags/<id>.html")))
       collect-tags
       ((link :entries)) ;; FIXME Looks bad.

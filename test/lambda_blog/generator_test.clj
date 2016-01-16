@@ -1,6 +1,7 @@
 (ns lambda-blog.generator-test
+  (:refer-clojure :exclude [update])
   (:require [clojure.test :refer :all]
-            [lambda-blog.generator :refer [update update-all]]))
+            [lambda-blog.generator :refer [update update-all whenever]]))
 
 (deftest can-update-keys
   (let [ent {:key :value}]
@@ -33,3 +34,16 @@
 (deftest update-preserves-collection-type
   (is (vector? (:v (update-all {:v [1 2 3]} :v (constantly 23)))))
   (is (set? (:s (update-all {:s #{1 2 3}} :s (constantly 5))))))
+
+(deftest can-update-selected-entities
+  (let [ent {:tags #{{:id :foo}
+                     {:id :bar}
+                     {:id :baz}}}]
+    (is (= (update-all ent :tags
+                       #(whenever % (fn [{:keys [id] :as t}]
+                                      (= id :bar))
+                                  (fn [t]
+                                    (assoc t :hello :world))))
+           {:tags #{{:id :foo}
+                    {:id :bar :hello :world}
+                    {:id :baz}}}))))

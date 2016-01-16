@@ -5,8 +5,9 @@
             :url "http://www.opensource.org/licenses/mit-license.php"}
   :dependencies [[clj-time "0.11.0"]
                  [com.taoensso/timbre "4.1.0"]
+                 [markdown-clj "0.9.85"]
                  [me.raynes/fs "1.4.6"]
-                 [org.clojure/clojure "1.6.0"]
+                 [org.clojure/clojure "1.7.0"]
                  [ring/ring-codec "1.0.0"]
                  [s-html "0.1.6"]]
   :plugins [[jonase/eastwood "0.1.5"]

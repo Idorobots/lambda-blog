@@ -1,4 +1,5 @@
 (ns lambda-blog.generator
+  (:refer-clojure :exclude [update])
   (:require [clojure.java.io :refer [make-parents]]
             [lambda-blog.utils :refer [pathcat]]
             [me.raynes.fs :as fs]
@@ -30,6 +31,12 @@
                  (map (reduce comp (reverse funs))
                       vs)))))
 
+(defn whenever [entity predicate & funs]
+  (if (predicate entity)
+    ((reduce comp (reverse funs))
+     entity)
+    entity))
+
 (defn- spit-file [file contents]
   (make-parents file)
   (spit file contents))
@@ -49,3 +56,11 @@
   (doseq [ent (env what)]
     (do-generate! template (merge env ent) args))
   env)
+
+(defn read-dir [env key path parser]
+  (->> path
+       fs/list-dir
+       (map (fn [file]
+              (log/info "Reading " file)
+              (parser (slurp file))))
+       (assoc env key)))
