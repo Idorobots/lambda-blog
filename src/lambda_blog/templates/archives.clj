@@ -1,6 +1,5 @@
 (ns lambda-blog.templates.archives
-  (:require [lambda-blog.templates.bits :refer [info-label inline-javascript panel
-                                                row text-centered warning-label]]
+  (:require [lambda-blog.templates.bits :refer [info-label panel row text-centered warning-label]]
             [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [format-date pathcat]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
@@ -15,21 +14,6 @@
                (sort-by :id tags)))
       (td {:class [:hidden-xs :hidden-sm]} summary)))
 
-(def tablesorter-script
-  ;; FIXME This ought to be ClojureScript.
-  "$(document).ready(function() {
-     $('table').tablesorter({
-     theme: 'bootstrap',
-     headerTemplate: '{content} {icon}',
-     cssIconAsc: 'fa fa-sort-asc',
-     cssIconDesc: 'fa fa-sort-desc',
-     cssIconNone: 'fa fa-sort',
-     textExtraction: function(node) {
-       var t = $(node).find('a').text();
-       return t != \"\" ? t : node.innerHTML;
-     }});
-   });")
-
 (defn archives [{:keys [entries] :as ent}]
   (page
    (fn [_]
@@ -43,6 +27,5 @@
                   (tbody (map archive-entry entries))))
       (p {:class [:hidden-xs :hidden-sm]}
          (warning-label "ProTip:")
-         " Hold " (kbd "Shift") " to sort by several columns at the same time.")
-      (inline-javascript tablesorter-script)])
+         " Hold " (kbd "Shift") " to sort by several columns at the same time.")])
    ent))
