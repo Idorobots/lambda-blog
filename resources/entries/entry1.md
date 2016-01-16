@@ -8,3 +8,11 @@ Tags: test
 
 # Entry 1 contents
 blahblah
+
+## Hello world
+
+```javascript
+(function () {
+  console.log("Hello world!");
+})();
+```

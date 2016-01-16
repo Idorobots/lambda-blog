@@ -46,15 +46,18 @@
            :brand-logo "media/logo-button.png"
            :favicon "media/favicon.png"
            :footer-template footer
+           :footer-scripts ["js/lambda-blog.js"]
            :navigation-template navigation
            :output-dir "/out/"
            :url "localhost:8000"
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
                      "js/jquery.tablesorter.min.js"
-                     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"]
+                     "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                     "https://cdn.jsdelivr.net/highlight.js/9.1.0/highlight.min.js"]
            :stylesheets ["https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
                          "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
                          "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+                         "https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/default.min.css"
                          "style/lambda-blog.css"]
            :title "Test Blog"})
 
