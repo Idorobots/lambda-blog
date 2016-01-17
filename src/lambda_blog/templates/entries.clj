@@ -63,30 +63,34 @@
          "Continue reading "
          (i {:class [:fa :fa-arrow-right]})))))
 
-(defn filtered-entries [entry-filter ent]
-  (page
-   (fn [{:keys [archives entries path-to-root]}]
-     [(map (juxt entry-summary (constantly (hr)))
-           (entry-filter entries))
-      (-> (a {:href (pathcat path-to-root (:path archives))}
-             "Further reading...")
-          h1
-          text-centered
-          panel)])
-   ent))
-
-(def recent-entries (partial filtered-entries
-                             #(->> %
-                                   (sort-by :timestamp)
-                                   reverse
-                                   (take 15))))
+(defn recent-entries [ent]
+  (page (fn [{:keys [archives entries path-to-root]}]
+          [(map (juxt entry-summary (constantly (hr)))
+                (->> entries
+                     (sort-by :timestamp)
+                     reverse
+                     (take 15)))
+           (-> (a {:href (pathcat path-to-root (:path archives))}
+                  "Further reading...")
+               h1
+               text-centered
+               panel)])
+        ent))
 
 (defn entries-by-tag [{:keys [id] :as ent}]
-  (filtered-entries #(->> %
-                          (filter (fn [{:keys [tags]}]
-                                    (contains? (into #{}
-                                                     (map :id tags))
-                                               id)))
-                          (sort-by :timestamp)
-                          reverse)
-                    ent))
+  (page (fn [{:keys [archives entries path-to-root]}]
+          [(panel (text-centered (h1 (format "Tagged %s" id))))
+           (map (juxt entry-summary (constantly (hr)))
+                (->> entries
+                     (filter (fn [{:keys [tags]}]
+                               (contains? (into #{}
+                                                (map :id tags))
+                                          id)))
+                     (sort-by :timestamp)
+                     reverse))
+           (-> (a {:href (pathcat path-to-root (:path archives))}
+                  "Archives")
+               h1
+               text-centered
+               panel)])
+        ent))
