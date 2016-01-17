@@ -48,7 +48,7 @@
 
 (def entry-page (partial page entry))
 
-(defn entry-summary [{:keys [path path-to-root summary tags timestamp title] :as ent}]
+(defn entry-summary [{:keys [author contents path path-to-root tags timestamp title] :as ent}]
   (article
    (header
     (panel
@@ -56,12 +56,10 @@
       (row
        (h1 (a {:href (pathcat path-to-root path)}
               title))
-       (p "Posted on " (time (format-date timestamp)))
+       (p "Posted on " (time (format-date timestamp))
+          " by " author)
        (entry-tags ent)))))
-   summary
-   (p (a {:href (pathcat path-to-root path)}
-         "Continue reading "
-         (i {:class [:fa :fa-arrow-right]})))))
+   contents))
 
 (defn recent-entries [ent]
   (page (fn [{:keys [archives entries path-to-root]}]
