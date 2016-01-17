@@ -64,7 +64,7 @@
 
 (defn generate-blog []
   (-> blog
-      (read-dir :static-pages "resources/static" parse)
+      (read-dir :static-pages "priv/static" parse)
       (update-all :static-pages
                   (promote :metadata)
                   #(whenever %
@@ -75,7 +75,7 @@
                                       :banner-template
                                       (constantly (text-centered "Custom banner contents")))))
                   (add-paths "<id>.html"))
-      (read-dir :entries "resources/entries" parse)
+      (read-dir :entries "priv/entries" parse)
       (update-all :entries
                   (promote :metadata)
                   (add-paths "posts/<id>.html")
@@ -99,6 +99,6 @@
       (generate-all! :static-pages static-page)
       (generate-all! :entries entry-page)
       (generate-all! :tags entries-by-tag)
-      (copy-dir! "resources/media" "media")
-      (copy-dir! "resources/style" "style")
-      (copy-dir! "resources/js" "js")))
+      (copy-dir! "priv/media" "media")
+      (copy-dir! "priv/style" "style")
+      (copy-dir! "priv/js" "js")))
