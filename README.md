@@ -1,6 +1,7 @@
+<img src="logo.png" style="height: 100px;" align="right" />
 # λ-blog
 
-...or the time I got __really__ mad at all other static blog generators.
+**λ-blog** is a static blog generator generator optimized for customizability. It provides sane defaults but lets you override anything, ranging from HTML templates to the generation pipeline, essentially allowing you to build your own static blog generator.
 
 ## License
 
