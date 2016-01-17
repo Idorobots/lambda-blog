@@ -33,7 +33,7 @@
 (defn- banner [{:keys [logo path-to-root]}]
   (row (div {:class [:hidden-xs :col-sm-2 :col-md-1]}
             (img {:style "height: 150px;"
-                  :src (pathcat path-to-root "media/logo-main.png")}))
+                  :src (pathcat path-to-root "media/logo.svg")}))
        (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
             (text-centered "Some banner contents"))))
 
@@ -43,27 +43,28 @@
 (def blog {:author "me"
            :banner-template banner
            :brand "Test Blog"
-           :brand-logo "media/logo-button.png"
-           :favicon "media/favicon.png"
+           :brand-logo "media/logo.svg"
+           :favicon "media/logo.svg"
            :footer-template footer
            :footer-scripts ["js/lambda-blog.js"]
            :navigation-template navigation
            :output-dir "/out/"
            :url "localhost:8000"
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
-                     "js/jquery.tablesorter.min.js"
+                     "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.1/js/jquery.tablesorter.min.js"
                      "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
                      "https://cdn.jsdelivr.net/highlight.js/9.1.0/highlight.min.js"]
            :stylesheets ["https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
                          "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
                          "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+                         "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.1/css/theme.bootstrap.min.css"
                          "https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/default.min.css"
                          "style/lambda-blog.css"]
            :title "Test Blog"})
 
 (defn generate-blog []
   (-> blog
-      (read-dir :static-pages "resources/static" parse)
+      (read-dir :static-pages "priv/static" parse)
       (update-all :static-pages
                   (promote :metadata)
                   #(whenever %
@@ -74,15 +75,17 @@
                                       :banner-template
                                       (constantly (text-centered "Custom banner contents")))))
                   (add-paths "<id>.html"))
-      (read-dir :entries "resources/entries" parse)
+      (read-dir :entries "priv/entries" parse)
       (update-all :entries
                   (promote :metadata)
                   (add-paths "posts/<id>.html")
                   #(update-all % :tags
                                (fn [t] {:id t})
                                (add-paths "tags/<id>.html")))
+      (update :entries
+              #(sort-by :timestamp %)
+              link)
       collect-tags
-      ((link :entries)) ;; FIXME Looks bad.
       (update :index
               (add-paths "index.html"))
       (update :rss
@@ -96,6 +99,6 @@
       (generate-all! :static-pages static-page)
       (generate-all! :entries entry-page)
       (generate-all! :tags entries-by-tag)
-      (copy-dir! "resources/media" "media")
-      (copy-dir! "resources/style" "style")
-      (copy-dir! "resources/js" "js")))
+      (copy-dir! "priv/media" "media")
+      (copy-dir! "priv/style" "style")
+      (copy-dir! "priv/js" "js")))

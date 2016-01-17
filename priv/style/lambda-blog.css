@@ -1,0 +1,53 @@
+/* Various fixes... */
+
+body {
+    padding-top: 50px; /* To offset the navbar. */
+}
+
+html, body { /* So anchors actually work. */
+    overflow: hidden;
+    height: 100%;
+}
+
+.body-wrap { /* So anchors actually work. */
+    overflow: auto;
+    height: 100%;
+}
+
+.caret {
+    margin-left: 3px;
+}
+
+.navbar-toggle { /* So navbar button fits on the navbar. */
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 15px;
+}
+
+.navbar-brand img {
+    height: 30px;
+    margin-right: 5px;
+}
+
+.navbar-brand:hover .dropdown-menu, .dropdown:hover .dropdown-menu {
+    display: block; /* To make dropdown menus work on hover instead of click. */   
+}
+
+/* Pager link summary. */
+
+.pager .next > a, .pager .previous > a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Category and tags. */
+
+.category, .category:hover {
+    color: #EEE;
+}
+
+.tag, .tag:hover {
+    color: #EEE;
+}

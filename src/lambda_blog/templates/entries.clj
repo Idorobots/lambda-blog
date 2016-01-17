@@ -12,38 +12,43 @@
                  (:id %)))
             (sort-by :id tags))))
 
-(defn- pager [{:keys [path-to-root]} {:keys [path title] :as link} class]
-  (div {:class [:col-xs-2 :col-sm-3]}
-       (when link
-         (nav
-          (ul {:class :pager}
-              (li {:class class}
-                  (a {:href (pathcat path-to-root path)}
-                     (when (= class :previous)
-                       (i {:class [:fa :fa-chevron-left]}))
-                     (span {:class [:title-short :hidden-xs]}
-                           title)
-                     (when (= class :next)
-                       (i {:class [:fa :fa-chevron-right]})))))))))
+(defn- pager [class url & contents]
+  (nav (ul {:class :pager}
+           (li {:class class}
+               (apply a {:href url} contents)))))
 
 (defn entry
-  [{:keys [author contents next previous timestamp title] :as ent}]
+  [{:keys [author contents next path-to-root previous timestamp title] :as ent}]
   (article
    (header
     (panel
      (row
-      (pager ent previous :previous)
+      (div {:class [:col-xs-2 :col-sm-3]}
+           (when previous
+             (pager :previous
+                    (pathcat path-to-root (:path previous))
+                    (i {:class [:fa :fa-chevron-left]})
+                    " "
+                    (span {:class [:hidden-xs]}
+                          (:title previous)))))
       (div {:class [:col-xs-8 :col-sm-6]}
            (text-centered (h1 title)
                           (p "Posted on " (time (format-date timestamp))
                              " by " author)
                           (entry-tags ent)))
-      (pager ent next :next))))
+      (div {:class [:col-xs-2 :col-sm-3]}
+           (when next
+             (pager :next
+                    (pathcat path-to-root (:path next))
+                    (span {:class [:hidden-xs]}
+                          (:title next))
+                    " "
+                    (i {:class [:fa :fa-chevron-right]})))))))
    contents))
 
 (def entry-page (partial page entry))
 
-(defn entry-summary [{:keys [path path-to-root summary tags timestamp title] :as ent}]
+(defn entry-summary [{:keys [author contents path path-to-root tags timestamp title] :as ent}]
   (article
    (header
     (panel
@@ -51,37 +56,39 @@
       (row
        (h1 (a {:href (pathcat path-to-root path)}
               title))
-       (p "Posted on " (time (format-date timestamp)))
+       (p "Posted on " (time (format-date timestamp))
+          " by " author)
        (entry-tags ent)))))
-   summary
-   (p (a {:href (pathcat path-to-root path)}
-         "Continue reading "
-         (i {:class [:fa :fa-arrow-right]})))))
+   contents))
 
-(defn filtered-entries [entry-filter ent]
-  (page
-   (fn [{:keys [archives entries path-to-root]}]
-     [(map (juxt entry-summary (constantly (hr)))
-           (entry-filter entries))
-      (-> (a {:href (pathcat path-to-root (:path archives))}
-             "Further reading...")
-          h1
-          text-centered
-          panel)])
-   ent))
-
-(def recent-entries (partial filtered-entries
-                             #(->> %
-                                   (sort-by :timestamp)
-                                   reverse
-                                   (take 15))))
+(defn recent-entries [ent]
+  (page (fn [{:keys [archives entries path-to-root]}]
+          [(map (juxt entry-summary (constantly (hr)))
+                (->> entries
+                     (sort-by :timestamp)
+                     reverse
+                     (take 15)))
+           (-> (a {:href (pathcat path-to-root (:path archives))}
+                  "Further reading...")
+               h1
+               text-centered
+               panel)])
+        ent))
 
 (defn entries-by-tag [{:keys [id] :as ent}]
-  (filtered-entries #(->> %
-                          (filter (fn [{:keys [tags]}]
-                                    (contains? (into #{}
-                                                     (map :id tags))
-                                               id)))
-                          (sort-by :timestamp)
-                          reverse)
-                    ent))
+  (page (fn [{:keys [archives entries path-to-root]}]
+          [(panel (text-centered (h1 (format "Tagged %s" id))))
+           (map (juxt entry-summary (constantly (hr)))
+                (->> entries
+                     (filter (fn [{:keys [tags]}]
+                               (contains? (into #{}
+                                                (map :id tags))
+                                          id)))
+                     (sort-by :timestamp)
+                     reverse))
+           (-> (a {:href (pathcat path-to-root (:path archives))}
+                  "Archives")
+               h1
+               text-centered
+               panel)])
+        ent))
