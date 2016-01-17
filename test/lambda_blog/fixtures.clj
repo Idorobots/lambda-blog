@@ -33,7 +33,7 @@
 (defn- banner [{:keys [logo path-to-root]}]
   (row (div {:class [:hidden-xs :col-sm-2 :col-md-1]}
             (img {:style "height: 150px;"
-                  :src (pathcat path-to-root "media/logo-main.png")}))
+                  :src (pathcat path-to-root "media/logo.svg")}))
        (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
             (text-centered "Some banner contents"))))
 
@@ -43,8 +43,8 @@
 (def blog {:author "me"
            :banner-template banner
            :brand "Test Blog"
-           :brand-logo "media/logo-button.png"
-           :favicon "media/favicon.png"
+           :brand-logo "media/logo.svg"
+           :favicon "media/logo.svg"
            :footer-template footer
            :footer-scripts ["js/lambda-blog.js"]
            :navigation-template navigation
