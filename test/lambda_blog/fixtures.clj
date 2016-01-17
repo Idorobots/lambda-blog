@@ -82,8 +82,10 @@
                   #(update-all % :tags
                                (fn [t] {:id t})
                                (add-paths "tags/<id>.html")))
+      (update :entries
+              #(sort-by :timestamp %)
+              link)
       collect-tags
-      ((link :entries)) ;; FIXME Looks bad.
       (update :index
               (add-paths "index.html"))
       (update :rss
