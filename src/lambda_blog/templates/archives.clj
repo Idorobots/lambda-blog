@@ -22,7 +22,7 @@
                   (thead (tr (th (span "Posted on"))
                              (th (span "Title"))
                              (th (span "Tags"))
-                             (th {:class [:sorter-false :hidden-xs :hidden-sm]}
+                             (th {:class [:hidden-xs :hidden-sm]}
                                  (span "Summary"))))
                   (tbody (map archive-entry entries))))
       (p {:class [:hidden-xs :hidden-sm]}
