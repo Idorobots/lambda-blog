@@ -55,8 +55,7 @@
 
 (deftest linking-entries-works
   (let [es [{:title 1} {:title 2} {:title 3}]
-        linked ((link :entries) {:entries es})
-        les (:entries linked)]
+        les (link es)]
     (is (= (:previous (first les))
            nil))
     (is (= (:next (first les))
