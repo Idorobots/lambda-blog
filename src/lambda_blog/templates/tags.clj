@@ -20,8 +20,8 @@
                      :href (pathcat path-to-root (:path t))}
                     (span {:class [:label :label-info]
                            :style (format "font-size: %s%%;"
-                                          (+ min-size
-                                             (* (- max-size min-size)
+                                          (+ min
+                                             (* (- max min)
                                                 (/ c total))))}
                           (:id t))
                     " "))
