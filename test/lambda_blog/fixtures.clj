@@ -8,6 +8,7 @@
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
             [lambda-blog.templates.rss :refer [rss-feed]]
+            [lambda-blog.templates.tags :refer [tags-index]]
             [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a div img li span ul]]))
@@ -92,10 +93,13 @@
               (add-paths "index.xml"))
       (update :archives
               (add-paths "archives.html"))
+      (update :tag-cloud
+              (add-paths "tags/index.html"))
       clean-dir!
       (generate! :index recent-entries)
       (generate! :rss rss-feed)
       (generate! :archives archives)
+      (generate! :tag-cloud tags-index)
       (generate-all! :static-pages static-page)
       (generate-all! :entries entry-page)
       (generate-all! :tags entries-by-tag)
