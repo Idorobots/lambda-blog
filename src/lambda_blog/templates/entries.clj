@@ -67,7 +67,8 @@
                 (->> entries
                      (sort-by :timestamp)
                      reverse
-                     (take 15)))
+                     (take 15)
+                     (map (partial merge ent))))
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Further reading...")
                h1
@@ -85,7 +86,8 @@
                                                 (map :id tags))
                                           id)))
                      (sort-by :timestamp)
-                     reverse))
+                     reverse
+                     (map (partial merge ent))))
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Archives")
                h1
