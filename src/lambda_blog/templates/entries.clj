@@ -6,10 +6,10 @@
             [s-html.tags :refer [a article div footer h1 header hr i li nav p span time ul]]))
 
 (defn- entry-tags [{:keys [path-to-root tags]}]
-  (nav (map #(info-label
-              (a {:class :tag
-                  :href (pathcat path-to-root (:path %))}
-                 (:id %)))
+  (nav (map #(a {:class :tag
+                 :href (pathcat path-to-root (:path %))}
+                (info-label (:id %))
+                " ")
             (sort-by :id tags))))
 
 (defn- pager [class url & contents]

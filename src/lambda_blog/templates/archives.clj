@@ -7,10 +7,10 @@
 (defn archive-entry [{:keys [path path-to-root summary tags timestamp title]}]
   (tr (td (format-date timestamp))
       (td (a {:href (pathcat path)} title))
-      (td (map #(info-label
-                 (a {:class :tag
-                     :href (pathcat path-to-root (:path %))}
-                    (:id %)))
+      (td (map #(a {:class :tag
+                    :href (pathcat path-to-root (:path %))}
+                   (info-label (:id %))
+                   " ")
                (sort-by :id tags)))
       (td {:class [:hidden-xs :hidden-sm]} summary)))
 
