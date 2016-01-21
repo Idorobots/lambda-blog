@@ -1,4 +1,5 @@
 (ns lambda-blog.utils
+  "Various useful utilities."
   (:require [clj-time.format :as f]
             [clojure.string :refer [split]]
             [ring.util.codec :refer [url-encode]]))
@@ -12,17 +13,23 @@
   ([a] a)
   ([a b] (str a "/" b)))
 
-(defn pathcat [& parts]
+(defn pathcat
+  "Concatenates filesystem/URL paths `parts` while maintaining correct format."
+  [& parts]
   (reduce join
           (filter (complement empty?)
                   (flatten (map (partial parse #"/")
                                 parts)))))
 
-(defn format-date [timestamp]
+(defn format-date
+  "Formats a `timestamp` according to a given format."
+  [timestamp]
   (f/unparse (f/formatter "YYYY-MM-dd HH:mm")
              (f/parse timestamp)))
 
-(defn sanitize [name]
+(defn sanitize
+  "Sanitizes a `string` for use in URLs and filesystem paths."
+  [string]
   ;; FIXME Probably needs to be FS safe in addition to being URL-safe.
-  (when name
-    (url-encode name)))
+  (when string
+    (url-encode string)))
