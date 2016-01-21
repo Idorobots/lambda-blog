@@ -1,4 +1,5 @@
 (ns lambda-blog.parsers.md
+  "Markdown parser."
   (:require [clojure.stacktrace :refer [print-stack-trace]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
@@ -20,7 +21,9 @@
          {:metadata nil
           :html (md-to-html-string contents)})))
 
-(defn parse [contents]
+(defn parse
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of metadata."
+  [contents]
   (if-not (empty? contents)
     (let [{:keys [metadata html]} (do-parse contents)]
       {:metadata (parse-metadata metadata)
