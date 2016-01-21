@@ -12,4 +12,7 @@
                  [s-html "0.1.6"]]
   :plugins [[jonase/eastwood "0.1.5"]
             [lein-ancient "0.5.4"]
-            [lein-cloverage "1.0.2"]])
+            [lein-cloverage "1.0.2"]
+            [lein-codox "0.9.1"]]
+  :codox {:metadata {:doc/format :markdown}
+          :source-uri "https://github.com/Idorobots/lambda-blog/blob/{version}/{filepath}#L{line}"})
