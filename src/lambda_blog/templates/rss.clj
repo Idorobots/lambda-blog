@@ -4,10 +4,18 @@
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [deftags link xml] :as tags]))
 
-(deftags [author category entry feed id name published summary updated])
+(deftags [^:private author
+          ^:private category
+          ^:private entry
+          ^:private feed
+          ^:private id
+          ^:private name
+          ^:private published
+          ^:private summary
+          ^:private updated])
 
-(def _author author) ;; FIXME Loose the _.
-(def _summary summary)
+(def ^:private _author author) ;; FIXME Loose the _.
+(def ^:private _summary summary)
 
 (defn rss-feed [{:keys [entries path title url]}]
   [(xml)
