@@ -4,7 +4,9 @@
             [lambda-blog.utils :refer [format-date pathcat]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 
-(defn archive-entry [{:keys [path path-to-root summary tags timestamp title]}]
+(defn archive-entry
+  "Creates a single row of the archives table containing various entry details."
+  [{:keys [path path-to-root summary tags timestamp title]}]
   (tr (td (format-date timestamp))
       (td (a {:href (pathcat path)} title))
       (td (map #(a {:class :tag
@@ -14,7 +16,9 @@
                (sort-by :id tags)))
       (td {:class [:hidden-xs :hidden-sm]} summary)))
 
-(defn archives [{:keys [entries] :as ent}]
+(defn archives
+  "Creates an HTML page containing a table of `entries`."
+  [{:keys [entries] :as ent}]
   (page
    (fn [_]
      [(-> "Archives" h1 text-centered row panel)

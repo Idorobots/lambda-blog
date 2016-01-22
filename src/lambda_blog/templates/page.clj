@@ -1,4 +1,5 @@
 (ns lambda-blog.templates.page
+  "Generic HTML page templates."
   (:refer-clojure :exclude [meta])
   (:require [lambda-blog.templates.bits :refer [javascript row text-centered]]
             [lambda-blog.utils :refer [pathcat]]
@@ -18,7 +19,9 @@
                  :href (link-or-pathcat path-to-root %)})
        stylesheets))
 
-(defn header [{:keys [favicon path-to-root rss scripts stylesheets title]}]
+(defn header
+  "Creates an HTML `head` element containing various metadata, `scripts` & `stylesheets`."
+  [{:keys [favicon path-to-root rss scripts stylesheets title]}]
   (t/head (t/meta {:charset :utf-8})
           (t/title title)
           (css path-to-root stylesheets)
@@ -35,23 +38,31 @@
           (t/meta {:name :generator
                    :content (str "λ-blog v." (System/getProperty "lambda-blog.version"))})))
 
-(defn banner [{:keys [banner-template] :as ent}]
+(defn banner
+  "Creates a page banner `header` using configured `banner-template`."
+  [{:keys [banner-template] :as ent}]
   (t/header {:class :page-header}
             (banner-template ent)))
 
-(defn powered-by []
+(defn powered-by
+  "Creates a tiny \"Powerd by λ-blog\" link."
+  []
   (t/p "Powered by "
        (t/a {:href "https://github.com/Idorobots/lambda-blog"}
             "λ-blog")
        "."))
 
-(defn footer [{:keys [footer-scripts footer-template path-to-root] :as ent}]
+(defn footer
+  "Creates a page `footer` using configured `footer-template`. Additionally, includes various `footer-scripts`."
+  [{:keys [footer-scripts footer-template path-to-root] :as ent}]
   [(t/footer (t/hr)
              (row (footer-template ent)
                   (text-centered (powered-by))))
    (javascripts path-to-root footer-scripts)])
 
-(defn navigation [{:keys [brand brand-logo navigation-template path-to-root] :as ent}]
+(defn navigation
+  "Creates a page `navbar` containing branding and various links using `navigation-template`."
+  [{:keys [brand brand-logo navigation-template path-to-root] :as ent}]
   (let [l (div (when brand-logo
                  (t/img {:src (pathcat path-to-root brand-logo)}))
                brand)]
@@ -70,7 +81,9 @@
                   (t/div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
                          (navigation-template ent))))))
 
-(defn page [contents-template entity]
+(defn page
+  "Creates a generic HTML page composed of [[header]], [[navigation]], [[banner]] & [[footer]]. Page contents are created using `contents-template`."
+  [contents-template entity]
   [(doctype :html)
    (t/html (header entity)
            (t/body (navigation entity)
@@ -81,4 +94,7 @@
                                             (contents-template entity)
                                             (footer entity))))))])
 
-(def static-page (partial page :contents))
+(defn static-page
+  "Creates a generic static [[page]] using `:contents` as the `contents-template`."
+  [ent]
+  (page :contents ent))

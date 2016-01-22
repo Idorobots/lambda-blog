@@ -1,4 +1,4 @@
-(defproject lambda-blog "0.1.0-SNAPSHOT"
+(defproject lambda-blog "1.0.0-SNAPSHOT"
   :description "A static blog generator."
   :url "https://github.com/Idorobots/lambda-blog"
   :license {:name "MIT License"
@@ -12,4 +12,7 @@
                  [s-html "0.1.6"]]
   :plugins [[jonase/eastwood "0.1.5"]
             [lein-ancient "0.5.4"]
-            [lein-cloverage "1.0.2"]])
+            [lein-cloverage "1.0.2"]
+            [lein-codox "0.9.1"]]
+  :codox {:metadata {:doc/format :markdown}
+          :source-uri "https://github.com/Idorobots/lambda-blog/blob/{version}/{filepath}#L{line}"})

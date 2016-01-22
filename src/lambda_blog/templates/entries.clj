@@ -18,6 +18,7 @@
                (apply a {:href url} contents)))))
 
 (defn entry
+  "Creates an HTML `atricle` representing an `ent`ry."
   [{:keys [author contents next path-to-root previous timestamp title] :as ent}]
   (article
    (header
@@ -46,9 +47,14 @@
                     (i {:class [:fa :fa-chevron-right]})))))))
    contents))
 
-(def entry-page (partial page entry))
+(defn entry-page
+  "Creates an HTML page containing an `ent`ry formatted by [[entry]]."
+  [ent]
+  (page entry ent))
 
-(defn entry-summary [{:keys [author contents path path-to-root tags timestamp title] :as ent}]
+(defn entry-summary
+  "Creates an HTML article representing a summarized `ent`ry."
+  [{:keys [author contents path path-to-root tags timestamp title] :as ent}]
   (article
    (header
     (panel
@@ -59,10 +65,12 @@
        (p "Posted on " (time (format-date timestamp))
           " by " author)
        (entry-tags ent)))))
-   contents))
+   contents)) ;; FIXME This should be shortened somehow.
 
-(defn recent-entries [ent]
-  (page (fn [{:keys [archives entries path-to-root]}]
+(defn recent-entries
+  "Creates an HTML page containing a list of [[entry-summary]]'ies of 15 most recent `entries` and a link to the `archives`."
+  [{:keys [archives entries path-to-root] :as ent}]
+  (page (fn [_]
           [(map (juxt entry-summary (constantly (hr)))
                 (->> entries
                      (sort-by :timestamp)
@@ -76,8 +84,10 @@
                panel)])
         ent))
 
-(defn entries-by-tag [{:keys [id] :as ent}]
-  (page (fn [{:keys [archives entries path-to-root]}]
+(defn entries-by-tag
+  "Creates an HTML page containing a list of [[entry-summary]]'ies of `entries` tagged with a tag identified by `id` and a link to the `archives`."
+  [{:keys [archives entries id path-to-root] :as ent}]
+  (page (fn [_]
           [(panel (text-centered (h1 (format "Tagged %s" id))))
            (map (juxt entry-summary (constantly (hr)))
                 (->> entries
