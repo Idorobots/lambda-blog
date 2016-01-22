@@ -17,7 +17,9 @@
 (def ^:private _author author) ;; FIXME Loose the _.
 (def ^:private _summary summary)
 
-(defn rss-feed [{:keys [entries path title url]}]
+(defn rss-feed
+  "Creates an XML RSS page conforming to the http://www.w3.org/2005/Atom specification."
+  [{:keys [entries path title url]}]
   [(xml)
    (feed {:xmlns "http://www.w3.org/2005/Atom"}
          (tags/title title)
