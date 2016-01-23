@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [time])
   (:require [lambda-blog.templates.bits :refer [info-label panel row text-centered]]
             [lambda-blog.templates.page :refer [page]]
-            [lambda-blog.utils :refer [format-date pathcat]]
+            [lambda-blog.utils :refer [format-time pathcat]]
             [s-html.tags :refer [a article div footer h1 header hr i li nav p span time ul]]))
 
 (defn- entry-tags [{:keys [path-to-root tags]}]
@@ -34,7 +34,7 @@
                           (:title previous)))))
       (div {:class [:col-xs-8 :col-sm-6]}
            (text-centered (h1 title)
-                          (p "Posted on " (time (format-date timestamp))
+                          (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
                              " by " author)
                           (entry-tags ent)))
       (div {:class [:col-xs-2 :col-sm-3]}
@@ -62,7 +62,7 @@
       (row
        (h1 (a {:href (pathcat path-to-root path)}
               title))
-       (p "Posted on " (time (format-date timestamp))
+       (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
           " by " author)
        (entry-tags ent)))))
    contents)) ;; FIXME This should be shortened somehow.
