@@ -68,14 +68,14 @@
    contents)) ;; FIXME This should be shortened somehow.
 
 (defn recent-entries
-  "Creates an HTML page containing a list of [[entry-summary]]'ies of 15 most recent `entries` and a link to the `archives`."
-  [{:keys [archives entries path-to-root] :as ent}]
+  "Creates an HTML page containing a list of [[entry-summary]]'ies of `n` most recent `entries` and a link to the `archives`."
+  [n {:keys [archives entries path-to-root] :as ent}]
   (page (fn [_]
           [(map (juxt entry-summary (constantly (hr)))
                 (->> entries
                      (sort-by :timestamp)
                      reverse
-                     (take 15)
+                     (take n)
                      (map (partial merge ent))))
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Further reading...")

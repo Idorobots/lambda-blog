@@ -96,7 +96,7 @@
       (update :tag-cloud
               (add-paths "tags/index.html"))
       clean-dir!
-      (generate! :index recent-entries)
+      (generate! :index (partial recent-entries 15))
       (generate! :rss rss-feed)
       (generate! :archives archives)
       (generate! :tag-cloud tags-index)
