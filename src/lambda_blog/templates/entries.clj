@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [time])
   (:require [lambda-blog.templates.bits :refer [info-label panel row text-centered]]
             [lambda-blog.templates.page :refer [page]]
-            [lambda-blog.utils :refer [format-date pathcat]]
+            [lambda-blog.utils :refer [format-time pathcat]]
             [s-html.tags :refer [a article div footer h1 header hr i li nav p span time ul]]))
 
 (defn- entry-tags [{:keys [path-to-root tags]}]
@@ -34,7 +34,7 @@
                           (:title previous)))))
       (div {:class [:col-xs-8 :col-sm-6]}
            (text-centered (h1 title)
-                          (p "Posted on " (time (format-date timestamp))
+                          (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
                              " by " author)
                           (entry-tags ent)))
       (div {:class [:col-xs-2 :col-sm-3]}
@@ -62,20 +62,20 @@
       (row
        (h1 (a {:href (pathcat path-to-root path)}
               title))
-       (p "Posted on " (time (format-date timestamp))
+       (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
           " by " author)
        (entry-tags ent)))))
    contents)) ;; FIXME This should be shortened somehow.
 
 (defn recent-entries
-  "Creates an HTML page containing a list of [[entry-summary]]'ies of 15 most recent `entries` and a link to the `archives`."
-  [{:keys [archives entries path-to-root] :as ent}]
+  "Creates an HTML page containing a list of [[entry-summary]]'ies of `n` most recent `entries` and a link to the `archives`."
+  [n {:keys [archives entries path-to-root] :as ent}]
   (page (fn [_]
           [(map (juxt entry-summary (constantly (hr)))
                 (->> entries
                      (sort-by :timestamp)
                      reverse
-                     (take 15)
+                     (take n)
                      (map (partial merge ent))))
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Further reading...")

@@ -21,10 +21,10 @@
                   (flatten (map (partial parse #"/")
                                 parts)))))
 
-(defn format-date
-  "Formats a `timestamp` according to a given format."
-  [timestamp]
-  (f/unparse (f/formatter "YYYY-MM-dd HH:mm")
+(defn format-time
+  "Formats a `timestamp` according to a given `format`."
+  [format timestamp]
+  (f/unparse (f/formatter format)
              (f/parse timestamp)))
 
 (defn sanitize
