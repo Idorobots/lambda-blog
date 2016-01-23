@@ -58,10 +58,8 @@
   "Returns a middleware function that promotes all subkeys of a map under `what` key of an `entity` into the `entity`."
   [what]
   (fn [entity]
-    (reduce (fn [e [k v]]
-              (assoc e k v))
-            entity
-            (entity what))))
+    (merge entity
+           (entity what))))
 
 (defn inspect
   "Pretty prints an `entity` for debugging purposes. Returns unmodified `entity`."
