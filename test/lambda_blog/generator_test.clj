@@ -70,7 +70,7 @@
     (is (->> b :archives :path (pathcat output-dir) file?))
     (is (->> b :tag-cloud :path (pathcat output-dir) file?))
     (is (->> b
-             :static-pages
+             :docs
              (map :path)
              (map #(pathcat output-dir %))
              (map file?)

@@ -13,7 +13,7 @@
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a div h1 i img li p span ul]]))
 
-(defn- navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
+(defn- navigation [{:keys [archives docs path-to-root rss] :as ent}]
   (ul {:class [:nav :navbar-nav]}
       (li {:class :dropdown}
           (a {:href "#"}
@@ -24,7 +24,7 @@
               (map (fn [{:keys [path title]}]
                      (li (a {:href (pathcat path-to-root path)}
                             title)))
-                   static-pages)))
+                   docs)))
       (li (a {:href (pathcat path-to-root "/api")}
              (i {:class [:fa :fa-list]})
              " API"))
@@ -83,8 +83,8 @@
 
 (defn generate-docs []
   (-> docs
-      (read-dir :static-pages "doc/static" parse)
-      (update-all :static-pages
+      (read-dir :docs "doc/docs" parse)
+      (update-all :docs
                   (promote :metadata)
                   #(whenever %
                              (fn [{:keys [id]}]
@@ -118,7 +118,7 @@
       (generate! :rss rss-feed)
       (generate! :archives archives)
       (generate! :tag-cloud tags-index)
-      (generate-all! :static-pages static-page)
+      (generate-all! :docs static-page)
       (generate-all! :entries entry-page)
       (generate-all! :tags entries-by-tag)
       (copy-dir! "doc/media" "media")
