@@ -1,7 +1,10 @@
 (ns lambda-blog.generator-test
   (:refer-clojure :exclude [update])
   (:require [clojure.test :refer :all]
-            [lambda-blog.generator :refer [update update-all whenever]]))
+            [lambda-blog.fixtures :refer [generate-blog]]
+            [lambda-blog.generator :refer [update update-all whenever]]
+            [lambda-blog.utils :refer [pathcat]]
+            [me.raynes.fs :refer [directory? file?]]))
 
 (deftest can-update-keys
   (let [ent {:key :value}]
@@ -47,3 +50,40 @@
            {:tags #{{:id :foo}
                     {:id :bar :hello :world}
                     {:id :baz}}}))))
+
+(deftest can-generate-a-blog
+  ;; NOTE There's no worth in testing HTML templates, so this is as much
+  ;; NOTE of the generator that can be easily tested.
+  (let [{:keys [output-dir] :as b} (generate-blog)]
+    ;; Misc stuff has been prepared correctly.
+    (is (contains? b :tags))
+    ;; Layout is correct.
+    (is (directory? (pathcat output-dir)))
+    (is (directory? (pathcat output-dir "media")))
+    (is (directory? (pathcat output-dir "style")))
+    (is (directory? (pathcat output-dir "js")))
+    (is (directory? (pathcat output-dir "tags")))
+    (is (directory? (pathcat output-dir "posts")))
+    ;; Various pages were generated.
+    (is (->> b :index :path (pathcat output-dir) file?))
+    (is (->> b :rss :path (pathcat output-dir) file?))
+    (is (->> b :archives :path (pathcat output-dir) file?))
+    (is (->> b :tag-cloud :path (pathcat output-dir) file?))
+    (is (->> b
+             :static-pages
+             (map :path)
+             (map #(pathcat output-dir %))
+             (map file?)
+             (every? true?)))
+    (is (->> b
+             :entries
+             (map :path)
+             (map #(pathcat output-dir %))
+             (map file?)
+             (every? true?)))
+    (is (->> b
+             :tags
+             (map :path)
+             (map #(pathcat output-dir %))
+             (map file?)
+             (every? true?)))))
