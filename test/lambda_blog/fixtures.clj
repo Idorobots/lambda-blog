@@ -41,27 +41,27 @@
 (defn- footer [_]
   (text-centered "Some footer contents"))
 
-(def blog {:author "me"
-           :banner-template banner
-           :brand "Test Blog"
+(def blog {:author "Idorobots"
+           :brand "λ-blog"
+           :title "λ-blog documentation"
+           :url "https://idorobots.github.io/lambda-blog/"
+           :output-dir "/target/out/"
            :brand-logo "media/logo.svg"
            :favicon "media/logo.svg"
-           :footer-template footer
-           :footer-scripts ["js/lambda-blog.js"]
+           :banner-template banner
            :navigation-template navigation
-           :output-dir "/target/out/"
-           :url "localhost:8000"
+           :footer-template footer
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
                      "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.1/js/jquery.tablesorter.min.js"
                      "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
                      "https://cdn.jsdelivr.net/highlight.js/9.1.0/highlight.min.js"]
+           :footer-scripts ["js/lambda-blog.js"]
            :stylesheets ["https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
                          "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
                          "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
                          "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.1/css/theme.bootstrap.min.css"
                          "https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/default.min.css"
-                         "style/lambda-blog.css"]
-           :title "Test Blog"})
+                         "style/lambda-blog.css"]})
 
 (defn generate-blog []
   (-> blog
