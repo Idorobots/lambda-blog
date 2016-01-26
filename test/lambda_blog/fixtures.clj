@@ -24,7 +24,7 @@
               (map (fn [{:keys [path title]}]
                      (li (a {:href (pathcat path-to-root path)}
                             title)))
-                   docs)))
+                   (sort-by :title docs))))
       (li (a {:href (pathcat path-to-root "/api")}
              (i {:class [:fa :fa-list]})
              " API"))
@@ -86,13 +86,6 @@
       (read-dir :docs "doc/docs" parse)
       (update-all :docs
                   (promote :metadata)
-                  #(whenever %
-                             (fn [{:keys [id]}]
-                               (= id "static-2"))
-                             (fn [ent]
-                               (assoc ent
-                                      :banner-template
-                                      (constantly (text-centered "Custom banner contents")))))
                   (add-paths "<id>.html"))
       (read-dir :entries "doc/entries" parse)
       (update-all :entries
