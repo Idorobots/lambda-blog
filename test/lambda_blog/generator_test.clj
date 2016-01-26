@@ -63,7 +63,7 @@
     (is (directory? (pathcat output-dir "style")))
     (is (directory? (pathcat output-dir "js")))
     (is (directory? (pathcat output-dir "tags")))
-    (is (directory? (pathcat output-dir "posts")))
+    (is (directory? (pathcat output-dir "entries")))
     ;; Various pages were generated.
     (is (->> b :index :path (pathcat output-dir) file?))
     (is (->> b :rss :path (pathcat output-dir) file?))
