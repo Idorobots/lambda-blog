@@ -1,7 +1,7 @@
 (ns lambda-blog.generator-test
   (:refer-clojure :exclude [update])
   (:require [clojure.test :refer :all]
-            [lambda-blog.fixtures :refer [generate-blog]]
+            [lambda-blog.fixtures :refer [generate-docs]]
             [lambda-blog.generator :refer [update update-all whenever]]
             [lambda-blog.utils :refer [pathcat]]
             [me.raynes.fs :refer [directory? file?]]))
@@ -54,7 +54,7 @@
 (deftest can-generate-a-blog
   ;; NOTE There's no worth in testing HTML templates, so this is as much
   ;; NOTE of the generator that can be easily tested.
-  (let [{:keys [output-dir] :as b} (generate-blog)]
+  (let [{:keys [output-dir] :as b} (generate-docs)]
     ;; Misc stuff has been prepared correctly.
     (is (contains? b :tags))
     ;; Layout is correct.

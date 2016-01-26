@@ -41,7 +41,7 @@
 (defn- footer [_]
   (text-centered "Some footer contents"))
 
-(def blog {:author "Idorobots"
+(def docs {:author "Idorobots"
            :brand "λ-blog"
            :title "λ-blog documentation"
            :url "https://idorobots.github.io/lambda-blog/"
@@ -63,8 +63,8 @@
                          "https://cdn.jsdelivr.net/highlight.js/9.1.0/styles/default.min.css"
                          "style/lambda-blog.css"]})
 
-(defn generate-blog []
-  (-> blog
+(defn generate-docs []
+  (-> docs
       (read-dir :static-pages "doc/static" parse)
       (update-all :static-pages
                   (promote :metadata)
