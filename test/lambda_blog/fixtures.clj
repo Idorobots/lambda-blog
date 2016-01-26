@@ -11,25 +11,32 @@
             [lambda-blog.templates.tags :refer [tags-index]]
             [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
-            [s-html.tags :refer [a div h1 img li p span ul]]))
+            [s-html.tags :refer [a div h1 i img li p span ul]]))
 
 (defn- navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
   (ul {:class [:nav :navbar-nav]}
-      (li (a {:href "https://github.com/Idorobots/lambda-blog"}
-             "λ-blog"))
       (li {:class :dropdown}
           (a {:href "#"}
-             "Static Pages"
+             (i {:class [:fa :fa-book]})
+             " Documentation"
              (span {:class :caret}))
           (ul {:class :dropdown-menu}
               (map (fn [{:keys [path title]}]
                      (li (a {:href (pathcat path-to-root path)}
                             title)))
                    static-pages)))
-      (li (a {:href (pathcat path-to-root (:path rss))}
-             "RSS Feed"))
+      (li (a {:href (pathcat path-to-root "/api")}
+             (i {:class [:fa :fa-list]})
+             " API"))
+      (li (a {:href "https://github.com/Idorobots/lambda-blog"}
+             (i {:class [:fa :fa-github]})
+             " GitHub"))
       (li (a {:href (pathcat path-to-root (:path archives))}
-             "Archives"))))
+             (i {:class [:fa :fa-archive]})
+             " Archives"))
+      (li (a {:href (pathcat path-to-root (:path rss))}
+             (i {:class [:fa :fa-feed]})
+             " RSS"))))
 
 (defn- banner [{:keys [logo path-to-root url]}]
   (row (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
