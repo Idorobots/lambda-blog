@@ -113,11 +113,14 @@
               (add-paths "archives.html"))
       (update :tag-cloud
               (add-paths "tags/index.html"))
+      (update :entries-index
+              (add-paths "entries/index.html"))
       clean-dir!
       (generate! :index (partial recent-entries 15))
       (generate! :rss rss-feed)
       (generate! :archives archives)
       (generate! :tag-cloud tags-index)
+      (generate! :entries-index (partial recent-entries 15))
       (generate-all! :docs static-page)
       (generate-all! :entries entry-page)
       (generate-all! :tags entries-by-tag)
