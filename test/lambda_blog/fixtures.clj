@@ -49,7 +49,7 @@
            :footer-template footer
            :footer-scripts ["js/lambda-blog.js"]
            :navigation-template navigation
-           :output-dir "/out/"
+           :output-dir "/target/out/"
            :url "localhost:8000"
            :scripts ["http://code.jquery.com/jquery-2.2.0.min.js"
                      "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.1/js/jquery.tablesorter.min.js"
