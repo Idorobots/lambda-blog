@@ -39,7 +39,14 @@
             (text-centered "Some banner contents"))))
 
 (defn- footer [_]
-  (text-centered "Some footer contents"))
+  (text-centered
+   "All writing licensed under "
+   (a {:rel :license
+       :href "http://creativecommons.org/licenses/by-sa/4.0/"}
+      (img {:alt "Creative Commons License"
+            :style "border-width:0;"
+            :src "https://i.creativecommons.org/l/by-sa/4.0/80x15.png"}))
+   ". All code released to the Public Domain unless otherwise specified."))
 
 (def docs {:author "Idorobots"
            :brand "λ-blog"
