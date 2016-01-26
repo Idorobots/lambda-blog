@@ -11,7 +11,7 @@
             [lambda-blog.templates.tags :refer [tags-index]]
             [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
-            [s-html.tags :refer [a div img li span ul]]))
+            [s-html.tags :refer [a div h1 img li p span ul]]))
 
 (defn- navigation [{:keys [archives path-to-root rss static-pages] :as ent}]
   (ul {:class [:nav :navbar-nav]}
@@ -31,12 +31,15 @@
       (li (a {:href (pathcat path-to-root (:path archives))}
              "Archives"))))
 
-(defn- banner [{:keys [logo path-to-root]}]
-  (row (div {:class [:hidden-xs :col-sm-2 :col-md-1]}
-            (img {:style "height: 150px;"
-                  :src (pathcat path-to-root "media/logo.svg")}))
-       (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
-            (text-centered "Some banner contents"))))
+(defn- banner [{:keys [logo path-to-root url]}]
+  (row (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
+            (h1 {:style "font-size: 300%;"}
+                "λ-blog")
+            (p {:style "font-size: 150%;"}
+               "A static blog generator generator optimized for customizability."))
+       (div {:class [:hidden-xs :col-sm-2 :col-md-1 :pull-right]}
+            (img {:style "height: 120px;"
+                  :src (pathcat path-to-root logo)}))))
 
 (defn- footer [_]
   (text-centered
@@ -54,6 +57,7 @@
            :url "https://idorobots.github.io/lambda-blog/"
            :output-dir "/target/out/"
            :brand-logo "media/logo.svg"
+           :logo "media/logo.svg"
            :favicon "media/logo.svg"
            :banner-template banner
            :navigation-template navigation
