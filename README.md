@@ -5,7 +5,7 @@
 
 ## Usage
 
-See the [API docs](https://idorobots.github.io/lambda-blog/doc/).
+See the [API docs](https://idorobots.github.io/lambda-blog/api/) and a [sample blog](https://idorobots.github.io/lambda-blog/).
 
 ## License
 
