@@ -14,5 +14,6 @@
             [lein-ancient "0.5.4"]
             [lein-cloverage "1.0.2"]
             [lein-codox "0.9.1"]]
-  :codox {:metadata {:doc/format :markdown}
+  :codox {:doc-paths ["doc/docs"]
+          :metadata {:doc/format :markdown}
           :source-uri "https://github.com/Idorobots/lambda-blog/blob/{version}/{filepath}#L{line}"})
