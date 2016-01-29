@@ -52,9 +52,9 @@
   [ent]
   (page entry ent))
 
-(defn entry-summary
-  "Creates an HTML article representing a summarized `ent`ry."
-  [{:keys [author contents path path-to-root tags timestamp title] :as ent}]
+(defn embedded-entry
+  "Creates an HTML article representing a summarized `entry` that will be embedded within another `ent`ity."
+  [{:keys [path-to-root] :as ent} {:keys [author contents path tags timestamp title] :as entry}]
   (article
    (header
     (panel
@@ -63,7 +63,7 @@
        (h1 (a {:href (pathcat path-to-root path)}
               title))
        (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
-          " by " author)
+          " by " (or author (:author ent))) ;; KLUDGE :(
        (entry-tags ent)))))
    contents)) ;; FIXME This should be shortened somehow.
 
@@ -71,12 +71,12 @@
   "Creates an HTML page containing a list of [[entry-summary]]'ies of `n` most recent `entries` and a link to the `archives`."
   [n {:keys [archives entries path-to-root] :as ent}]
   (page (fn [_]
-          [(map (juxt entry-summary (constantly (hr)))
+          [(map (juxt (partial embedded-entry ent)
+                      (constantly (hr)))
                 (->> entries
                      (sort-by :timestamp)
                      reverse
-                     (take n)
-                     (map (partial merge ent))))
+                     (take n)))
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Further reading...")
                h1
@@ -89,15 +89,15 @@
   [{:keys [archives entries id path-to-root] :as ent}]
   (page (fn [_]
           [(panel (text-centered (h1 (format "Tagged %s" id))))
-           (map (juxt entry-summary (constantly (hr)))
+           (map (juxt (partial embedded-entry ent)
+                      (constantly (hr)))
                 (->> entries
                      (filter (fn [{:keys [tags]}]
                                (contains? (into #{}
                                                 (map :id tags))
                                           id)))
                      (sort-by :timestamp)
-                     reverse
-                     (map (partial merge ent))))
+                     reverse))
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Archives")
                h1
