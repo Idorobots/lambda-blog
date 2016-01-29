@@ -1,8 +1,10 @@
 (ns lambda-blog.utils
   "Various useful utilities."
+  (:refer-clojure :exclude [replace])
   (:require [clj-time.format :as f]
-            [clojure.string :refer [split]]
-            [ring.util.codec :refer [url-encode]]))
+            [clojure.string :refer [lower-case replace split]]
+            [ring.util.codec :refer [url-encode]])
+  (:import [me.xuender.unidecode Unidecode]))
 
 (defn- parse [separator path]
   (when path
@@ -27,9 +29,17 @@
   (f/unparse (f/formatter format)
              (f/parse timestamp)))
 
+(defn- bastardize [string]
+  (-> string
+      (replace #"%20" "-")
+      (replace #"%[a-zA-Z0-9]{2}" "_")))
+
 (defn sanitize
   "Sanitizes a `string` for use in URLs and filesystem paths."
   [string]
-  ;; FIXME Probably needs to be FS safe in addition to being URL-safe.
   (when string
-    (url-encode string)))
+    (-> string
+        Unidecode/decode
+        lower-case
+        url-encode
+        bastardize)))

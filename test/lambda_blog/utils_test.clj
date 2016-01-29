@@ -1,6 +1,6 @@
 (ns lambda-blog.utils-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.utils :refer [pathcat]]))
+            [lambda-blog.utils :refer [pathcat sanitize]]))
 
 (deftest path-renders-properly
   (is (= (pathcat "")
@@ -25,3 +25,17 @@
          "foo/bar"))
   (is (= (pathcat "/foo" "bar")
          "foo/bar")))
+
+(deftest sanitize-works-properly
+  (is (= (sanitize "TeSt")
+         "test"))
+  (is (= (sanitize "test test")
+         "test-test"))
+  (is (= (sanitize "test.html")
+         "test.html"))
+  (is (= (sanitize "λ-blog.html")
+         "l-blog.html"))
+  (is (= (sanitize "zażółć gęślą jaźń")
+         "zazolc-gesla-jazn"))
+  (is (= (sanitize "illega$/ch*ract%rs")
+         "illega__ch_ract_rs")))
