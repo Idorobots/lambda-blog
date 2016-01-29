@@ -86,11 +86,11 @@
       (read-dir :docs "doc/docs" parse)
       (update-all :docs
                   (promote :metadata)
-                  (add-paths "<id>.html"))
+                  (add-paths "<title>.html"))
       (read-dir :entries "doc/entries" parse)
       (update-all :entries
                   (promote :metadata)
-                  (add-paths "entries/<id>.html")
+                  (add-paths "entries/<title>.html")
                   #(update-all % :tags
                                (fn [t] {:id t})
                                (add-paths "tags/<id>.html")))
