@@ -36,3 +36,11 @@ user=> (md/parse "Some: \"Metadata\"\n\n# Some\nMarkdown\n## Contents")
 {:metadata {:some "Metadata"}
  :contents "<h1>Some</h1>Markdown<h2>Contents</h2>"}
 ```
+
+Each of metadata value is assumed to be in [Clojure EDN](https://github.com/edn-format/edn) format and thus is parsed as such. In order to give a certain metadata key multiple values, simply use a Clojure vector:
+
+```clojure-repl
+user=> (md/parse "Some: [Multiple Values]\n\n# Some\nMarkdown\n## Contents")
+{:metadata {:some [Multiple Values]}
+ :contents "<h1>Some</h1>Markdown<h2>Contents</h2>"}
+```

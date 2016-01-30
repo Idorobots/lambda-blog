@@ -30,7 +30,15 @@
           :html (md-to-html-string contents)})))
 
 (defn parse
-  "Parses file `contents` as a Markdown document and returns HTML and various bits of metadata."
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Example input:
+
+```markdown
+String: \"value\"
+Vector: [some more values]
+
+# Header
+Contents.
+```"
   [contents]
   (if-not (empty? contents)
     (let [{:keys [metadata html]} (do-parse contents)]
