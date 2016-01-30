@@ -1,6 +1,6 @@
 (ns lambda-blog.utils-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.utils :refer [pathcat sanitize urlcat]]))
+            [lambda-blog.utils :refer [pathcat sanitize]]))
 
 (deftest path-renders-properly
   (is (= (pathcat "")
@@ -24,25 +24,21 @@
   (is (= (pathcat "foo" "/bar")
          "foo/bar"))
   (is (= (pathcat "/foo" "bar")
-         "foo/bar")))
-
-(deftest url-renders-properly
-  (is (= (urlcat "https://test.io" "foo")
+         "foo/bar"))
+  (is (= (pathcat "https://test.io" "foo")
          "https://test.io/foo"))
-  (is (= (urlcat "http://test.io" "foo")
+  (is (= (pathcat "http://test.io" "foo")
          "http://test.io/foo"))
-  (is (= (urlcat "file:///usr/bin" "bash")
+  (is (= (pathcat "file:///usr/bin" "bash")
          "file:///usr/bin/bash"))
-  (is (= (urlcat "https://test.io/" "/some/path/")
+  (is (= (pathcat "https://test.io/" "/some/path/")
          "https://test.io/some/path"))
-  (is (= (urlcat "https://test.io" "/some/path/")
+  (is (= (pathcat "https://test.io" "/some/path/")
          "https://test.io/some/path"))
-  (is (= (urlcat "https://test.io/" "some/path/")
+  (is (= (pathcat "https://test.io/" "some/path/")
          "https://test.io/some/path"))
-  (is (= (urlcat "https://test.io" "some/path/")
-         "https://test.io/some/path"))
-  (is (= (urlcat "https://" "test.io/foo")
-         "https://test.io/foo")))
+  (is (= (pathcat "https://test.io" "some/path/")
+         "https://test.io/some/path")))
 
 (deftest sanitize-works-properly
   (is (= (sanitize "TeSt")
