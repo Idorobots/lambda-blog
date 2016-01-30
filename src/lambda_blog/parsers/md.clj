@@ -1,6 +1,8 @@
 (ns lambda-blog.parsers.md
   "Markdown parser."
-  (:require [clojure.stacktrace :refer [print-stack-trace]]
+  (:refer-clojure :exclude [read-string])
+  (:require [clojure.edn :refer [read-string]]
+            [clojure.stacktrace :refer [print-stack-trace]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
 
@@ -8,9 +10,15 @@
   (->> metadata
        seq
        (map (fn [[k v]]
-              [k (if (= (count v) 1)
-                   (first v)
-                   v)]))
+              (when (> (count v) 1)
+                (log/warnf "Multiple values for metadata %s, choosing the last one." k))
+              (try [k (read-string (last v))]
+                   (catch java.lang.Exception e
+                     (log/warnf "Caught an exception while parsing metadata %s: %s" k e)
+                     (log/debug (with-out-str (print-stack-trace e)))
+                     ;; NOTE Probably better to skip this key instead of trying
+                     ;; NOTE to repair it or fail entirely.
+                     nil))))
        (into {})))
 
 (defn- do-parse [contents]
@@ -22,7 +30,15 @@
           :html (md-to-html-string contents)})))
 
 (defn parse
-  "Parses file `contents` as a Markdown document and returns HTML and various bits of metadata."
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Example input:
+
+```markdown
+String: \"value\"
+Vector: [some more values]
+
+# Header
+Contents.
+```"
   [contents]
   (if-not (empty? contents)
     (let [{:keys [metadata html]} (do-parse contents)]

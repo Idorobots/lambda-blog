@@ -1,5 +1,5 @@
-Timestamp: 2016-01-26T16:43:00
-Title: HTML templates
+Timestamp: #inst "2016-01-26T16:43:00"
+Title: "HTML templates"
 ID: templates
 
 # HTML templates
