@@ -4,7 +4,8 @@
   (:require [clj-time.format :as f]
             [clojure.string :refer [lower-case replace split]]
             [ring.util.codec :refer [url-encode]])
-  (:import [me.xuender.unidecode Unidecode]))
+  (:import [org.apache.commons.validator.routines UrlValidator]
+           [me.xuender.unidecode Unidecode]))
 
 (defn- parse [separator path]
   (when path
@@ -15,12 +16,20 @@
   ([a] a)
   ([a b] (str a "/" b)))
 
+(defn- url? [string]
+  (.isValid (UrlValidator. (bit-or UrlValidator/ALLOW_LOCAL_URLS
+                                   UrlValidator/ALLOW_ALL_SCHEMES))
+            string))
+
 (defn pathcat
   "Concatenates filesystem/URL paths `parts` while maintaining correct format."
   [& parts]
   (reduce join
           (filter (complement empty?)
-                  (flatten (map (partial parse #"/")
+                  (flatten (map (fn [p]
+                                  (if (url? p)
+                                    (replace p #"/$" "")
+                                    (parse #"/" p)))
                                 parts)))))
 
 (defn format-time
