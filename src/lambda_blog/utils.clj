@@ -23,6 +23,12 @@
                   (flatten (map (partial parse #"/")
                                 parts)))))
 
+(defn urlcat
+  "Same as [[pathcat]] but is `base-url` protocol conscious."
+  [base-url & parts]
+  (join (replace base-url #"/$" "")
+        (replace (apply pathcat parts) #"^/" "")))
+
 (defn format-time
   "Formats a `timestamp` according to a given `format`."
   [format timestamp]
