@@ -1,6 +1,8 @@
 (ns lambda-blog.parsers.md
   "Markdown parser."
-  (:require [clojure.stacktrace :refer [print-stack-trace]]
+  (:refer-clojure :exclude [read-string])
+  (:require [clojure.edn :refer [read-string]]
+            [clojure.stacktrace :refer [print-stack-trace]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
 
@@ -8,9 +10,9 @@
   (->> metadata
        seq
        (map (fn [[k v]]
-              [k (if (= (count v) 1)
-                   (first v)
-                   v)]))
+              (when (> (count v) 1)
+                (log/warnf "Multiple values for metadata %s, choosing the last one." k))
+              [k (read-string (last v))]))
        (into {})))
 
 (defn- do-parse [contents]
