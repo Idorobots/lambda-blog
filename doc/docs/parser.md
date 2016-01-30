@@ -1,5 +1,5 @@
-Timestamp: 2016-01-26T16:43:00
-Title: Content parsers
+Timestamp: #inst "2016-01-26T16:43:00"
+Title: "Content parsers"
 ID: parsers
 
 # Content parsers
@@ -32,7 +32,7 @@ Out of the box, **λ-blog** comes bundled with a Markdown parser based on [markd
 The value returned is a Clojure map containing at least `:contents` & `:metadata` keys:
 
 ```clojure-repl
-user=> (md/parse "Some: Metadada\n\n# Some\nMarkdown\n## Contents")
-{:metadata {:some "Metadada"}
+user=> (md/parse "Some: \"Metadata\"\n\n# Some\nMarkdown\n## Contents")
+{:metadata {:some "Metadata"}
  :contents "<h1>Some</h1>Markdown<h2>Contents</h2>"}
 ```

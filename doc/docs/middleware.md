@@ -1,5 +1,5 @@
-Timestamp: 2016-01-26T16:43:00
-Title: Generator middleware
+Timestamp: #inst "2016-01-26T16:43:00"
+Title: "Generator middleware"
 ID: middleware
 
 # Generator middleware
