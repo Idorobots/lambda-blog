@@ -1,4 +1,4 @@
-(defproject lambda-blog "1.0.1"
+(defproject lambda-blog "1.0.2"
   :description "A static blog generator."
   :url "https://github.com/Idorobots/lambda-blog"
   :license {:name "MIT License"
