@@ -1,6 +1,7 @@
 (ns lambda-blog.utils-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.utils :refer [pathcat sanitize]]))
+            [clj-time.core :as t]
+            [lambda-blog.utils :refer [format-time pathcat sanitize]]))
 
 (deftest path-renders-properly
   (is (= (pathcat "")
@@ -53,3 +54,11 @@
          "zazolc-gesla-jazn"))
   (is (= (sanitize "illega$/ch*ract%rs")
          "illega__ch_ract_rs")))
+
+(deftest can-properly-format-time
+  (is (= (format-time "YYYY-MM-DD" #inst "2016-01-26T23:23:23.000-00:00")
+         "2016-01-26"))
+  (is (= (format-time "YYYY-MM-DD" "2016-01-26T23:23:23.000-00:00")
+         "2016-01-26"))
+  (is (= (format-time "YYYY-MM-DD" (t/date-time 2016 01 26 23 23 23 0000))
+         "2016-01-26")))
