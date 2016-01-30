@@ -68,7 +68,7 @@
    contents)) ;; FIXME This should be shortened somehow.
 
 (defn recent-entries
-  "Creates an HTML page containing a list of [[entry-summary]]'ies of `n` most recent `entries` and a link to the `archives`."
+  "Creates an HTML page containing a list of [[embedded-entry]]'ies of `n` most recent `entries` and a link to the `archives`."
   [n {:keys [archives entries path-to-root] :as ent}]
   (page (fn [_]
           [(map (juxt (partial embedded-entry ent)
@@ -85,7 +85,7 @@
         ent))
 
 (defn entries-by-tag
-  "Creates an HTML page containing a list of [[entry-summary]]'ies of `entries` tagged with a tag identified by `id` and a link to the `archives`."
+  "Creates an HTML page containing a list of [[embedded-entry]]'ies of `entries` tagged with a tag identified by `id` and a link to the `archives`."
   [{:keys [archives entries id path-to-root] :as ent}]
   (page (fn [_]
           [(panel (text-centered (h1 (format "Tagged %s" id))))
