@@ -1,7 +1,8 @@
 (ns lambda-blog.utils
   "Various useful utilities."
   (:refer-clojure :exclude [replace])
-  (:require [clj-time.format :as f]
+  (:require [clj-time.coerce :as c]
+            [clj-time.format :as f]
             [clojure.string :refer [lower-case replace split]]
             [ring.util.codec :refer [url-encode]])
   (:import [org.apache.commons.validator.routines UrlValidator]
@@ -36,7 +37,14 @@
   "Formats a `timestamp` according to a given `format`."
   [format timestamp]
   (f/unparse (f/formatter format)
-             (f/parse timestamp)))
+             (cond (string? timestamp)
+                   (f/parse timestamp)
+
+                   (instance? java.util.Date timestamp)
+                   (c/from-date timestamp)
+
+                   :else
+                   timestamp)))
 
 (defn- bastardize [string]
   (-> string
