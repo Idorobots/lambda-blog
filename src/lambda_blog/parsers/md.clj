@@ -12,7 +12,13 @@
        (map (fn [[k v]]
               (when (> (count v) 1)
                 (log/warnf "Multiple values for metadata %s, choosing the last one." k))
-              [k (read-string (last v))]))
+              (try [k (read-string (last v))]
+                   (catch java.lang.Exception e
+                     (log/warnf "Caught an exception while parsing metadata %s: %s" k e)
+                     (log/debug (with-out-str (print-stack-trace e)))
+                     ;; NOTE Probably better to skip this key instead of trying
+                     ;; NOTE to repair it or fail entirely.
+                     nil))))
        (into {})))
 
 (defn- do-parse [contents]

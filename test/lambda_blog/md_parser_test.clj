@@ -25,6 +25,7 @@
 (def malformed "")
 (def just-metadata "Meta: Test\n")
 (def just-metadata2 "Meta: Test")
+(def metadata-eof "Meta: \"Test\n\n# Test!")
 
 (deftest can-parse-malformed-files
   (is (= (parse metadata-malformed)
@@ -38,7 +39,10 @@
           :contents "<p>Meta: Test</p>"}))
   (is (= (parse just-metadata2)
          {:metadata {}
-          :contents "<p>Meta: Test</p>"})))
+          :contents "<p>Meta: Test</p>"}))
+  (is (= (parse metadata-eof)
+         {:metadata {}
+          :contents "<h1>Test!</h1>"})))
 
 (def metadata-multi "Meta: [test1 test2 test3]\nData: foo bar baz\nMulti: \"foo bar baz\"\n\n# Header")
 
