@@ -34,9 +34,16 @@
                                 parts)))))
 
 (defn format-time
-  "Formats a `timestamp` according to a given `format`."
+  "Formats a `timestamp` according to a given `format`. `timestamp` can be either a string, a JodaTime value, or a Java DateTime. `format` can be either a string or a keyword recognized by [clj-time](https://github.com/clj-time/clj-time)."
   [format timestamp]
-  (f/unparse (f/formatter format)
+  (f/unparse (cond (string? format)
+                   (f/formatter format)
+
+                   (keyword? format)
+                   (f/formatters format)
+
+                   :else
+                   format)
              (cond (string? timestamp)
                    (f/parse timestamp)
 
