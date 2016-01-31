@@ -64,7 +64,7 @@
               title))
        (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
           " by " (or author (:author ent))) ;; KLUDGE :(
-       (entry-tags ent)))))
+       (entry-tags entry)))))
    contents)) ;; FIXME This should be shortened somehow.
 
 (defn recent-entries
