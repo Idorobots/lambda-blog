@@ -19,4 +19,4 @@
             [lein-codox "0.9.1"]]
   :codox {:doc-paths ["doc/docs"]
           :metadata {:doc/format :markdown}
-          :source-uri "https://github.com/Idorobots/lambda-blog/blob/{version}/{filepath}#L{line}"})
+          :source-uri "https://github.com/Idorobots/lambda-blog/lambda-blog/blob/{version}/{filepath}#L{line}"})
