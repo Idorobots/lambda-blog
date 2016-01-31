@@ -21,7 +21,7 @@
 
 (defn rss-feed
   "Creates an XML RSS page conforming to the http://www.w3.org/2005/Atom specification."
-  [{:keys [entries path title url]}]
+  [{:keys [entries path title url] :as ent}]
   [(xml)
    (feed {:xmlns "http://www.w3.org/2005/Atom"}
          (tags/title title)
@@ -33,7 +33,7 @@
          (map (fn [{:keys [author path summary tags timestamp title]}]
                 (entry (tags/title title)
                        (id path)
-                       (_author (name author))
+                       (_author (name (or author (:author ent)))) ;; KLUDGE :(
                        (updated (format-t timestamp))
                        (published (format-t timestamp))
                        (link {:href (pathcat url path)})
