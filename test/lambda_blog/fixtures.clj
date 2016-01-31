@@ -5,7 +5,7 @@
             [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all!
                                            read-dir update update-all whenever]]
             [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
-            [lambda-blog.templates.bits :refer [row text-centered]]
+            [lambda-blog.templates.bits :refer [fork-me-on-gh row text-centered]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
@@ -15,30 +15,28 @@
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a div h1 i img li p span ul]]))
 
-(defn- navigation [{:keys [archives docs path-to-root rss] :as ent}]
-  (ul {:class [:nav :navbar-nav]}
-      (li {:class :dropdown}
-          (a {:href "#"}
-             (i {:class [:fa :fa-book]})
-             " Documentation"
-             (span {:class :caret}))
-          (ul {:class :dropdown-menu}
-              (map (fn [{:keys [path title]}]
-                     (li (a {:href (pathcat path-to-root path)}
-                            title)))
-                   (sort-by :title docs))))
-      (li (a {:href (pathcat path-to-root "/api")}
-             (i {:class [:fa :fa-list]})
-             " API"))
-      (li (a {:href "https://github.com/Idorobots/lambda-blog"}
-             (i {:class [:fa :fa-github]})
-             " GitHub"))
-      (li (a {:href (pathcat path-to-root (:path archives))}
-             (i {:class [:fa :fa-archive]})
-             " Archives"))
-      (li (a {:href (pathcat path-to-root (:path rss))}
-             (i {:class [:fa :fa-feed]})
-             " RSS"))))
+(defn- navigation [{:keys [archives docs github-url path-to-root rss] :as ent}]
+  [(fork-me-on-gh github-url :right :darkblue)
+   (ul {:class [:nav :navbar-nav]}
+       (li {:class :dropdown}
+           (a {:href "#"}
+              (i {:class [:fa :fa-book]})
+              " Documentation"
+              (span {:class :caret}))
+           (ul {:class :dropdown-menu}
+               (map (fn [{:keys [path title]}]
+                      (li (a {:href (pathcat path-to-root path)}
+                             title)))
+                    (sort-by :title docs))))
+       (li (a {:href (pathcat path-to-root "/api")}
+              (i {:class [:fa :fa-list]})
+              " API"))
+       (li (a {:href (pathcat path-to-root (:path archives))}
+              (i {:class [:fa :fa-archive]})
+              " Archives"))
+       (li (a {:href (pathcat path-to-root (:path rss))}
+              (i {:class [:fa :fa-feed]})
+              " RSS")))])
 
 (defn- banner [{:keys [logo path-to-root url]}]
   (row (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
@@ -64,6 +62,7 @@
            :brand "λ-blog"
            :title "λ-blog documentation"
            :url "https://idorobots.github.io/lambda-blog/"
+           :github-url "https://github.com/Idorobots/lambda-blog/"
            :output-dir "/target/out/"
            :brand-logo "media/logo.svg"
            :logo "media/logo.svg"
