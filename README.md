@@ -5,7 +5,23 @@
 
 ## Usage
 
-See the [API docs](https://idorobots.github.io/lambda-blog/api/) and a [sample blog](https://idorobots.github.io/lambda-blog/).
+See the [API docs](https://idorobots.github.io/lambda-blog/api/) and the [sample blog](https://idorobots.github.io/lambda-blog/).
+
+To create a blog using [Leiningen](leiningen.org) simply do the following in the console:
+
+```
+lein new lambda-blog name
+```
+
+Now you can generate & check out your static blog by runnig:
+
+```
+cd name
+lein run
+firefox out/index.html
+```
+
+Happy blogging!
 
 ## License
 
