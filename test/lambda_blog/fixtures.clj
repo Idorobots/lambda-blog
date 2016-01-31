@@ -1,6 +1,8 @@
 (ns lambda-blog.fixtures
   (:refer-clojure :exclude [replace update])
-  (:require [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all!
+  (:require [clj-jgit.porcelain :as gitp]
+            [clj-jgit.internal :as giti]
+            [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all!
                                            read-dir update update-all whenever]]
             [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
             [lambda-blog.templates.bits :refer [row text-centered]]
@@ -81,6 +83,33 @@
                          "style/highlight.default.css"
                          "style/lambda-blog.css"]})
 
+(defn- read-git-tags []
+  (gitp/with-repo "."
+    (map (fn [tag]
+           (let [t (->> tag
+                        .getValue
+                        .getObjectId
+                        (.parseTag rev-walk))]
+             (-> t
+                 .getFullMessage
+                 parse
+                 (update :metadata
+                         (fn [m]
+                           (let [n (-> t .getTagName)]
+                             (assoc m
+                                    :author (-> t .getTaggerIdent .getName)
+                                    :id n
+                                    :summary (-> t .getShortMessage)
+                                    :tags ["changelog" n]
+                                    :timestamp (->> t
+                                                    .getObject
+                                                    .getId
+                                                    (.parseCommit rev-walk)
+                                                    .getAuthorIdent
+                                                    .getWhen)
+                                    :title (format "λ-blog v%s has been released!" n))))))))
+         (giti/get-refs repo "refs/tags/"))))
+
 (defn generate-docs []
   (-> docs
       (read-dir :docs "doc/docs" parse)
@@ -88,6 +117,8 @@
                   (promote :metadata)
                   (add-paths "<title>.html"))
       (read-dir :entries "doc/entries" parse)
+      (update :entries
+              #(concat % (read-git-tags)))
       (update-all :entries
                   (promote :metadata)
                   (add-paths "entries/<title>.html")
