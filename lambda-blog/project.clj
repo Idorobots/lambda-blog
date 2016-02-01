@@ -1,4 +1,4 @@
-(defproject lambda-blog "1.0.4"
+(defproject lambda-blog/lambda-blog "1.0.4"
   :description "A static blog generator."
   :url "https://github.com/Idorobots/lambda-blog"
   :license {:name "MIT License"
@@ -19,4 +19,4 @@
             [lein-codox "0.9.1"]]
   :codox {:doc-paths ["doc/docs"]
           :metadata {:doc/format :markdown}
-          :source-uri "https://github.com/Idorobots/lambda-blog/blob/{version}/{filepath}#L{line}"})
+          :source-uri "https://github.com/Idorobots/lambda-blog/lambda-blog/blob/{version}/{filepath}#L{line}"})

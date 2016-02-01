@@ -83,8 +83,8 @@
                          "style/highlight.default.css"
                          "style/lambda-blog.css"]})
 
-(defn- read-git-tags []
-  (gitp/with-repo "."
+(defn- read-git-tags [path]
+  (gitp/with-repo path
     (map (fn [tag]
            (let [t (->> tag
                         .getValue
@@ -118,7 +118,7 @@
                   (add-paths "<title>.html"))
       (read-dir :entries "doc/entries" parse)
       (update :entries
-              #(concat % (read-git-tags)))
+              #(concat % (read-git-tags "..")))
       (update-all :entries
                   (promote :metadata)
                   (add-paths "entries/<title>.html")
