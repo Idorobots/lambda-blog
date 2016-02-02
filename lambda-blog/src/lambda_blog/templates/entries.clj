@@ -71,12 +71,13 @@
   "Creates an HTML page containing a list of [[embedded-entry]]'ies of `n` most recent `entries` and a link to the `archives`."
   [n {:keys [archives entries path-to-root] :as ent}]
   (page (fn [_]
-          [(map (juxt (partial embedded-entry ent)
-                      (constantly (hr)))
-                (->> entries
-                     (sort-by :timestamp)
-                     reverse
-                     (take n)))
+          [(separate-with (hr)
+                          (map (partial embedded-entry ent)
+                               (->> entries
+                                    (sort-by :timestamp)
+                                    reverse
+                                    (take n))))
+           (hr)
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Further reading...")
                h1
@@ -89,15 +90,16 @@
   [{:keys [archives entries id path-to-root] :as ent}]
   (page (fn [_]
           [(panel (text-centered (h1 (format "Tagged %s" id))))
-           (map (juxt (partial embedded-entry ent)
-                      (constantly (hr)))
-                (->> entries
-                     (filter (fn [{:keys [tags]}]
-                               (contains? (into #{}
-                                                (map :id tags))
-                                          id)))
-                     (sort-by :timestamp)
-                     reverse))
+           (separate-with (hr)
+                          (map (partial embedded-entry ent)
+                               (->> entries
+                                    (filter (fn [{:keys [tags]}]
+                                              (contains? (into #{}
+                                                               (map :id tags))
+                                                         id)))
+                                    (sort-by :timestamp)
+                                    reverse)))
+           (hr)
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Archives")
                h1
