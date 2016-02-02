@@ -1,7 +1,7 @@
 (ns lambda-blog.utils-test
   (:require [clojure.test :refer :all]
             [clj-time.core :as t]
-            [lambda-blog.utils :refer [format-time pathcat sanitize]]))
+            [lambda-blog.utils :refer [format-time pathcat sanitize separate-with]]))
 
 (deftest path-renders-properly
   (is (= (pathcat "")
@@ -66,3 +66,15 @@
          "2016-01-26"))
   (is (= (format-time :date-time "2016-01-26T23:23:23.000-00:00")
          "2016-01-26T23:23:23.000Z")))
+
+(deftest separate-with-works-properly
+  (is (= (separate-with 23 [])
+         nil))
+  (is (= (separate-with 23 [1])
+         '(1)))
+  (is (= (separate-with 23 [1 2])
+         '(1 23 2)))
+  (is (= (separate-with 23 [1 2 3])
+         '(1 23 2 23 3)))
+  (is (= (separate-with 23 '(1 2))
+         '(1 23 2))))

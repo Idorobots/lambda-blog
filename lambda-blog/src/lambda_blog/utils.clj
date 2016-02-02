@@ -67,3 +67,11 @@
         lower-case
         url-encode
         bastardize)))
+
+(defn separate-with
+  "Creates a sequence of elements from `coll` each separated with `separator`."
+  [separator coll]
+  (-> separator
+      repeat
+      (interleave coll)
+      next))  ;; NOTE Skips the initial instance of `separator`.
