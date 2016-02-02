@@ -1,7 +1,7 @@
 (ns lambda-blog.templates.page
   "Generic HTML page templates."
   (:refer-clojure :exclude [meta])
-  (:require [lambda-blog.templates.bits :refer [javascript row text-centered]]
+  (:require [lambda-blog.templates.bits :refer [container javascript row text-centered]]
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a article body button div doctype head hr html img li link meta nav p script span ul] :as t]))
 
@@ -67,19 +67,20 @@
                  (t/img {:src (pathcat path-to-root brand-logo)}))
                brand)]
     (t/nav {:class [:navbar :navbar-default :navbar-fixed-top]}
-           (t/div {:class [:container :navbar-inner]}
-                  (t/div (:class :navbar-header)
-                         (t/button {:class [:navbar-toggle :navbar-brand :pull-left]
-                                    :type :button
-                                    :data-toggle :collapse
-                                    :data-target ".navbar-responsive-collapse"}
-                                   l)
-                         (t/div {:class :hidden-xs}
-                                (t/a {:class :navbar-brand
-                                      :href (pathcat path-to-root)}
-                                     l)))
-                  (t/div {:class [:collapse :navbar-collapse :navbar-right :navbar-responsive-collapse]}
-                         (navigation-template ent))))))
+           (container
+            (t/div {:class :navbar-header}
+                   (t/button {:class [:navbar-toggle :navbar-brand :pull-left]
+                              :type :button
+                              :data-toggle :collapse
+                              :data-target "#navbar-responsive-collapse"}
+                             l)
+                   (t/div {:class :hidden-xs}
+                          (t/a {:class :navbar-brand
+                                :href (pathcat path-to-root)}
+                               l)))
+            (t/div {:class [:collapse :navbar-collapse :navbar-right]
+                    :id :navbar-responsive-collapse}
+                   (navigation-template ent))))))
 
 (defn page
   "Creates a generic HTML page composed of [[header]], [[navigation]], [[banner]] & [[footer]]. Page contents are created using `contents-template`."
@@ -89,10 +90,10 @@
            (t/body (navigation entity)
                    (t/div {:class :body-wrap}
                           (t/article {:id :page}
-                                     (t/div {:class :container}
-                                            (banner entity)
-                                            (contents-template entity)
-                                            (footer entity))))))])
+                                     (container
+                                      (banner entity)
+                                      (contents-template entity)
+                                      (footer entity))))))])
 
 (defn static-page
   "Creates a generic static [[page]] using `:contents` as the `contents-template`."

@@ -2,50 +2,51 @@
   (:refer-clojure :exclude [time])
   (:require [lambda-blog.templates.bits :refer [info-label panel row text-centered]]
             [lambda-blog.templates.page :refer [page]]
-            [lambda-blog.utils :refer [format-time pathcat]]
+            [lambda-blog.utils :refer [format-time pathcat separate-with]]
             [s-html.tags :refer [a article div footer h1 header hr i li nav p span time ul]]))
 
 (defn- entry-tags [{:keys [path-to-root tags]}]
-  (nav (map #(a {:class :tag
-                 :href (pathcat path-to-root (:path %))}
-                (info-label (:id %))
-                " ")
-            (sort-by :id tags))))
+  (nav (separate-with " "
+                      (map #(a {:class :tag
+                                :href (pathcat path-to-root (:path %))}
+                               (info-label (:id %)))
+                           (sort-by :id tags)))))
 
-(defn- pager [class url & contents]
-  (nav (ul {:class :pager}
-           (li {:class class}
-               (apply a {:href url} contents)))))
+(defn- pager [{:keys [next path-to-root previous]}]
+  (row (div {:class [:hidden-xs :col-md-2]})
+       (div {:class [:col-xs-6 :col-md-4]}
+            (nav (ul {:class :pager}
+                     (when previous
+                       (li {:class :previous}
+                           (a {:href (pathcat path-to-root (:path previous))}
+                              (i {:class [:fa :fa-chevron-left]
+                                  :style "margin-right: 5px;"})
+                              (span {:class :entry-title}
+                                    (:title previous))))))))
+       (div {:class [:col-xs-6 :col-md-4]}
+            (nav (ul {:class :pager}
+                     (when next
+                       (li {:class :next}
+                           (a {:href (pathcat path-to-root (:path next))}
+                              (span {:class :entry-title}
+                                    (:title next))
+                              (i {:class [:fa :fa-chevron-right]
+                                  :style "margin-left: 5px;"})))))))))
 
 (defn entry
   "Creates an HTML `atricle` representing an `ent`ry."
-  [{:keys [author contents next path-to-root previous timestamp title] :as ent}]
+  [{:keys [author contents path-to-root timestamp title] :as ent}]
   (article
    (header
     (panel
-     (row
-      (div {:class [:col-xs-2 :col-sm-3]}
-           (when previous
-             (pager :previous
-                    (pathcat path-to-root (:path previous))
-                    (i {:class [:fa :fa-chevron-left]})
-                    " "
-                    (span {:class [:hidden-xs]}
-                          (:title previous)))))
-      (div {:class [:col-xs-8 :col-sm-6]}
-           (text-centered (h1 title)
-                          (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
-                             " by " author)
-                          (entry-tags ent)))
-      (div {:class [:col-xs-2 :col-sm-3]}
-           (when next
-             (pager :next
-                    (pathcat path-to-root (:path next))
-                    (span {:class [:hidden-xs]}
-                          (:title next))
-                    " "
-                    (i {:class [:fa :fa-chevron-right]})))))))
-   contents))
+     (text-centered
+      (h1 title)
+      (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
+         " by " author)
+      (entry-tags ent))))
+   contents
+   (footer
+    (pager ent))))
 
 (defn entry-page
   "Creates an HTML page containing an `ent`ry formatted by [[entry]]."
@@ -71,12 +72,13 @@
   "Creates an HTML page containing a list of [[embedded-entry]]'ies of `n` most recent `entries` and a link to the `archives`."
   [n {:keys [archives entries path-to-root] :as ent}]
   (page (fn [_]
-          [(map (juxt (partial embedded-entry ent)
-                      (constantly (hr)))
-                (->> entries
-                     (sort-by :timestamp)
-                     reverse
-                     (take n)))
+          [(separate-with (hr)
+                          (map (partial embedded-entry ent)
+                               (->> entries
+                                    (sort-by :timestamp)
+                                    reverse
+                                    (take n))))
+           (hr)
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Further reading...")
                h1
@@ -89,15 +91,16 @@
   [{:keys [archives entries id path-to-root] :as ent}]
   (page (fn [_]
           [(panel (text-centered (h1 (format "Tagged %s" id))))
-           (map (juxt (partial embedded-entry ent)
-                      (constantly (hr)))
-                (->> entries
-                     (filter (fn [{:keys [tags]}]
-                               (contains? (into #{}
-                                                (map :id tags))
-                                          id)))
-                     (sort-by :timestamp)
-                     reverse))
+           (separate-with (hr)
+                          (map (partial embedded-entry ent)
+                               (->> entries
+                                    (filter (fn [{:keys [tags]}]
+                                              (contains? (into #{}
+                                                               (map :id tags))
+                                                         id)))
+                                    (sort-by :timestamp)
+                                    reverse)))
+           (hr)
            (-> (a {:href (pathcat path-to-root (:path archives))}
                   "Archives")
                h1
