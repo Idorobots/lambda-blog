@@ -1,7 +1,7 @@
 (ns lambda-blog.templates.archives
   (:require [lambda-blog.templates.bits :refer [info-label panel row text-centered warning-label]]
             [lambda-blog.templates.page :refer [page]]
-            [lambda-blog.utils :refer [format-time pathcat]]
+            [lambda-blog.utils :refer [format-time pathcat separate-with]]
             [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 
 (defn archive-entry
@@ -9,11 +9,11 @@
   [{:keys [path path-to-root summary tags timestamp title]}]
   (tr (td (format-time "YYYY-MM-dd HH:mm" timestamp))
       (td (a {:href (pathcat path)} title))
-      (td (map #(a {:class :tag
-                    :href (pathcat path-to-root (:path %))}
-                   (info-label (:id %))
-                   " ")
-               (sort-by :id tags)))
+      (td (separate-with " "
+                         (map #(a {:class :tag
+                                   :href (pathcat path-to-root (:path %))}
+                                  (info-label (:id %)))
+                              (sort-by :id tags))))
       (td {:class [:hidden-xs :hidden-sm]} summary)))
 
 (defn archives
