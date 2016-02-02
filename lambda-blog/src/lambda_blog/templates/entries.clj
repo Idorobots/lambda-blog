@@ -12,40 +12,38 @@
                                (info-label (:id %)))
                            (sort-by :id tags)))))
 
-(defn- pager [class url & contents]
-  (nav (ul {:class :pager}
-           (li {:class class}
-               (apply a {:href url} contents)))))
+(defn- pager [{:keys [next path-to-root previous]}]
+  (row (div {:class [:hidden-xs :col-md-2]})
+       (div {:class [:col-xs-6 :col-md-4]}
+            (nav (ul {:class :pager}
+                     (when previous
+                       (li {:class :previous}
+                           (a {:href (pathcat path-to-root (:path previous))}
+                              (i {:class [:fa :fa-chevron-left]})
+                              " "
+                              (:title previous)))))))
+       (div {:class [:col-xs-6 :col-md-4]}
+            (nav (ul {:class :pager}
+                     (when next
+                       (li {:class :next}
+                           (a {:href (pathcat path-to-root (:path next))}
+                              (:title next)
+                              " "
+                              (i {:class [:fa :fa-chevron-right]})))))))))
 
 (defn entry
   "Creates an HTML `atricle` representing an `ent`ry."
-  [{:keys [author contents next path-to-root previous timestamp title] :as ent}]
+  [{:keys [author contents path-to-root timestamp title] :as ent}]
   (article
    (header
     (panel
-     (row
-      (div {:class [:col-xs-2 :col-sm-3]}
-           (when previous
-             (pager :previous
-                    (pathcat path-to-root (:path previous))
-                    (i {:class [:fa :fa-chevron-left]})
-                    " "
-                    (span {:class [:hidden-xs]}
-                          (:title previous)))))
-      (div {:class [:col-xs-8 :col-sm-6]}
-           (text-centered (h1 title)
-                          (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
-                             " by " author)
-                          (entry-tags ent)))
-      (div {:class [:col-xs-2 :col-sm-3]}
-           (when next
-             (pager :next
-                    (pathcat path-to-root (:path next))
-                    (span {:class [:hidden-xs]}
-                          (:title next))
-                    " "
-                    (i {:class [:fa :fa-chevron-right]})))))))
-   contents))
+     (text-centered (h1 title)
+                    (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
+                       " by " author)
+                    (entry-tags ent))))
+   contents
+   (footer
+    (pager ent))))
 
 (defn entry-page
   "Creates an HTML page containing an `ent`ry formatted by [[entry]]."
