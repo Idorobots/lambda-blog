@@ -67,8 +67,8 @@
                  (t/img {:src (pathcat path-to-root brand-logo)}))
                brand)]
     (t/nav {:class [:navbar :navbar-default :navbar-fixed-top]}
-           (t/div {:class [:container :navbar-inner]}
-                  (t/div (:class :navbar-header)
+           (t/div {:class :container}
+                  (t/div {:class :navbar-header}
                          (t/button {:class [:navbar-toggle :navbar-brand :pull-left]
                                     :type :button
                                     :data-toggle :collapse
