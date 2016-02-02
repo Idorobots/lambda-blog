@@ -19,17 +19,19 @@
                      (when previous
                        (li {:class :previous}
                            (a {:href (pathcat path-to-root (:path previous))}
-                              (i {:class [:fa :fa-chevron-left]})
-                              " "
-                              (:title previous)))))))
+                              (i {:class [:fa :fa-chevron-left]
+                                  :style "margin-right: 5px;"})
+                              (span {:class :entry-title}
+                                    (:title previous))))))))
        (div {:class [:col-xs-6 :col-md-4]}
             (nav (ul {:class :pager}
                      (when next
                        (li {:class :next}
                            (a {:href (pathcat path-to-root (:path next))}
-                              (:title next)
-                              " "
-                              (i {:class [:fa :fa-chevron-right]})))))))))
+                              (span {:class :entry-title}
+                                    (:title next))
+                              (i {:class [:fa :fa-chevron-right]
+                                  :style "margin-left: 5px;"})))))))))
 
 (defn entry
   "Creates an HTML `atricle` representing an `ent`ry."

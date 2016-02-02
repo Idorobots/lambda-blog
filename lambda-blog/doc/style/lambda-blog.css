@@ -35,10 +35,16 @@ html, body { /* So anchors actually work. */
 
 /* Pager link summary. */
 
-.pager .next > a, .pager .previous > a {
+.pager .next a, .pager .previous a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.pager .next .entry-title, .pager .previous .entry-title {
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 100%;
     overflow: hidden;
 }
 
