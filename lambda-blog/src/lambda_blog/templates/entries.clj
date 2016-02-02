@@ -39,10 +39,11 @@
   (article
    (header
     (panel
-     (text-centered (h1 title)
-                    (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
-                       " by " author)
-                    (entry-tags ent))))
+     (text-centered
+      (h1 title)
+      (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
+         " by " author)
+      (entry-tags ent))))
    contents
    (footer
     (pager ent))))

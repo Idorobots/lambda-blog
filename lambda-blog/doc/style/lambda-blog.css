@@ -30,7 +30,7 @@ html, body { /* So anchors actually work. */
 }
 
 .navbar-brand:hover .dropdown-menu, .dropdown:hover .dropdown-menu {
-    display: block; /* To make dropdown menus work on hover instead of click. */   
+    display: block; /* To make dropdown menus work on hover instead of click. */
 }
 
 /* Pager link summary. */
