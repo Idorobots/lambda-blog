@@ -19,6 +19,15 @@
     (div {:class [:panel :panel-default]}
          (apply div {:class :panel-body}
                 contents))))
+
+(defshort container
+  "Creates a Bootstrap container `div`."
+  (partial div {:class :container}))
+
+(defshort container-fluid
+  "Creates a Bootstrap container `div`."
+  (partial div {:class :container-fluid}))
+
 (defshort row
   "Creates a Bootstrap row `div`."
   (partial div {:class :row}))
