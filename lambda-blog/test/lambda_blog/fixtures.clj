@@ -17,6 +17,10 @@
 
 (defn- navigation [{:keys [archives docs path-to-root rss] :as ent}]
   (ul {:class [:nav :navbar-nav]}
+      (li {:class [:hidden-sm :hidden-md :hidden-lg]}
+          (a {:href (pathcat path-to-root)}
+             (i {:class [:fa :fa-home]})
+             " Home page"))
       (li {:class :dropdown}
           (a {:href "#"}
              (i {:class [:fa :fa-book]})
