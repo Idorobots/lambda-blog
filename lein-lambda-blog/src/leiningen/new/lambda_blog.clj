@@ -2,15 +2,18 @@
   (:require [leiningen.new.templates :refer [renderer name-to-path ->files]]
             [leiningen.core.main :as main]))
 
-(def render (renderer "lambda-blog"))
+(defn- format-date [format date]
+  (.format (java.text.SimpleDateFormat. format) date))
 
 (defn lambda-blog
   "Creates a λ-blog blog named `name`."
   [name]
   (let [data {:author "me"
               :name name
-              :now (java.util.Date.)
-              :sanitized (name-to-path name)}]
+              :now (format-date "YYYY-MM-DD'T'HH:mm:ssXXX"
+                                (java.util.Date.))
+              :sanitized (name-to-path name)}
+        render (renderer "lambda-blog")]
     (main/info "Generating fresh 'lein new' lambda-blog project.")
     (->files data
              ["project.clj" (render "project.clj" data)]
