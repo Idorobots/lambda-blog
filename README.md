@@ -7,7 +7,7 @@
 
 See the [API docs](https://idorobots.github.io/lambda-blog/api/) and the [sample blog](https://idorobots.github.io/lambda-blog/).
 
-To create a blog using [Leiningen](leiningen.org) simply do the following in the console:
+To create a blog using [Leiningen](https://leiningen.org) simply do the following in the console:
 
 ```
 lein new lambda-blog name
