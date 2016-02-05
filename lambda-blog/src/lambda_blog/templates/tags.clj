@@ -21,7 +21,8 @@
                                (vector %))))
         total (apply max (map second counts))]
     (text-centered
-     (ul {:class :list-inline}
+     (ul {:class :list-inline
+          :style (format "line-height: %s%%;" (int max-size))}
          (map (fn [[t c]]
                 (li (a {:class :tag
                         :href (pathcat path-to-root (:path t))}
