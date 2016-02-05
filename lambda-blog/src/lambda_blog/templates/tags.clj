@@ -22,9 +22,9 @@
                      :href (pathcat path-to-root (:path t))}
                     (span {:class [:label :label-info]
                            :style (format "font-size: %s%%;"
-                                          (+ min
-                                             (* (- max min)
-                                                (/ c total))))}
+                                          (int (+ min
+                                                  (* (- max min)
+                                                     (/ c total)))))}
                           (:id t))
                     " "))
                (sort-by (comp :id first)
