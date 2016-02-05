@@ -28,7 +28,8 @@
                              (th (span "Tags"))
                              (th {:class [:hidden-xs :hidden-sm]}
                                  (span "Summary"))))
-                  (tbody (map archive-entry entries))))
+                  (tbody (map archive-entry
+                              (reverse (sort-by :timestamp entries))))))
       (p {:class [:hidden-xs :hidden-sm]}
          (warning-label "ProTip:")
          " Hold " (kbd "Shift") " to sort by several columns at the same time.")])
