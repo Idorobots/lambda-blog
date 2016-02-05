@@ -5,8 +5,8 @@
             [s-html.tags :refer [a h1 li span ul]]))
 
 (defn tag-cloud
-  "Creates a tag cloud of `tags` where each element is scaled according to the number of `entries` that are tagged by it. `min` and `max` specify in percent the minimal and maximal font size of the elements."
-  [min max {:keys [entries path-to-root tags]}]
+  "Creates a tag cloud of `tags` where each element is scaled according to the number of `entries` that are tagged by it. `min-size` and `max-size` specify in percent the minimal and maximal font size of the elements."
+  [min-size max-size {:keys [entries path-to-root tags]}]
   (let [counts (->> tags
                     ;; FIXME O(N_tags * N_entries) but could be O(N_entries)
                     (map #(->> entries
@@ -14,8 +14,12 @@
                                          (contains? (into #{} (map :id tags))
                                                     (:id %))))
                                count
+                               ;; NOTE Since tags only appear in the list if there's at least one entry
+                               ;; NOTE tagged with them, we need to subtract 1 from the count in order
+                               ;; NOTE to span the entire [min-size; max-size] range.
+                               (+ -1)
                                (vector %))))
-        total (count entries)]
+        total (apply max (map second counts))]
     (text-centered
      (ul {:class :list-inline}
          (map (fn [[t c]]
@@ -23,8 +27,8 @@
                         :href (pathcat path-to-root (:path t))}
                        (span {:class [:label :label-info]
                               :style (format "font-size: %s%%;"
-                                             (int (+ min
-                                                     (* (- max min)
+                                             (int (+ min-size
+                                                     (* (- max-size min-size)
                                                         (/ c total)))))}
                              (:id t))
                        " ")))
