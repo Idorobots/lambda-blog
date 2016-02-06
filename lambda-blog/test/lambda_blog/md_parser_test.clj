@@ -1,6 +1,12 @@
 (ns lambda-blog.md-parser-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.parsers.md :refer [parse]]))
+            [lambda-blog.parsers.md :as md]))
+
+(defn- parse [contents]
+  (md/parse contents
+            :footnotes? false
+            :heading-anchors false
+            :reference-links? false))
 
 (def no-metadata "# Hello world!")
 (def metadata "Meta: \"Test\"\n\n# Hello world!")
@@ -52,3 +58,18 @@
                      :meta '[test1 test2 test3]
                      :multi "foo bar baz"}
           :contents "<h1>Header</h1>"})))
+
+(def additional-features-1 "# Test1")
+(def additional-features-2 "This is a test[^test2] of nadditional features.\n\n[^test2]: 'test2'")
+(def additional-features-3 "This is a test of additional [features][test3].\n\n[test3]: # 'test3'")
+
+(deftest can-use-additional-features
+  (is (= (md/parse additional-features-1)
+         {:metadata {}
+          :contents "<h1><a name=\"test1\"></a>Test1</h1>"}))
+  (is (= (md/parse additional-features-2)
+         {:metadata {}
+          :contents "<p>This is a test<a href='#fn-1' id='fnref1'><sup>1</sup></a> of nadditional features.</p><ol class='footnotes'><li id='fn-1'>'test2'<a href='#fnref1'>&#8617;</a></li></ol>"}))
+  (is (= (md/parse additional-features-3)
+         {:metadata {}
+          :contents "<p>This is a test of additional <a href='#' title='test3'>features</a>.</p>"})))

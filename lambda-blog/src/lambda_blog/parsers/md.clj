@@ -21,11 +21,8 @@
                      nil))))
        (into {})))
 
-(defn- do-parse [contents]
-  (try (md-to-html-string-with-meta contents
-                                    :heading-anchors true
-                                    :reference-links? true
-                                    :footnotes? true)
+(defn- do-parse [contents args]
+  (try (apply md-to-html-string-with-meta contents args)
        (catch java.lang.NullPointerException e
          (log/warnf "Caught an exception while parsing input file (bad metadata format?): %s" e)
          (log/debug (with-out-str (print-stack-trace e)))
@@ -42,9 +39,14 @@ Vector: [some more values]
 # Header
 Contents.
 ```"
-  [contents]
+  [contents & args]
   (if-not (empty? contents)
-    (let [{:keys [metadata html]} (do-parse contents)]
+    (let [{:keys [metadata html]}
+          (do-parse contents
+                    (concat [:footnotes? true
+                             :heading-anchors true
+                             :reference-links? true]
+                            args))]
       {:metadata (parse-metadata metadata)
        :contents html})
     {:metadata {}
