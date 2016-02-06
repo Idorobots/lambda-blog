@@ -22,7 +22,10 @@
        (into {})))
 
 (defn- do-parse [contents]
-  (try (md-to-html-string-with-meta contents)
+  (try (md-to-html-string-with-meta contents
+                                    :heading-anchors true
+                                    :reference-links? true
+                                    :footnotes? true)
        (catch java.lang.NullPointerException e
          (log/warnf "Caught an exception while parsing input file (bad metadata format?): %s" e)
          (log/debug (with-out-str (print-stack-trace e)))
