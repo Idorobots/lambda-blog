@@ -1,4 +1,5 @@
-(ns lambda-blog.templates.rss
+(ns lambda-blog.templates.feeds
+  "News syndication feed templates."
   (:refer-clojure :exclude [name])
   (:require [clj-time.core :refer [now]]
             [lambda-blog.utils :refer [format-time pathcat]]

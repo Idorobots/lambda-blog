@@ -9,13 +9,13 @@
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
-            [lambda-blog.templates.rss :refer [atom-feed]]
+            [lambda-blog.templates.feeds :refer [atom-feed]]
             [lambda-blog.templates.tags :refer [tags-index]]
             [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags :refer [a div h1 i img li p span ul]]))
 
-(defn- navigation [{:keys [archives docs path-to-root rss] :as ent}]
+(defn- navigation [{:keys [archives docs feed path-to-root] :as ent}]
   (ul {:class [:nav :navbar-nav]}
       (li {:class [:hidden-sm :hidden-md :hidden-lg]}
           (a {:href (pathcat path-to-root)}
@@ -40,7 +40,7 @@
       (li (a {:href (pathcat path-to-root (:path archives))}
              (i {:class [:fa :fa-archive]})
              " Archives"))
-      (li (a {:href (pathcat path-to-root (:path rss))}
+      (li (a {:href (pathcat path-to-root (:path feed))}
              (i {:class [:fa :fa-feed]})
              " RSS"))))
 
@@ -145,7 +145,7 @@
               (add-paths "entries/index.html"))
       clean-dir!
       (generate! :index (partial recent-entries 15))
-      (generate! :rss atom-feed)
+      (generate! :feed atom-feed)
       (generate! :archives archives)
       (generate! :tag-cloud tags-index)
       (generate! :entries-index (partial recent-entries 15))

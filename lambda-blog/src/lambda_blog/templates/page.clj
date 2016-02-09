@@ -21,14 +21,14 @@
 
 (defn header
   "Creates an HTML `head` element containing various metadata, `scripts` & `stylesheets`."
-  [{:keys [favicon path-to-root rss scripts stylesheets title]}]
+  [{:keys [favicon feed path-to-root scripts stylesheets title]}]
   (t/head (t/meta {:charset :utf-8})
           (t/title title)
           (css path-to-root stylesheets)
           (t/link {:rel :alternate
                    :type "application/rss+xhtml"
                    :title "RSS Feed"
-                   :href (pathcat path-to-root (:path rss))})
+                   :href (pathcat path-to-root (:path feed))})
           (t/link {:rel :icon
                    :type "image/png"
                    :href (pathcat path-to-root favicon)})

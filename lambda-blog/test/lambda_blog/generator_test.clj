@@ -67,7 +67,7 @@
     ;; Various pages were generated.
     (is (->> b :index :path (pathcat output-dir) file?))
     (is (->> b :entries-index :path (pathcat output-dir) file?))
-    (is (->> b :rss :path (pathcat output-dir) file?))
+    (is (->> b :feed :path (pathcat output-dir) file?))
     (is (->> b :archives :path (pathcat output-dir) file?))
     (is (->> b :tag-cloud :path (pathcat output-dir) file?))
     (is (->> b
