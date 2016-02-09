@@ -9,7 +9,7 @@
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
             [lambda-blog.templates.page :refer [static-page]]
-            [lambda-blog.templates.rss :refer [rss-feed]]
+            [lambda-blog.templates.rss :refer [atom-feed]]
             [lambda-blog.templates.tags :refer [tags-index]]
             [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
@@ -145,7 +145,7 @@
               (add-paths "entries/index.html"))
       clean-dir!
       (generate! :index (partial recent-entries 15))
-      (generate! :rss rss-feed)
+      (generate! :rss atom-feed)
       (generate! :archives archives)
       (generate! :tag-cloud tags-index)
       (generate! :entries-index (partial recent-entries 15))

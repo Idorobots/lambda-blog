@@ -2,44 +2,30 @@
   (:refer-clojure :exclude [name])
   (:require [clj-time.core :refer [now]]
             [lambda-blog.utils :refer [format-time pathcat]]
-            [s-html.tags :refer [deftags link xml] :as tags]))
+            [s-html.tags.atom :refer [author category entry feed* id link name
+                                      published summary title updated]]))
 
-(deftags [^:private author
-          ^:private category
-          ^:private entry
-          ^:private feed
-          ^:private id
-          ^:private name
-          ^:private published
-          ^:private summary
-          ^:private updated])
-
-(def ^:private _author author) ;; FIXME Loose the _.
-(def ^:private _summary summary)
-
-(def ^:private format-t (partial format-time :date-time))
-
-(defn rss-feed
-  "Creates an XML RSS page conforming to the http://www.w3.org/2005/Atom specification."
-  [{:keys [entries path title url] :as ent}]
-  [(xml)
-   (feed {:xmlns "http://www.w3.org/2005/Atom"}
-         (tags/title title)
-         (link {:rel :self
-                :href (pathcat url path)})
-         (link {:href url})
-         (updated (format-t (now)))
-         (id url)
-         (map (fn [{:keys [author path summary tags timestamp title]}]
-                (entry (tags/title title)
-                       (id path)
-                       (_author (name (or author (:author ent)))) ;; KLUDGE :(
-                       (updated (format-t timestamp))
-                       (published (format-t timestamp))
-                       (link {:href (pathcat url path)})
-                       (map #(category {:scheme (pathcat url (:path %))
-                                        :term (:id %)
-                                        :label (:id %)})
-                            (sort-by :id tags))
-                       (_summary {:type :html} summary)))
-              (reverse (sort-by :timestamp entries))))])
+(defn atom-feed
+  "Creates an Atom feed page conforming to the http://www.w3.org/2005/Atom specification."
+  [{:keys [entries path url] :as ent}]
+  (let [format-t (partial format-time :date-time)]
+    (feed* (title (:title ent))
+           (link {:rel :self
+                  :href (pathcat url path)})
+           (link {:href url})
+           (updated (format-t (now)))
+           (id url)
+           (map (fn [{:keys [path tags timestamp] :as e}]
+                  (entry (title (:title e))
+                         (id path)
+                         (author (name (or (:author e) (:author ent)))) ;; KLUDGE :(
+                         (updated (format-t timestamp))
+                         (published (format-t timestamp))
+                         (link {:href (pathcat url path)})
+                         (map #(category {:scheme (pathcat url (:path %))
+                                          :term (:id %)
+                                          :label (:id %)})
+                              (sort-by :id tags))
+                         (summary {:type :html}
+                                  (:summary e))))
+                (reverse (sort-by :timestamp entries))))))
