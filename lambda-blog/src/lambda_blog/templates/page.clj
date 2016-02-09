@@ -26,8 +26,8 @@
           (t/title title)
           (css path-to-root stylesheets)
           (t/link {:rel :alternate
-                   :type "application/rss+xhtml"
-                   :title "RSS Feed"
+                   :type (:type feed)
+                   :title (str " Feed")
                    :href (pathcat path-to-root (:path feed))})
           (t/link {:rel :icon
                    :type "image/png"

@@ -42,7 +42,7 @@
              " Archives"))
       (li (a {:href (pathcat path-to-root (:path feed))}
              (i {:class [:fa :fa-feed]})
-             " RSS"))))
+             " Feed"))))
 
 (defn- banner [{:keys [logo path-to-root url]}]
   (row (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
@@ -135,7 +135,8 @@
       collect-tags
       (update :index
               (add-paths "index.html"))
-      (update :rss
+      (update :feed
+              #(assoc % :type "application/atom+xhtml")
               (add-paths "index.xml"))
       (update :archives
               (add-paths "archives.html"))
