@@ -3,7 +3,9 @@
   (:refer-clojure :exclude [meta])
   (:require [lambda-blog.templates.bits :refer [container javascript row text-centered]]
             [lambda-blog.utils :refer [pathcat]]
-            [s-html.tags :refer [a article body button div doctype head hr html img li link meta nav p script span ul] :as t]))
+            [s-html.tags :refer [a article body button div doctype head hr html
+                                 img li link meta nav p script span ul]
+             :as t]))
 
 (defn- link-or-pathcat [path-to-root link]
   (or (re-matches #"^https?://.*$" link)
