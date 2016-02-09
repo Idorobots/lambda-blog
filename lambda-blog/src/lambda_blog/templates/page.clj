@@ -3,7 +3,9 @@
   (:refer-clojure :exclude [meta])
   (:require [lambda-blog.templates.bits :refer [container javascript row text-centered]]
             [lambda-blog.utils :refer [pathcat]]
-            [s-html.tags :refer [a article body button div doctype head hr html img li link meta nav p script span ul] :as t]))
+            [s-html.tags :refer [a article body button div doctype head hr html
+                                 img li link meta nav p script span ul]
+             :as t]))
 
 (defn- link-or-pathcat [path-to-root link]
   (or (re-matches #"^https?://.*$" link)
@@ -21,14 +23,14 @@
 
 (defn header
   "Creates an HTML `head` element containing various metadata, `scripts` & `stylesheets`."
-  [{:keys [favicon path-to-root rss scripts stylesheets title]}]
+  [{:keys [favicon feed path-to-root scripts stylesheets title]}]
   (t/head (t/meta {:charset :utf-8})
           (t/title title)
           (css path-to-root stylesheets)
           (t/link {:rel :alternate
-                   :type "application/rss+xhtml"
-                   :title "RSS Feed"
-                   :href (pathcat path-to-root (:path rss))})
+                   :type (:type feed)
+                   :title (str " Feed")
+                   :href (pathcat path-to-root (:path feed))})
           (t/link {:rel :icon
                    :type "image/png"
                    :href (pathcat path-to-root favicon)})

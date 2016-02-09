@@ -11,7 +11,7 @@
                  [me.xuender/unidecode "0.0.7"]
                  [org.clojure/clojure "1.7.0"]
                  [ring/ring-codec "1.0.0"]
-                 [s-html "0.1.6"]]
+                 [s-html "0.4.0"]]
   :profiles {:dev {:dependencies [[clj-jgit "0.8.8"]]}}
   :plugins [[jonase/eastwood "0.1.5"]
             [lein-ancient "0.5.4"]
