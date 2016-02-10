@@ -2,7 +2,7 @@
   (:require [lambda-blog.templates.bits :refer [info-label panel row text-centered warning-label]]
             [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [format-time pathcat separate-with]]
-            [s-html.tags :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
+            [s-html.tags.html :refer [a div h1 hr kbd nav p script span table tbody td th thead tr]]))
 
 (defn archive-entry
   "Creates a single row of the archives table containing various entry details."

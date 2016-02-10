@@ -3,7 +3,7 @@
   (:require [lambda-blog.templates.bits :refer [info-label panel row text-centered]]
             [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [format-time pathcat separate-with]]
-            [s-html.tags :refer [a article div footer h1 header hr i li nav p span time ul]]))
+            [s-html.tags.html :refer [a article div footer h1 header hr i li nav p span time ul]]))
 
 (defn- entry-tags [{:keys [path-to-root tags]}]
   (nav (separate-with " "

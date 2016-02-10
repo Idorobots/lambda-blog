@@ -2,7 +2,7 @@
   (:require [lambda-blog.templates.bits :refer [panel text-centered]]
             [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [pathcat]]
-            [s-html.tags :refer [a h1 li span ul]]))
+            [s-html.tags.html :refer [a h1 li span ul]]))
 
 (defn tag-cloud
   "Creates a tag cloud of `tags` where each element is scaled according to the number of `entries` that are tagged by it. `min-size` and `max-size` specify in percent the minimal and maximal font size of the elements."
