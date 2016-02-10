@@ -1,6 +1,6 @@
 (ns lambda-blog.templates.bits
   "Various useful bits of HTML for use in the templates."
-  (:require [s-html.tags :refer [div script span]]))
+  (:require [s-html.tags.html :refer [div script span]]))
 
 ;; NOTE This macro is here only to make Codox generate slightly prettier docs.
 (defmacro ^:private defshort [name docstring tag]

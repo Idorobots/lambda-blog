@@ -13,7 +13,7 @@
             [lambda-blog.templates.tags :refer [tags-index]]
             [lambda-blog.parsers.md :refer [parse]]
             [lambda-blog.utils :refer [pathcat]]
-            [s-html.tags :refer [a div h1 i img li p span ul]]))
+            [s-html.tags.html :refer [a div h1 i img li p span ul]]))
 
 (defn- navigation [{:keys [archives docs feed path-to-root] :as ent}]
   (ul {:class [:nav :navbar-nav]}
