@@ -31,7 +31,7 @@
           :html (md-to-html-string contents)})))
 
 (defn parse
-  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. Example input:
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
 
 ```markdown
 String: \"value\"

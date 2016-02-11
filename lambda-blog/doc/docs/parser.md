@@ -6,7 +6,7 @@ ID: parsers
 
 **λ-blog** uses a very simple scheme of content management - you supply paths to files containing your content, and tell how to process them by specifying a *parser*.
 
-A parser is simply a Clojure function that takes two arguments - the text contents of a file and parser configuration, and returns a data structure representing it. The returned data structure can be arbitrary as long as your generation pipeline knows how to handle it. A sensible idea is to return a Clojure map containing processed file contents & some metadata.
+A parser is simply a Clojure function that takes two arguments - the text contents of a file and an additional configuration argument. Parsers return a data structure representing the file contents. The returned data structure can be arbitrary as long as your generation pipeline knows how to handle it. A sensible idea is to return a Clojure map containing processed file contents & some metadata.
 
 Here's a simple definition of such a parser:
 
@@ -63,3 +63,13 @@ When using the `read-dir` generator utility, **λ-blog** will supply the site co
     ;; Each `entry` is parsed with substitutions comming from `config`.
     )
 ```
+
+### Additional arguments
+
+In addition to the substitutions argument, the builtin Markdown parser acceps a number of extra, keyword arguments:
+
+* `:footnotes?` - toggles footnote syntax parsing; `true` by default,
+
+* `:heading-anchors` - toggles HTML anchors in headers; `true` by default,
+
+* `:reference-links?` - toggles reference link syntax parsing; `true` by default.
