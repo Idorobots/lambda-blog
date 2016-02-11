@@ -30,6 +30,12 @@
          {:metadata nil
           :html (md-to-html-string contents)})))
 
+(defn- subs-transformer [subs]
+  (fn [text {:keys [code codeblock] :as state}]
+    (if (or code codeblock)
+      [text state]
+      [(substitute text subs :sanitize? false) state])))
+
 (defn parse
   "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
 
@@ -43,10 +49,11 @@ Vector: [some more values]
   [contents subs & args]
   (if-not (empty? contents)
     (let [{:keys [metadata html]}
-          (do-parse (substitute contents subs :sanitize? false)
+          (do-parse contents
                     (concat [:footnotes? true
                              :heading-anchors true
-                             :reference-links? true]
+                             :reference-links? true
+                             :custom-transformers [(subs-transformer subs)]]
                             args))]
       {:metadata (parse-metadata metadata)
        :contents html})

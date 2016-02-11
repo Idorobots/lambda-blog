@@ -55,7 +55,27 @@ user=> (md/parse "# Some\n{{md}}\n## Contents" {:md "Markdown"})
  :contents "<h1>Some</h1>Markdown<h2>Contents</h2>"}
 ```
 
-When using the `read-dir` generator utility, **λ-blog** will supply the site configuration map as the `config` argument:
+Another example:
+
+```markdown
+To insert site title & url into a Markdown document, simply write "{{title}}" and "{{url}}".
+```
+
+Turns into:
+
+To insert site title & url into a Markdown document, simply write "{{title}}" and "{{url}}".
+
+Similarily, substitutions can also be used in the embedded HTML code:
+
+```markdown
+<img src="{{url}}/media/logo.svg" style="width: 100px;"/>
+```
+
+Turns into:
+
+<img src="{{url}}/media/logo.svg" style="width: 100px;"/>
+
+When using the `read-dir` generator utility, **λ-blog** will supply the site configuration map as the substitutions argument:
 
 ```clojure
 (-> config

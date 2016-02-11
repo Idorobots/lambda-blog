@@ -74,3 +74,24 @@
   (is (= (md/parse additional-features-3 {})
          {:metadata {}
           :contents "<p>This is a test of additional <a href='#' title='test3'>features</a>.</p>"})))
+
+(def with-subs "# Test {{substitutions}}")
+(def with-subs-in-code "# Test\n```markdown\n{{test}}\n```")
+(def with-subs-in-html "# Test\n\n<a href=\"{{url}}\">test</a>\n\n```")
+
+(deftest can-use-text-substitutions
+  (is (= (parse with-subs)
+         {:metadata {}
+          :contents "<h1>Test </h1>"}))
+  (is (= (parse with-subs {:substitutions "ok"})
+         {:metadata {}
+          :contents "<h1>Test ok</h1>"}))
+  (is (= (parse with-subs-in-code)
+         {:metadata {}
+          :contents "<h1>Test</h1><pre><code class=\"markdown\">{{test}}\n</code></pre>"}))
+  (is (= (parse with-subs-in-code {:test "ok"})
+         {:metadata {}
+          :contents "<h1>Test</h1><pre><code class=\"markdown\">{{test}}\n</code></pre>"}))
+  (is (= (parse with-subs-in-html {:url "www.example.com"})
+         {:metadata {}
+          :contents "<h1>Test</h1><p><a href=\"www.example.com\">test</a></p><pre><code>\n"})))
