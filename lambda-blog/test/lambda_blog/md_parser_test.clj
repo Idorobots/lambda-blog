@@ -2,8 +2,9 @@
   (:require [clojure.test :refer :all]
             [lambda-blog.parsers.md :as md]))
 
-(defn- parse [contents]
+(defn- parse [contents & [config]]
   (md/parse contents
+            (or config {})
             :footnotes? false
             :heading-anchors false
             :reference-links? false))
@@ -64,12 +65,12 @@
 (def additional-features-3 "This is a test of additional [features][test3].\n\n[test3]: # 'test3'")
 
 (deftest can-use-additional-features
-  (is (= (md/parse additional-features-1)
+  (is (= (md/parse additional-features-1 {})
          {:metadata {}
           :contents "<h1><a name=\"test1\"></a>Test1</h1>"}))
-  (is (= (md/parse additional-features-2)
+  (is (= (md/parse additional-features-2 {})
          {:metadata {}
           :contents "<p>This is a test<a href='#fn-1' id='fnref1'><sup>1</sup></a> of nadditional features.</p><ol class='footnotes'><li id='fn-1'>'test2'<a href='#fnref1'>&#8617;</a></li></ol>"}))
-  (is (= (md/parse additional-features-3)
+  (is (= (md/parse additional-features-3 {})
          {:metadata {}
           :contents "<p>This is a test of additional <a href='#' title='test3'>features</a>.</p>"})))

@@ -3,6 +3,7 @@
   (:refer-clojure :exclude [read-string])
   (:require [clojure.edn :refer [read-string]]
             [clojure.stacktrace :refer [print-stack-trace]]
+            [lambda-blog.utils :refer [substitute]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
 
@@ -30,19 +31,19 @@
           :html (md-to-html-string contents)})))
 
 (defn parse
-  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Example input:
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. Example input:
 
 ```markdown
 String: \"value\"
 Vector: [some more values]
 
 # Header
-Contents.
+{{substituted}} contents.
 ```"
-  [contents & args]
+  [contents subs & args]
   (if-not (empty? contents)
     (let [{:keys [metadata html]}
-          (do-parse contents
+          (do-parse (substitute contents subs :sanitize? false)
                     (concat [:footnotes? true
                              :heading-anchors true
                              :reference-links? true]

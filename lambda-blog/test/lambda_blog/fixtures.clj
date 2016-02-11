@@ -96,7 +96,7 @@
                         (.parseTag rev-walk))]
              (-> t
                  .getFullMessage
-                 parse
+                 (parse {})
                  (update :metadata
                          (fn [m]
                            (let [n (-> t .getTagName)]
