@@ -1,18 +1,10 @@
 (ns lambda-blog.middleware
   "Various entity transformers used in the generation pipelines."
-  (:refer-clojure :exclude [replace])
   (:require [clojure.pprint :refer [pprint]]
             [clojure.set :refer [union]]
-            [clojure.string :refer [replace]]
-            [lambda-blog.utils :refer [pathcat sanitize]]
+            [lambda-blog.utils :refer [pathcat sanitize substitute]]
             [taoensso.timbre :as log]))
 
-(defn- fmt [f args]
-  (->> f
-       (re-seq #"<([^>]+)>")
-       (map (juxt (comp re-pattern first)
-                  (comp sanitize str args keyword second)))
-       (reduce #(apply replace %1 %2) f)))
 
 (defn- times [str n]
   (take n (repeat str)))
@@ -29,7 +21,7 @@
   "Returns a middleware function that adds paths to an `entity` based on `path-spec`. `path-spec` can use various `entity` keys by naming them in angle brackets (i.e. `\"posts/<year>/<month>/<title>.html\"`). Each key is stringified and [[lambda-blog.utils/sanitize]]d before including in the path."
   [path-spec]
   (fn [entity]
-    (let [p (fmt path-spec entity)]
+    (let [p (substitute path-spec entity)]
       (assoc entity
              :path-to-root (path-to-root path-spec)
              :path (pathcat p)))))

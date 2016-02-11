@@ -75,3 +75,12 @@
       repeat
       (interleave coll)
       next))  ;; NOTE Skips the initial instance of `separator`.
+
+(defn substitute
+  "Substitutes occurances of `<key>` in `string` for matching `:key`'s in `subs`."
+  [string subs]
+  (->> string
+       (re-seq #"<([^>]+)>")
+       (map (juxt (comp re-pattern first)
+                  (comp sanitize str subs keyword second)))
+       (reduce #(apply replace %1 %2) string)))
