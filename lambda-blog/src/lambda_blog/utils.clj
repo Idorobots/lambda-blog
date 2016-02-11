@@ -3,7 +3,7 @@
   (:refer-clojure :exclude [replace])
   (:require [clj-time.coerce :as c]
             [clj-time.format :as f]
-            [clojure.string :refer [lower-case replace split]]
+            [clojure.string :refer [escape lower-case replace split]]
             [ring.util.codec :refer [url-encode]])
   (:import [org.apache.commons.validator.routines UrlValidator]
            [me.xuender.unidecode Unidecode]))
@@ -75,3 +75,18 @@
       repeat
       (interleave coll)
       next))  ;; NOTE Skips the initial instance of `separator`.
+
+(defn substitute
+  "Substitutes occurances of `{{key}}` in `string` for matching `:key`'s in `subs`. By default sanitizes substituted values."
+  [string subs & {:keys [sanitize?] :or {sanitize? true}}]
+  (let [esc #(escape % {\{ "\\{" \} "\\}"})
+        san (if sanitize?
+              sanitize
+              ;; NOTE Since $ is used to reference matches we need to escape it
+              ;; NOTE if no sanitization is performed.
+              #(escape % {\$ "\\$"}))]
+    (->> string
+         (re-seq #"\{\{([^\}\s]+)\}\}")
+         (map (juxt (comp re-pattern esc first)
+                    (comp san str subs keyword second)))
+         (reduce #(apply replace %1 %2) string))))

@@ -3,6 +3,7 @@
   (:refer-clojure :exclude [read-string])
   (:require [clojure.edn :refer [read-string]]
             [clojure.stacktrace :refer [print-stack-trace]]
+            [lambda-blog.utils :refer [substitute]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
 
@@ -29,23 +30,30 @@
          {:metadata nil
           :html (md-to-html-string contents)})))
 
+(defn- subs-transformer [subs]
+  (fn [text {:keys [code codeblock] :as state}]
+    (if (or code codeblock)
+      [text state]
+      [(substitute text subs :sanitize? false) state])))
+
 (defn parse
-  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Example input:
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
 
 ```markdown
 String: \"value\"
 Vector: [some more values]
 
 # Header
-Contents.
+{{substituted}} contents.
 ```"
-  [contents & args]
+  [contents subs & args]
   (if-not (empty? contents)
     (let [{:keys [metadata html]}
           (do-parse contents
                     (concat [:footnotes? true
                              :heading-anchors true
-                             :reference-links? true]
+                             :reference-links? true
+                             :custom-transformers [(subs-transformer subs)]]
                             args))]
       {:metadata (parse-metadata metadata)
        :contents html})

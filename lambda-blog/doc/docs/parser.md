@@ -6,12 +6,12 @@ ID: parsers
 
 **λ-blog** uses a very simple scheme of content management - you supply paths to files containing your content, and tell how to process them by specifying a *parser*.
 
-A parser is simply a Clojure function that takes a single argument - the text contents of a file, and returns a data structure representing it. The returned data structure can be arbitrary as long as your generation pipeline knows how to handle it. A sensible idea is to return a Clojure map containing processed file contents & some metadata.
+A parser is simply a Clojure function that takes two arguments - the text contents of a file and an additional configuration argument. Parsers return a data structure representing the file contents. The returned data structure can be arbitrary as long as your generation pipeline knows how to handle it. A sensible idea is to return a Clojure map containing processed file contents & some metadata.
 
 Here's a simple definition of such a parser:
 
 ```clojure
-(defn hello-parser [contents]
+(defn hello-parser [contents config]
   {:metadata {:length (count contents)}
    :contents (str "<h1>Hello world!</h1><p>" contents "</p>")})
 ```
@@ -26,13 +26,13 @@ Out of the box, **λ-blog** comes bundled with a Markdown parser based on [markd
 ;; Elswhere in the code:
 (-> filename
     slurp
-    md/parse)
+    (md/parse config))
 ```
 
 The value returned is a Clojure map containing at least `:contents` & `:metadata` keys:
 
 ```clojure-repl
-user=> (md/parse "Some: \"Metadata\"\n\n# Some\nMarkdown\n## Contents")
+user=> (md/parse "Some: \"Metadata\"\n\n# Some\nMarkdown\n## Contents" {})
 {:metadata {:some "Metadata"}
  :contents "<h1>Some</h1>Markdown<h2>Contents</h2>"}
 ```
@@ -40,7 +40,56 @@ user=> (md/parse "Some: \"Metadata\"\n\n# Some\nMarkdown\n## Contents")
 Each of metadata value is assumed to be in [Clojure EDN](https://github.com/edn-format/edn) format and thus is parsed as such. In order to give a certain metadata key multiple values, simply use a Clojure vector:
 
 ```clojure-repl
-user=> (md/parse "Some: [Multiple Values]\n\n# Some\nMarkdown\n## Contents")
+user=> (md/parse "Some: [Multiple Values]\n\n# Some\nMarkdown\n## Contents" {})
 {:metadata {:some [Multiple Values]}
  :contents "<h1>Some</h1>Markdown<h2>Contents</h2>"}
 ```
+
+### Text substitutions
+
+The builtin Markdown parser supports text substitutions of the `{{key}}` form. Each `{{key}}` occurance will be replaced with corresponding `:key` of the configuration argument. For example:
+
+```clojure-repl
+user=> (md/parse "# Some\n{{md}}\n## Contents" {:md "Markdown"})
+{:metadata {}
+ :contents "<h1>Some</h1>Markdown<h2>Contents</h2>"}
+```
+
+Another example:
+
+```markdown
+To insert site title & url into a Markdown document, simply write "{{title}}" and "{{url}}".
+```
+
+Turns into:
+
+To insert site title & url into a Markdown document, simply write "{{title}}" and "{{url}}".
+
+Similarily, substitutions can also be used in the embedded HTML code:
+
+```markdown
+<img src="{{url}}/media/logo.svg" style="width: 100px;"/>
+```
+
+Turns into:
+
+<img src="{{url}}/media/logo.svg" style="width: 100px;"/>
+
+When using the `read-dir` generator utility, **λ-blog** will supply the site configuration map as the substitutions argument:
+
+```clojure
+(-> config
+    (read-dir :entries "entries/" md/parse)
+    ;; Each `entry` is parsed with substitutions comming from `config`.
+    )
+```
+
+### Additional arguments
+
+In addition to the substitutions argument, the builtin Markdown parser acceps a number of extra, keyword arguments:
+
+* `:footnotes?` - toggles footnote syntax parsing; `true` by default,
+
+* `:heading-anchors` - toggles HTML anchors in headers; `true` by default,
+
+* `:reference-links?` - toggles reference link syntax parsing; `true` by default.
