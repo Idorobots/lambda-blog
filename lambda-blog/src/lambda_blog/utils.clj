@@ -77,11 +77,16 @@
       next))  ;; NOTE Skips the initial instance of `separator`.
 
 (defn substitute
-  "Substitutes occurances of `{{key}}` in `string` for matching `:key`'s in `subs`."
-  [string subs]
-  (let [esc #(escape % {\{ "\\{" \} "\\}"})]
+  "Substitutes occurances of `{{key}}` in `string` for matching `:key`'s in `subs`. By default sanitizes substituted values."
+  [string subs & {:keys [sanitize?] :or {sanitize? true}}]
+  (let [esc #(escape % {\{ "\\{" \} "\\}"})
+        san (if sanitize?
+              sanitize
+              ;; NOTE Since $ is used to reference matches we need to escape it
+              ;; NOTE if no sanitization is performed.
+              #(escape % {\$ "\\$"}))]
     (->> string
          (re-seq #"\{\{([^\}\s]+)\}\}")
          (map (juxt (comp re-pattern esc first)
-                    (comp sanitize str subs keyword second)))
+                    (comp san str subs keyword second)))
          (reduce #(apply replace %1 %2) string))))
