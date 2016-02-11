@@ -119,13 +119,13 @@
       (read-dir :docs "doc/docs" parse)
       (update-all :docs
                   (promote :metadata)
-                  (add-paths "<title>.html"))
+                  (add-paths "{{title}}.html"))
       (read-dir :entries "doc/entries" parse)
       (update :entries
               #(concat % (read-git-tags "..")))
       (update-all :entries
                   (promote :metadata)
-                  (add-paths "entries/<title>.html")
+                  (add-paths "entries/{{title}}.html")
                   #(update-all % :tags
                                (fn [t] {:id t})
                                (add-paths "tags/<id>.html")))

@@ -1,7 +1,7 @@
 (ns lambda-blog.utils-test
   (:require [clojure.test :refer :all]
             [clj-time.core :as t]
-            [lambda-blog.utils :refer [format-time pathcat sanitize separate-with]]))
+            [lambda-blog.utils :refer [format-time pathcat sanitize separate-with substitute]]))
 
 (deftest path-renders-properly
   (is (= (pathcat "")
@@ -78,3 +78,27 @@
          '(1 23 2 23 3)))
   (is (= (separate-with 23 '(1 2))
          '(1 23 2))))
+
+(deftest can-substitute-config
+  (is (= (substitute "{{test}}" {:test "passed"})
+         "passed"))
+  (is (= (substitute "{{test}}{{test}}" {:test "passed"})
+         "passedpassed"))
+  (is (= (substitute "foo{{test}}bar" {:test "baz"})
+         "foobazbar"))
+  (is (= (substitute "{{foo}}{{bar}}" {:foo "bar" :bar "foo"})
+         "barfoo"))
+  (is (= (substitute "{{foo}}" {:bar "foo"})
+         ""))
+  (is (= (substitute "{{foo}} bar {{baz}}" {:foo "foo" :baz "baz"})
+         "foo bar baz"))
+  (is (= (substitute "{{foo" {:foo "bar"})
+         "{{foo"))
+  (is (= (substitute "foo}}" {:foo "bar"})
+         "foo}}"))
+  (is (= (substitute "{foo}}" {:foo "bar"})
+         "{foo}}"))
+  (is (= (substitute "{{foo}" {:foo "bar"})
+         "{{foo}"))
+  (is (= (substitute "{{foo bar}}" {:foo "bar" :bar "foo"})
+         "{{foo bar}}")))

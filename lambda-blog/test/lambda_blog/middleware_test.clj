@@ -5,11 +5,11 @@
 
 (deftest can-generate-paths-from-spec
   (let [ent {:id 'id :title "test"}
-        ap1 (add-paths "<id>")
-        ap2 (add-paths "<id>/<title>")
-        ap3 (add-paths "/<id>/<title>")
-        ap4 (add-paths "/<id>-<title>")
-        ap5 (add-paths "some/nested/path/<title>")]
+        ap1 (add-paths "{{id}}")
+        ap2 (add-paths "{{id}}/{{title}}")
+        ap3 (add-paths "/{{id}}/{{title}}")
+        ap4 (add-paths "/{{id}}-{{title}}")
+        ap5 (add-paths "some/nested/path/{{title}}")]
     (is (= (ap1 ent)
            (assoc ent
                   :path "id"
