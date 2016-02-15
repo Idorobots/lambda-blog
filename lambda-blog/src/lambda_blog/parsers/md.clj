@@ -47,17 +47,21 @@ Vector: [some more values]
 # Header
 {{substituted}} contents.
 ```"
-  [contents subs & {:keys [previews?]
-                    :or {previews? true}
-                    :as args}]
+  [contents subs & {:keys [custom-transformers
+                           footnotes?
+                           heading-anchors
+                           previews?
+                           reference-links?]
+                    :or {footnotes? true
+                         heading-anchors true
+                         previews? true
+                         reference-links? true}}]
   (if-not (empty? contents)
-    (let [p #(do-parse % (concat [:custom-transformers [(subs-transformer subs)]
-                                  ;; NOTE These are overwritten by anything passed in the `args`.
-                                  :footnotes? true
-                                  :heading-anchors true
-                                  :reference-links? true]
-                                 ;; KLUDGE Too fiddly with the arg lists. u_u
-                                 (-> args seq flatten)))
+    (let [p #(do-parse % [:custom-transformers (conj custom-transformers
+                                                     (subs-transformer subs))
+                          :footnotes? footnotes?
+                          :heading-anchors heading-anchors
+                          :reference-links? reference-links?])
           preview-separator #"(?i)<!--\s*more\s*-->"
           preview (when (and previews?
                              (re-find preview-separator contents))
