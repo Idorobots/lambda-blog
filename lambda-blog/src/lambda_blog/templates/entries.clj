@@ -55,7 +55,7 @@
 
 (defn embedded-entry
   "Creates an HTML article representing a summarized `entry` that will be embedded within another `ent`ity."
-  [{:keys [path-to-root] :as ent} {:keys [author contents path tags timestamp title] :as entry}]
+  [{:keys [path-to-root] :as ent} {:keys [author contents path preview tags timestamp title] :as entry}]
   (article
    (header
     (panel
@@ -66,7 +66,13 @@
        (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
           " by " (or author (:author ent))) ;; KLUDGE :(
        (entry-tags entry)))))
-   contents)) ;; FIXME This should be shortened somehow.
+   (if preview
+     [preview
+      ;; NOTE #preview-more should be added by the parser.
+      (a {:href (pathcat path-to-root (str path "#preview-more"))}
+         "Continue reading "
+         (i {:class [:fa :fa-chevron-right]}))]
+     contents)))
 
 (defn recent-entries
   "Creates an HTML page containing a list of [[embedded-entry]]'ies of `n` most recent `entries` and a link to the `archives`."
