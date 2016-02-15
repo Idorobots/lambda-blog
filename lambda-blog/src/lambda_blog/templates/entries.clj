@@ -68,7 +68,8 @@
        (entry-tags entry)))))
    (if preview
      [preview
-      (a {:href (pathcat path-to-root path)}
+      ;; NOTE #preview-more should be added by the parser.
+      (a {:href (pathcat path-to-root (str path "#preview-more"))}
          "Continue reading "
          (i {:class [:fa :fa-chevron-right]}))]
      contents)))

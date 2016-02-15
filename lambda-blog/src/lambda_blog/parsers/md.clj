@@ -3,7 +3,7 @@
   (:refer-clojure :exclude [read-string])
   (:require [clojure.edn :refer [read-string]]
             [clojure.stacktrace :refer [print-stack-trace]]
-            [clojure.string :refer [split]]
+            [clojure.string :refer [replace-first split]]
             [lambda-blog.utils :refer [substitute]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
@@ -63,14 +63,16 @@ Vector: [some more values]
                           :heading-anchors heading-anchors
                           :reference-links? reference-links?])
           preview-separator #"(?i)<!--\s*more\s*-->"
-          preview (when (and previews?
-                             (re-find preview-separator contents))
+          preview (when (and previews? (re-find preview-separator contents))
                     (-> contents
                         (split preview-separator)
                         first
                         p
                         :html))
-          {:keys [html metadata]} (p contents)]
+          {:keys [html metadata]} (-> contents
+                                      (replace-first preview-separator
+                                                     "<a name=\"preview-more\"></a>")
+                                      p)]
       (conj {:metadata (parse-metadata metadata)
              :contents html}
             (when preview

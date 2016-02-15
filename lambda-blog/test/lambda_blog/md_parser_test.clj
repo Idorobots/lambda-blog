@@ -107,7 +107,7 @@
                  :preview))
   (is (= (parse with-preview)
          {:metadata {}
-          :contents "<h1>Test</h1>stuff<!&ndash; more &ndash;>stuff" ;; FIXME Should be a comment.
+          :contents "<h1>Test</h1>stuff<a name=\"preview-more\"></a>stuff"
           :preview "<h1>Test</h1>stuff"}))
   (is (contains? (parse with-pokemon-preview)
                  :preview)))
