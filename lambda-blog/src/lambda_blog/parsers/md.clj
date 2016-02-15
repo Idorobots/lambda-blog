@@ -3,6 +3,7 @@
   (:refer-clojure :exclude [read-string])
   (:require [clojure.edn :refer [read-string]]
             [clojure.stacktrace :refer [print-stack-trace]]
+            [clojure.string :refer [split]]
             [lambda-blog.utils :refer [substitute]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
@@ -37,7 +38,7 @@
       [(substitute text subs :sanitize? false) state])))
 
 (defn parse
-  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. If a preview separator `<!-- more -->` is present in the `contents`, an additional `:preview` will be added to the result. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
 
 ```markdown
 String: \"value\"
@@ -46,16 +47,29 @@ Vector: [some more values]
 # Header
 {{substituted}} contents.
 ```"
-  [contents subs & args]
+  [contents subs & {:keys [previews?]
+                    :or {previews? true}
+                    :as args}]
   (if-not (empty? contents)
-    (let [{:keys [metadata html]}
-          (do-parse contents
-                    (concat [:footnotes? true
-                             :heading-anchors true
-                             :reference-links? true
-                             :custom-transformers [(subs-transformer subs)]]
-                            args))]
-      {:metadata (parse-metadata metadata)
-       :contents html})
+    (let [p #(do-parse % (concat [:custom-transformers [(subs-transformer subs)]
+                                  ;; NOTE These are overwritten by anything passed in the `args`.
+                                  :footnotes? true
+                                  :heading-anchors true
+                                  :reference-links? true]
+                                 ;; KLUDGE Too fiddly with the arg lists. u_u
+                                 (-> args seq flatten)))
+          preview-separator #"(?i)<!--\s*more\s*-->"
+          preview (when (and previews?
+                             (re-find preview-separator contents))
+                    (-> contents
+                        (split preview-separator)
+                        first
+                        p
+                        :html))
+          {:keys [html metadata]} (p contents)]
+      (conj {:metadata (parse-metadata metadata)
+             :contents html}
+            (when preview
+              [:preview preview])))
     {:metadata {}
      :contents ""}))

@@ -95,3 +95,19 @@
   (is (= (parse with-subs-in-html {:url "www.example.com"})
          {:metadata {}
           :contents "<h1>Test</h1><p><a href=\"www.example.com\">test</a></p><pre><code>\n"})))
+
+(def without-preview "# Test\nstuff\n\nstuff")
+(def with-preview "# Test\nstuff\n<!-- more -->\nstuff")
+(def with-pokemon-preview "# Test\nstuff\n<!--    mOrE    -->\nstuff")
+
+(deftest can-create-post-previews
+  (is (not (contains? (parse without-preview)
+                      :preview)))
+  (is (contains? (parse with-preview)
+                 :preview))
+  (is (= (parse with-preview)
+         {:metadata {}
+          :contents "<h1>Test</h1>stuff<!&ndash; more &ndash;>stuff" ;; FIXME Should be a comment.
+          :preview "<h1>Test</h1>stuff"}))
+  (is (contains? (parse with-pokemon-preview)
+                 :preview)))
