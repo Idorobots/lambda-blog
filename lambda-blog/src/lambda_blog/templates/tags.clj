@@ -1,5 +1,6 @@
 (ns lambda-blog.templates.tags
-  (:require [lambda-blog.templates.bits :refer [panel text-centered]]
+  (:require [clojure.string :refer [lower-case]]
+            [lambda-blog.templates.bits :refer [panel text-centered]]
             [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags.html :refer [a h1 li span ul]]))
@@ -33,7 +34,7 @@
                                                         (/ c total)))))}
                              (:id t))
                        " ")))
-              (sort-by (comp :id first)
+              (sort-by (comp lower-case str :id first)
                        counts))))))
 
 (defn tags-index
