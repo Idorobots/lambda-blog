@@ -47,12 +47,12 @@ A list of middleware available out of the box, as well as their descriptions can
 
 ### Text substitutions
 
-`(substitute :what)` is a useful middleware that will substitute all occurences of `{{key}}` with corresponding `:key`'s of the entity. For example:
+`(substitute :where)` is a useful middleware that will substitute all occurences of `{{key}}` with corresponding `:key`'s of the entity. For example:
 
 ```clojure-repl
 user=> (-> {:contents "{​{fill-me-in}}"
             :fill-me-in "like-a so"}
-          (substitute :contents))
+          ((substitute :contents)))
 {:contents "like-a so"
  :fill-me-in "like-a so"}
 ```
@@ -67,4 +67,14 @@ Turns into:
 
 To insert site title into a Markdown document, simply write "{{title}}" and use the `substitute` middleware in your generation pipeline.
 
-Similarily, substitutions can also be used in the embedded HTML code.
+Alternatively, you can use the `(substitute-by :where)` version of this middleware which evaluates each occurence of `{{expression}}` and applies it like a function to the entity:
+
+```clojure-repl
+user=> (-> {:contents "{​{(comp clojure.string/upper-case :fill-me-in)}}"
+            :fill-me-in "like-a so"}
+          ((substitute-by :contents)))
+{:contents "LIKE-A SO"
+ :fill-me-in "like-a so"}
+```
+
+Of course, substitutions can also be used in the embedded HTML code.
