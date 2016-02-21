@@ -79,9 +79,12 @@
 (defn substitute-by
   "Substitutes occurances of `{{key}}` in `string` with `(f key)`."
   [string f]
-  (let [esc #(escape % {\{ "\\{" \} "\\}"})]
+  (let [esc #(escape % {\{ "\\{" \} "\\}"
+                        \( "\\(" \) "\\)"
+                        \[ "\\[" \] "\\]"})]
     (->> string
-         (re-seq #"\{\{([^\}\s]+)\}\}")
+         ;; FIXME Can't use maps this way, a better way would be to search for {{ and parse EDN from there.
+         (re-seq #"\{\{([^\}]+)\}\}")
          (map (juxt (comp re-pattern esc first)
                     (comp str f second)))
          (reduce #(apply replace %1 %2) string))))

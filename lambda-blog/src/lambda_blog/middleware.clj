@@ -68,3 +68,12 @@
   (fn [entity]
     (update-in entity [what]
                #(utils/substitute % entity))))
+
+(defn substitute-by
+  "Returns a middleware function that **evaluates** each occurance of `{{expression}}` in `(entity :what)`, applies it to `entity` and substitutes original text for the result."
+  [what]
+  (fn [entity]
+    (update-in entity [what]
+               #(utils/substitute-by %
+                                     (fn [s]
+                                       ((eval (read-string s)) entity))))))

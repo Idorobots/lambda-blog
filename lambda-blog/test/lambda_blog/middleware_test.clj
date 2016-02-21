@@ -1,6 +1,6 @@
 (ns lambda-blog.middleware-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.middleware :refer [add-paths collect-tags link promote substitute]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link promote substitute substitute-by]]
             [lambda-blog.generator :refer [update-all]]))
 
 (deftest can-generate-paths-from-spec
@@ -90,4 +90,15 @@
           {:url "www.example.com"
            :preview "<h1>Test</h1><p><a href=\"{{url}}\">test</a></p><pre><code>\n"})
          {:url "www.example.com"
-          :preview "<h1>Test</h1><p><a href=\"www.example.com\">test</a></p><pre><code>\n"})))
+          :preview "<h1>Test</h1><p><a href=\"www.example.com\">test</a></p><pre><code>\n"}))
+  (is (= ((substitute-by :contents)
+          {:contents "{{:key}}"})
+         {:contents ""}))
+  (is (= ((substitute-by :contents)
+          {:key "ok"
+           :contents "{{:key}}"})
+         {:key "ok"
+          :contents "ok"}))
+  (is (= ((substitute-by :contents)
+          {:contents "{{(constantly 23)}}"})
+         {:contents "23"})))
