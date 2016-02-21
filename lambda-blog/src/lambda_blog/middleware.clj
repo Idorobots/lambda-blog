@@ -18,11 +18,13 @@
        (apply str)))
 
 (defn add-paths
-  "Returns a middleware function that adds paths to an `entity` based on `path-spec`. `path-spec` can use various `entity` keys by naming them in angle brackets (i.e. `\"posts/<year>/<month>/<title>.html\"`). Each key is stringified and [[lambda-blog.utils/sanitize]]d before including in the path."
+  "Returns a middleware function that adds paths to an `entity` based on `path-spec` (e.g. `/{{value-1}}/{{value-2}}.html`). Each templated value is [[lambda-blog.utils/substitute]]d into the path using `entity` keys."
   [path-spec]
   (fn [entity]
     (let [p (utils/substitute path-spec entity)]
       (assoc entity
+             ;; NOTE Uses `path-spec` instead of `p` since additional
+             ;; NOTE slashes might have beed added by the substitution.
              :path-to-root (path-to-root path-spec)
              :path (utils/pathcat p)))))
 
