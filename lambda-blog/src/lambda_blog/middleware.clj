@@ -21,12 +21,13 @@
   "Returns a middleware function that adds paths to an `entity` based on `path-spec` (e.g. `/{{value-1}}/{{value-2}}.html`). Each templated value is [[lambda-blog.utils/substitute]]d into the path using `entity` keys."
   [path-spec]
   (fn [entity]
-    (let [p (utils/substitute path-spec entity)]
-      (assoc entity
-             ;; NOTE Uses `path-spec` instead of `p` since additional
-             ;; NOTE slashes might have beed added by the substitution.
-             :path-to-root (path-to-root path-spec)
-             :path (utils/pathcat p)))))
+    (assoc entity
+           ;; NOTE Uses `path-spec` instead of substituted value since additional
+           ;; NOTE slashes might be added by the substitution.
+           :path-to-root (path-to-root path-spec)
+           :path (-> path-spec
+                     (utils/substitute-by (comp utils/sanitize str entity keyword))
+                     utils/pathcat))))
 
 (defn collect-tags
   "Collects unique `tags` from each of the `entries` in the `ent`ity. Returns `ent`ity with collected tags stored under `tags`."
@@ -66,4 +67,4 @@
   [what]
   (fn [entity]
     (update-in entity [what]
-               #(utils/substitute % entity :sanitize? false))))
+               #(utils/substitute % entity))))
