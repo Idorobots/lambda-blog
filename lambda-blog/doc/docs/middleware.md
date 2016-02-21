@@ -44,3 +44,27 @@ Things get tricky when we want to process nested entities. Fortunately, **λ-blo
 ## Builtin middleware functions
 
 A list of middleware available out of the box, as well as their descriptions can be found [here](https://idorobots.github.io/lambda-blog/api/lambda-blog.middleware.html).
+
+### Text substitutions
+
+`(substitute :what)` is a useful middleware that will substitute all occurences of `{{key}}` with corresponding `:key`'s of the entity. For example:
+
+```clojure-repl
+user=> (-> {:contents "{​{fill-me-in}}"
+            :fill-me-in "like-a so"}
+          (substitute :contents))
+{:contents "like-a so"
+ :fill-me-in "like-a so"}
+```
+
+Another example:
+
+```markdown
+To insert site title into a Markdown document, simply write "{​{title}}" and use the `substitute` middleware in your generation pipeline.
+```
+
+Turns into:
+
+To insert site title into a Markdown document, simply write "{{title}}" and use the `substitute` middleware in your generation pipeline.
+
+Similarily, substitutions can also be used in the embedded HTML code.
