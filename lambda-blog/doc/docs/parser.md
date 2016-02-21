@@ -53,4 +53,6 @@ The builtin Markdown parser accepts a number of extra, keyword arguments:
 
 * `:heading-anchors` - toggles HTML anchors in headers; `true` by default,
 
+* `previews?` - toggles generation of entry prievews (snipping text at `<!-- more -->` tag),
+
 * `:reference-links?` - toggles reference link syntax parsing; `true` by default.
