@@ -2,7 +2,7 @@
   "Various entity transformers used in the generation pipelines."
   (:require [clojure.pprint :refer [pprint]]
             [clojure.set :refer [union]]
-            [lambda-blog.utils :refer [pathcat sanitize substitute]]
+            [lambda-blog.utils :as utils]
             [taoensso.timbre :as log]))
 
 
@@ -11,7 +11,7 @@
 
 (defn- path-to-root [p]
   (->> p
-       pathcat
+       utils/pathcat
        (re-seq #"/")
        count
        (times "../")
@@ -21,10 +21,10 @@
   "Returns a middleware function that adds paths to an `entity` based on `path-spec`. `path-spec` can use various `entity` keys by naming them in angle brackets (i.e. `\"posts/<year>/<month>/<title>.html\"`). Each key is stringified and [[lambda-blog.utils/sanitize]]d before including in the path."
   [path-spec]
   (fn [entity]
-    (let [p (substitute path-spec entity)]
+    (let [p (utils/substitute path-spec entity)]
       (assoc entity
              :path-to-root (path-to-root path-spec)
-             :path (pathcat p)))))
+             :path (utils/pathcat p)))))
 
 (defn collect-tags
   "Collects unique `tags` from each of the `entries` in the `ent`ity. Returns `ent`ity with collected tags stored under `tags`."
@@ -58,3 +58,10 @@
   [entity]
   (log/debug (with-out-str (pprint entity)))
   entity)
+
+(defn substitute
+  "Returns a middleware function that substitutes each occurance of `{{key}}` in `(entity :what)` for the corresponding `:key` of the `entity`."
+  [what]
+  (fn [entity]
+    (update-in entity [what]
+               #(utils/substitute % entity :sanitize? false))))
