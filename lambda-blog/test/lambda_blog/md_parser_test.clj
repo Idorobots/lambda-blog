@@ -89,3 +89,12 @@
           :preview "<h1>Test</h1>stuff"}))
   (is (contains? (parse with-pokemon-preview)
                  :preview)))
+
+(deftest can-supply-additional-arguments
+  (is (not (contains? (md/parse with-preview :previews? false)
+                      :preview)))
+  (is (= (md/parse no-metadata
+                   :replacement-transformers
+                   [(fn [t s] ["replacement" s])])
+         {:metadata {}
+          :contents "replacementreplacement"})))
