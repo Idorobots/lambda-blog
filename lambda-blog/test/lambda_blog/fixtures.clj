@@ -130,7 +130,7 @@
                   (substitute :contents)
                   #(update-all % :tags
                                (fn [t] {:id t})
-                               (add-paths "tags/<id>.html")))
+                               (add-paths "tags/{{id}}.html")))
       (update :entries
               #(sort-by :timestamp %)
               link)
