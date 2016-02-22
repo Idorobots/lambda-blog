@@ -40,20 +40,15 @@ Vector: [some more values]
 # Header
 Contents.
 ```"
-  [contents & {:keys [custom-transformers
-                      footnotes?
-                      heading-anchors
-                      previews?
-                      reference-links?]
-               :or {footnotes? true
-                    heading-anchors true
-                    previews? true
-                    reference-links? true}}]
+  [contents & args]
   (if-not (empty? contents)
-    (let [p #(do-parse % [:custom-transformers custom-transformers
-                          :footnotes? footnotes?
-                          :heading-anchors heading-anchors
-                          :reference-links? reference-links?])
+    (let [{:keys [previews?]
+           :or {previews? true}} args
+          p #(do-parse % (concat [:footnotes? true
+                                  :heading-anchors true
+                                  :reference-links? true]
+                                 ;; NOTE `args` can override all defaults
+                                 args))
           preview-separator #"(?i)<!--\s*more\s*-->"
           preview (when (and previews? (re-find preview-separator contents))
                     (-> contents
