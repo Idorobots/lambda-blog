@@ -5,7 +5,7 @@
             [lambda-blog.utils :refer [format-time pathcat separate-with]]
             [s-html.tags.html :refer [a article div footer h1 header hr i li nav p span time ul]]))
 
-(defn- entry-tags [{:keys [path-to-root tags]}]
+(defn- entry-tags [path-to-root {:keys [tags]}]
   (nav (separate-with " "
                       (map #(a {:class :tag
                                 :href (pathcat path-to-root (:path %))}
@@ -43,7 +43,7 @@
       (h1 title)
       (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
          " by " author)
-      (entry-tags ent))))
+      (entry-tags path-to-root ent))))
    contents
    (footer
     (pager ent))))
@@ -65,7 +65,7 @@
               title))
        (p "Posted on " (time (format-time "YYYY-MM-dd HH:mm" timestamp))
           " by " (or author (:author ent))) ;; KLUDGE :(
-       (entry-tags entry)))))
+       (entry-tags path-to-root entry)))))
    (if preview
      [preview
       ;; NOTE #preview-more should be added by the parser.
