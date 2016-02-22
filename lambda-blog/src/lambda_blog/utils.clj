@@ -76,17 +76,24 @@
       (interleave coll)
       next))  ;; NOTE Skips the initial instance of `separator`.
 
-(defn substitute
-  "Substitutes occurances of `{{key}}` in `string` for matching `:key`'s in `subs`. By default sanitizes substituted values."
-  [string subs & {:keys [sanitize?] :or {sanitize? true}}]
-  (let [esc #(escape % {\{ "\\{" \} "\\}"})
-        san (if sanitize?
-              sanitize
-              ;; NOTE Since $ is used to reference matches we need to escape it
-              ;; NOTE if no sanitization is performed.
-              #(escape % {\$ "\\$"}))]
+(defn substitute-by
+  "Substitutes occurances of `{{key}}` in `string` with `(f key)`."
+  [string f]
+  (let [esc #(escape % {\{ "\\{" \} "\\}"
+                        \( "\\(" \) "\\)"
+                        \[ "\\[" \] "\\]"})]
     (->> string
-         (re-seq #"\{\{([^\}\s]+)\}\}")
+         ;; FIXME Can't use maps this way, a better way would be to search for {{ and parse EDN from there.
+         (re-seq #"\{\{([^\}]+)\}\}")
          (map (juxt (comp re-pattern esc first)
-                    (comp san str subs keyword second)))
+                    (comp str f second)))
          (reduce #(apply replace %1 %2) string))))
+
+(defn substitute
+  "Substitutes occurances of `{{key}}` in `string` for matching `:key`'s in `subs`."
+  [string subs]
+  (substitute-by string
+                 (comp #(escape % {\$ "\\$"})
+                       str
+                       subs
+                       keyword)))

@@ -79,5 +79,5 @@
        fs/list-dir
        (map (fn [file]
               (log/info "Reading " file)
-              (parser (slurp file) entity)))
+              (parser (slurp file))))
        (assoc entity key)))

@@ -4,7 +4,6 @@
   (:require [clojure.edn :refer [read-string]]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :refer [replace-first split]]
-            [lambda-blog.utils :refer [substitute]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
             [taoensso.timbre :as log]))
 
@@ -31,34 +30,27 @@
          {:metadata nil
           :html (md-to-html-string contents)})))
 
-(defn- subs-transformer [subs]
-  (fn [text {:keys [code codeblock] :as state}]
-    (if (or code codeblock)
-      [text state]
-      [(substitute text subs :sanitize? false) state])))
-
 (defn parse
-  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. Each occurance of `{{key}}` in the `contents` will be substituted for the corresponding `:key` of the `subs`. If a preview separator `<!-- more -->` is present in the `contents`, an additional `:preview` will be added to the result. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
+  "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. If a preview separator `<!-- more -->` is present in the `contents`, an additional `:preview` will be added to the result. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
 
 ```markdown
 String: \"value\"
 Vector: [some more values]
 
 # Header
-{{substituted}} contents.
+Contents.
 ```"
-  [contents subs & {:keys [custom-transformers
-                           footnotes?
-                           heading-anchors
-                           previews?
-                           reference-links?]
-                    :or {footnotes? true
-                         heading-anchors true
-                         previews? true
-                         reference-links? true}}]
+  [contents & {:keys [custom-transformers
+                      footnotes?
+                      heading-anchors
+                      previews?
+                      reference-links?]
+               :or {footnotes? true
+                    heading-anchors true
+                    previews? true
+                    reference-links? true}}]
   (if-not (empty? contents)
-    (let [p #(do-parse % [:custom-transformers (conj custom-transformers
-                                                     (subs-transformer subs))
+    (let [p #(do-parse % [:custom-transformers custom-transformers
                           :footnotes? footnotes?
                           :heading-anchors heading-anchors
                           :reference-links? reference-links?])

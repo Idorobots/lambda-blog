@@ -2,7 +2,7 @@
   "Various entity transformers used in the generation pipelines."
   (:require [clojure.pprint :refer [pprint]]
             [clojure.set :refer [union]]
-            [lambda-blog.utils :refer [pathcat sanitize substitute]]
+            [lambda-blog.utils :as utils]
             [taoensso.timbre :as log]))
 
 
@@ -11,20 +11,23 @@
 
 (defn- path-to-root [p]
   (->> p
-       pathcat
+       utils/pathcat
        (re-seq #"/")
        count
        (times "../")
        (apply str)))
 
 (defn add-paths
-  "Returns a middleware function that adds paths to an `entity` based on `path-spec`. `path-spec` can use various `entity` keys by naming them in angle brackets (i.e. `\"posts/<year>/<month>/<title>.html\"`). Each key is stringified and [[lambda-blog.utils/sanitize]]d before including in the path."
+  "Returns a middleware function that adds paths to an `entity` based on `path-spec` (e.g. `/{{value-1}}/{{value-2}}.html`). Each templated value is [[lambda-blog.utils/substitute]]d into the path using `entity` keys."
   [path-spec]
   (fn [entity]
-    (let [p (substitute path-spec entity)]
-      (assoc entity
-             :path-to-root (path-to-root path-spec)
-             :path (pathcat p)))))
+    (assoc entity
+           ;; NOTE Uses `path-spec` instead of substituted value since additional
+           ;; NOTE slashes might be added by the substitution.
+           :path-to-root (path-to-root path-spec)
+           :path (-> path-spec
+                     (utils/substitute-by (comp utils/sanitize str entity keyword))
+                     utils/pathcat))))
 
 (defn collect-tags
   "Collects unique `tags` from each of the `entries` in the `ent`ity. Returns `ent`ity with collected tags stored under `tags`."
@@ -58,3 +61,19 @@
   [entity]
   (log/debug (with-out-str (pprint entity)))
   entity)
+
+(defn substitute
+  "Returns a middleware function that substitutes each occurance of `{{key}}` in `(entity :what)` for the corresponding `:key` of the `entity`."
+  [what]
+  (fn [entity]
+    (update-in entity [what]
+               #(utils/substitute % entity))))
+
+(defn substitute-by
+  "Returns a middleware function that **evaluates** each occurance of `{{expression}}` in `(entity :what)`, applies it to `entity` and substitutes original text for the result."
+  [what]
+  (fn [entity]
+    (update-in entity [what]
+               #(utils/substitute-by %
+                                     (fn [s]
+                                       ((eval (read-string s)) entity))))))

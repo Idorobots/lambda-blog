@@ -4,7 +4,7 @@
             [clj-jgit.internal :as giti]
             [lambda-blog.generator :refer [clean-dir! copy-dir! generate! generate-all!
                                            read-dir update update-all whenever]]
-            [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link promote substitute]]
             [lambda-blog.templates.bits :refer [row text-centered]]
             [lambda-blog.templates.archives :refer [archives]]
             [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
@@ -96,7 +96,7 @@
                         (.parseTag rev-walk))]
              (-> t
                  .getFullMessage
-                 (parse {})
+                 parse
                  (update :metadata
                          (fn [m]
                            (let [n (-> t .getTagName)]
@@ -119,13 +119,15 @@
       (read-dir :docs "doc/docs" parse)
       (update-all :docs
                   (promote :metadata)
-                  (add-paths "{{title}}.html"))
+                  (add-paths "{{title}}.html")
+                  (substitute :contents))
       (read-dir :entries "doc/entries" parse)
       (update :entries
               #(concat % (read-git-tags "..")))
       (update-all :entries
                   (promote :metadata)
                   (add-paths "entries/{{title}}.html")
+                  (substitute :contents)
                   #(update-all % :tags
                                (fn [t] {:id t})
                                (add-paths "tags/<id>.html")))

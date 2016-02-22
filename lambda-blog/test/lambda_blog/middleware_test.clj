@@ -1,6 +1,6 @@
 (ns lambda-blog.middleware-test
   (:require [clojure.test :refer :all]
-            [lambda-blog.middleware :refer [add-paths collect-tags link promote]]
+            [lambda-blog.middleware :refer [add-paths collect-tags link promote substitute substitute-by]]
             [lambda-blog.generator :refer [update-all]]))
 
 (deftest can-generate-paths-from-spec
@@ -73,3 +73,32 @@
            (assoc vs :vs vs)))
     (is (= ((promote :vs) {:k1 :some-other-value :vs vs})
            (assoc vs :vs vs)))))
+
+(deftest substitution-works-properly
+  (is (= ((substitute :contents)
+          {:contents "<h1>Test </h1>"})
+         {:contents "<h1>Test </h1>"}))
+  (is (= ((substitute :contents)
+          {:contents "<h1>Test {{substitutions}}</h1>"})
+         {:contents "<h1>Test </h1>"}))
+  (is (= ((substitute :contents)
+          {:substitutions "ok"
+           :contents "<h1>Test {{substitutions}}</h1>"})
+         {:substitutions "ok"
+          :contents "<h1>Test ok</h1>"}))
+  (is (= ((substitute :preview)
+          {:url "www.example.com"
+           :preview "<h1>Test</h1><p><a href=\"{{url}}\">test</a></p><pre><code>\n"})
+         {:url "www.example.com"
+          :preview "<h1>Test</h1><p><a href=\"www.example.com\">test</a></p><pre><code>\n"}))
+  (is (= ((substitute-by :contents)
+          {:contents "{{:key}}"})
+         {:contents ""}))
+  (is (= ((substitute-by :contents)
+          {:key "ok"
+           :contents "{{:key}}"})
+         {:key "ok"
+          :contents "ok"}))
+  (is (= ((substitute-by :contents)
+          {:contents "{{(constantly 23)}}"})
+         {:contents "23"})))
