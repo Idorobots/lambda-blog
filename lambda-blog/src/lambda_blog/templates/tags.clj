@@ -1,5 +1,6 @@
 (ns lambda-blog.templates.tags
-  (:require [lambda-blog.templates.bits :refer [panel text-centered]]
+  (:require [clojure.string :refer [lower-case]]
+            [lambda-blog.templates.bits :refer [panel text-centered]]
             [lambda-blog.templates.page :refer [page]]
             [lambda-blog.utils :refer [pathcat]]
             [s-html.tags.html :refer [a h1 li span ul]]))
@@ -21,19 +22,18 @@
                                (vector %))))
         total (apply max (map second counts))]
     (text-centered
-     (ul {:class :list-inline
-          :style (format "line-height: %s%%;" (int max-size))}
+     (ul {:class :list-inline}
          (map (fn [[t c]]
                 (li (a {:class :tag
                         :href (pathcat path-to-root (:path t))}
                        (span {:class [:label :label-info]
-                              :style (format "font-size: %s%%;"
+                              :style (format "font-size: %s%%; display: block; margin: 2px;"
                                              (int (+ min-size
                                                      (* (- max-size min-size)
                                                         (/ c total)))))}
                              (:id t))
                        " ")))
-              (sort-by (comp :id first)
+              (sort-by (comp lower-case str :id first)
                        counts))))))
 
 (defn tags-index
