@@ -29,4 +29,7 @@
                               (sort-by :id tags))
                          (summary {:type :html}
                                   (:summary e))))
-                (reverse (sort-by :timestamp entries))))))
+                (->> entries
+                     (sort-by :timestamp)
+                     reverse
+                     (take 10))))))
