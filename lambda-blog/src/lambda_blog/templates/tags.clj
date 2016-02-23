@@ -17,10 +17,13 @@
                                count
                                ;; NOTE Since tags only appear in the list if there's at least one entry
                                ;; NOTE tagged with them, we need to subtract 1 from the count in order
-                               ;; NOTE to span the entire [min-size; max-size] range.
+                               ;; NOTE to span the entire [`min-size`; `max-size`] range.
                                (+ -1)
                                (vector %))))
-        total (apply max (map second counts))]
+        ;; NOTE `total` needs to be at least 1 not to divide by 0.
+        ;; NOTE This means that when all tags have a count of 0 they'll appear
+        ;; NOTE in the tag cloud with `min-size` size instead of `max-size`.
+        total (apply max 1 (map second counts))]
     (text-centered
      (ul {:class :list-inline}
          (map (fn [[t c]]
