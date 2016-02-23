@@ -6,18 +6,18 @@
               [lambda-blog.templates.archives :refer [archives]]
               [lambda-blog.templates.entries :refer [entries-by-tag entry-page recent-entries]]
               [lambda-blog.templates.page :refer [static-page]]
-              [lambda-blog.templates.rss :refer [rss-feed]]
+              [lambda-blog.templates.feeds :refer [atom-feed]]
               [lambda-blog.templates.tags :refer [tags-index]]
               [lambda-blog.parsers.md :refer [parse]]
               [lambda-blog.utils :refer [pathcat]]
-              [s-html.tags :refer [a li i p span ul]])
+              [s-html.tags.html :refer [a li i p span ul]])
     (:gen-class))
 
 (defn banner [_]
   (p {:class :text-center}
      "FIXME: Add a banner."))
 
-(defn navigation [{:keys [archives path-to-root rss static]}]
+(defn navigation [{:keys [archives feed path-to-root static tag-cloud]}]
   (ul {:class [:nav :navbar-nav]}
       (li {:class :dropdown}
           (a {:href "#"}
@@ -33,9 +33,12 @@
       (li (a {:href (pathcat path-to-root (:path archives))}
              (i {:class [:fa :fa-archive]})
              " Archives"))
-      (li (a {:href (pathcat path-to-root (:path rss))}
+      (li (a {:href (pathcat path-to-root (:path tag-cloud))}
+             (i {:class [:fa :fa-tags]})
+             " Tags"))
+      (li (a {:href (pathcat path-to-root (:path feed))}
              (i {:class [:fa :fa-feed]})
-             " RSS"))))
+             " Feed"))))
 
 (defn footer [_]
   (p {:class :text-center}
@@ -69,23 +72,25 @@
   []
   (-> config
       (read-dir :static "resources/static" parse)
+      {{=<% %>=}}
       (update-all :static
                   (promote :metadata)
-                  (add-paths "<title>.html"))
+                  (add-paths "{{title}}.html"))
       (read-dir :entries "resources/entries" parse)
       (update-all :entries
                   (promote :metadata)
-                  (add-paths "entries/<title>.html")
+                  (add-paths "entries/{{title}}.html")
                   #(update-all % :tags
                                (fn [t] {:id t})
-                               (add-paths "tags/<id>.html")))
+                               (add-paths "tags/{{id}}.html")))
+      <%={{ }}=%>
       (update :entries
               #(sort-by :timestamp %)
               link)
       collect-tags
       (update :index
               (add-paths "index.html"))
-      (update :rss
+      (update :feed
               (add-paths "index.xml"))
       (update :archives
               (add-paths "archives.html"))
@@ -95,7 +100,7 @@
               (add-paths "entries/index.html"))
       clean-dir!
       (generate! :index (partial recent-entries 15))
-      (generate! :rss rss-feed)
+      (generate! :feed atom-feed)
       (generate! :archives archives)
       (generate! :tag-cloud tags-index)
       (generate! :entries-index (partial recent-entries 15))
