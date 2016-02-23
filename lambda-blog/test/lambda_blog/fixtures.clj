@@ -120,6 +120,7 @@
       (update-all :docs
                   (promote :metadata)
                   (add-paths "{{title}}.html")
+                  #(merge docs %)
                   (substitute :contents))
       (read-dir :entries "doc/entries" parse)
       (update :entries
@@ -127,6 +128,7 @@
       (update-all :entries
                   (promote :metadata)
                   (add-paths "entries/{{title}}.html")
+                  #(merge docs %)
                   (substitute :contents)
                   #(update-all % :tags
                                (fn [t] {:id t})
