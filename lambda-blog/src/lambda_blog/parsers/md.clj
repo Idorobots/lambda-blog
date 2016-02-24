@@ -4,7 +4,10 @@
   (:require [clojure.edn :refer [read-string]]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :refer [replace-first split]]
+            [lambda-blog.utils :refer [escape-subs subs-regex]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
+            [markdown.common :refer [freeze-string]]
+            [markdown.transformers :refer [transformer-vector]]
             [taoensso.timbre :as log]))
 
 (defn- parse-metadata [metadata]
@@ -30,6 +33,15 @@
          {:metadata nil
           :html (md-to-html-string contents)})))
 
+;; NOTE This has to run first so clj-markdown doesn't mess up text substitutions.
+(defn- subs-transformer [text state]
+  (reduce (fn [[t s] [sub _]] ;; NOTE Ignores the group in that regex.
+            (-> sub
+                (freeze-string s)
+                (update 0 #(replace-first t (re-pattern (escape-subs sub)) %))))
+          [text state]
+          (re-seq subs-regex text)))
+
 (defn parse
   "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. If a preview separator `<!-- more -->` is present in the `contents`, an additional `:preview` will be added to the result. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
 
@@ -46,8 +58,9 @@ Contents.
            :or {previews? true}} args
           p #(do-parse % (concat [:footnotes? true
                                   :heading-anchors true
-                                  :reference-links? true]
-                                 ;; NOTE `args` can override all defaults
+                                  :reference-links? true
+                                  :replacement-transformers (cons subs-transformer transformer-vector)]
+                                 ;; NOTE `args` can override all defaults.
                                  args))
           preview-separator #"(?i)<!--\s*more\s*-->"
           preview (when (and previews? (re-find preview-separator contents))
