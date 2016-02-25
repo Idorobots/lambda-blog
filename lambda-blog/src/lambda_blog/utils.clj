@@ -76,18 +76,21 @@
       (interleave coll)
       next))  ;; NOTE Skips the initial instance of `separator`.
 
+(def ^:no-doc escape-subs #(escape % {\{ "\\{" \} "\\}"
+                                      \( "\\(" \) "\\)"
+                                      \[ "\\[" \] "\\]"}))
+
+;; FIXME Can't use maps this way, a better way would be to search for {{ and parse EDN from there.
+(def ^:no-doc subs-regex #"\{\{([^\}]+)\}\}")
+
 (defn substitute-by
   "Substitutes occurances of `{{key}}` in `string` with `(f key)`."
   [string f]
-  (let [esc #(escape % {\{ "\\{" \} "\\}"
-                        \( "\\(" \) "\\)"
-                        \[ "\\[" \] "\\]"})]
-    (->> string
-         ;; FIXME Can't use maps this way, a better way would be to search for {{ and parse EDN from there.
-         (re-seq #"\{\{([^\}]+)\}\}")
-         (map (juxt (comp re-pattern esc first)
-                    (comp str f second)))
-         (reduce #(apply replace %1 %2) string))))
+  (->> string
+       (re-seq subs-regex)
+       (map (juxt (comp re-pattern escape-subs first)
+                  (comp str f second)))
+       (reduce #(apply replace %1 %2) string)))
 
 (defn substitute
   "Substitutes occurances of `{{key}}` in `string` for matching `:key`'s in `subs`."
