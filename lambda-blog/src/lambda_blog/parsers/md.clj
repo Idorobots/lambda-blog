@@ -25,14 +25,6 @@
                      nil))))
        (into {})))
 
-(defn- do-parse [contents args]
-  (try (apply md-to-html-string-with-meta contents args)
-       (catch java.lang.NullPointerException e
-         (log/warnf "Caught an exception while parsing input file (bad metadata format?): %s" e)
-         (log/debug (with-out-str (print-stack-trace e)))
-         {:metadata nil
-          :html (md-to-html-string contents)})))
-
 ;; NOTE This has to run first so clj-markdown doesn't mess up text substitutions.
 (defn- subs-transformer [text state]
   (reduce (fn [[t s] [sub _]] ;; NOTE Ignores the group in that regex.
@@ -41,6 +33,28 @@
                 (update 0 #(replace-first t (re-pattern (escape-subs sub)) %))))
           [text state]
           (re-seq subs-regex text)))
+
+(defn- do-parse [contents args]
+  (try (let [{:keys [html metadata]}
+             (apply md-to-html-string-with-meta
+                    contents
+                    (concat [:footnotes? true
+                             :heading-anchors true
+                             :reference-links? true
+                             :replacement-transformers (cons subs-transformer transformer-vector)]
+                            ;; NOTE `args` can override all defaults.
+                            args))]
+         {:metadata (parse-metadata metadata)
+          :contents html})
+       (catch java.lang.NullPointerException e
+         (log/warnf "Caught an exception while parsing input file (bad metadata format?): %s" e)
+         (log/debug (with-out-str (print-stack-trace e)))
+         {:metadata {}
+          :contents (md-to-html-string contents)})))
+
+(defn- assoc-if [coll key v]
+  (conj coll
+        (when v [key v])))
 
 (defn parse
   "Parses file `contents` as a Markdown document and returns HTML and various bits of Clojure EDN formatted metadata. If a preview separator `<!-- more -->` is present in the `contents`, an additional `:preview` will be added to the result. Additional `args` are passed as is to the underlying [[markdown-clj]] parser. Example input:
@@ -53,29 +67,24 @@ Vector: [some more values]
 Contents.
 ```"
   [contents & args]
-  (if-not (empty? contents)
-    (let [{:keys [previews?]
-           :or {previews? true}} args
-          p #(do-parse % (concat [:footnotes? true
-                                  :heading-anchors true
-                                  :reference-links? true
-                                  :replacement-transformers (cons subs-transformer transformer-vector)]
-                                 ;; NOTE `args` can override all defaults.
-                                 args))
-          preview-separator #"(?i)<!--\s*more\s*-->"
-          preview (when (and previews? (re-find preview-separator contents))
+  (let [{:keys [previews?]
+         :or {previews? true}} args
+        p #"\n(?i)<!--\s*more\s*-->\n"] ;; FIXME Still needs contextual preview marker replacement.
+    (cond (empty? contents)
+          {:metadata {}
+           :contents ""}
+
+          (and previews? (re-find p contents))
+          ;; NOTE There appears not to be a way to achieve contextual marker replacement in clj-markdown.
+          (assoc-if (-> contents
+                        (replace-first p "<a name=\"preview-more\"></a>")
+                        (do-parse args))
+                    :preview
                     (-> contents
-                        (split preview-separator)
+                        (split p)
                         first
-                        p
-                        :html))
-          {:keys [html metadata]} (-> contents
-                                      (replace-first preview-separator
-                                                     "<a name=\"preview-more\"></a>")
-                                      p)]
-      (conj {:metadata (parse-metadata metadata)
-             :contents html}
-            (when preview
-              [:preview preview])))
-    {:metadata {}
-     :contents ""}))
+                        (do-parse args)
+                        :contents)) ;; NOTE Skips :metadata since it's the same.
+
+          :else
+          (do-parse contents args))))

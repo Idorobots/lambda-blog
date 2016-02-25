@@ -77,6 +77,8 @@
 (def without-preview "# Test\nstuff\n\nstuff")
 (def with-preview "# Test\nstuff\n<!-- more -->\nstuff")
 (def with-pokemon-preview "# Test\nstuff\n<!--    mOrE    -->\nstuff")
+(def with-preview-in-line1 "# Test\nstuff\nLine contents <!-- more -->\nstuff")
+(def with-preview-in-line2 "# Test\nstuff\n<!-- more --> line contents\nstuff")
 
 (deftest can-create-post-previews
   (is (not (contains? (parse without-preview)
@@ -88,7 +90,11 @@
           :contents "<h1>Test</h1>stuff<a name=\"preview-more\"></a>stuff"
           :preview "<h1>Test</h1>stuff"}))
   (is (contains? (parse with-pokemon-preview)
-                 :preview)))
+                 :preview))
+  (is (not (contains? (parse with-preview-in-line1)
+                      :preview)))
+  (is (not (contains? (parse with-preview-in-line2)
+                      :preview))))
 
 (deftest can-supply-additional-arguments
   (is (not (contains? (md/parse with-preview :previews? false)
