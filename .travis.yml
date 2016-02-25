@@ -1,0 +1,8 @@
+language: clojure
+lein: lein2
+before_install: cd "lambda-blog"
+script: lein2 do clean, eastwood, cloverage
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7

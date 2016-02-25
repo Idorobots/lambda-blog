@@ -105,12 +105,15 @@
                                     :id n
                                     :summary (-> t .getShortMessage)
                                     :tags ["changelog" n]
-                                    :timestamp (->> t
-                                                    .getObject
-                                                    .getId
-                                                    (.parseCommit rev-walk)
-                                                    .getAuthorIdent
-                                                    .getWhen)
+                                    :timestamp (try (->> t
+                                                         .getObject
+                                                         .getId
+                                                         (.parseCommit rev-walk)
+                                                         .getAuthorIdent
+                                                         .getWhen)
+                                                    ;; NOTE Travis CI doesn't pull all the objects.
+                                                    (catch Exception _
+                                                      #inst "1970-01-01T00:00:00.000Z"))
                                     :title (format "λ-blog v%s has been released!" n))))))))
          (giti/get-refs repo "refs/tags/"))))
 
