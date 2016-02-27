@@ -73,11 +73,10 @@
   entity)
 
 (defn read-dir
-  "Reads a directory under `path` and parses each file using `parser`. Returns `entity` with parsed file contents sequence stored under `key`."
-  [entity key path parser]
+  "Reads a directory under `path`. Returns `entity` with file contents sequence stored under `key`."
+  [entity key path]
   (->> path
        fs/list-dir
-       (map (fn [file]
-              (log/info "Reading " file)
-              (parser (slurp file))))
+       (map #(do (log/info "Reading " %)
+                 (slurp %)))
        (assoc entity key)))

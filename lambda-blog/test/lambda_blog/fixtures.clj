@@ -119,13 +119,16 @@
 
 (defn generate-docs []
   (-> docs
-      (read-dir :docs "doc/docs" parse)
+      (read-dir :docs "doc/docs")
       (update-all :docs
+                  parse
                   (promote :metadata)
                   (add-paths "{{title}}.html")
                   #(merge docs %)
                   (substitute :contents))
-      (read-dir :entries "doc/entries" parse)
+      (read-dir :entries "doc/entries")
+      (update-all :entries
+                  parse)
       (update :entries
               #(concat % (read-git-tags "..")))
       (update-all :entries
