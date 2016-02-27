@@ -71,13 +71,15 @@
   "Generates your blog!"
   []
   (-> config
-      (read-dir :static "resources/static" parse)
+      (read-dir :static "resources/static")
       {{=<% %>=}}
       (update-all :static
+                  parse
                   (promote :metadata)
                   (add-paths "{{title}}.html"))
-      (read-dir :entries "resources/entries" parse)
+      (read-dir :entries "resources/entries")
       (update-all :entries
+                  parse
                   (promote :metadata)
                   (add-paths "entries/{{title}}.html")
                   #(update-all % :tags
