@@ -1,4 +1,4 @@
-(defproject lambda-blog/lein-template "0.1.3"
+(defproject lambda-blog/lein-template "0.1.4"
   :description "A Leiningen template for λ-blog."
   :url "https://github.com/Idorobots/lambda-blog"
   :license {:name "MIT License"
