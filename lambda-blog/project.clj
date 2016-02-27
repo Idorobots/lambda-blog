@@ -4,9 +4,9 @@
   :license {:name "MIT License"
             :url "http://www.opensource.org/licenses/mit-license.php"}
   :dependencies [[clj-time "0.11.0"]
-                 [com.taoensso/timbre "4.2.1"]
+                 [com.taoensso/timbre "4.3.0"]
                  [commons-validator "1.5.0"]
-                 [markdown-clj "0.9.85"]
+                 [markdown-clj "0.9.86"]
                  [me.raynes/fs "1.4.6"]
                  [me.xuender/unidecode "0.0.7"]
                  [org.clojure/clojure "1.7.0"]
