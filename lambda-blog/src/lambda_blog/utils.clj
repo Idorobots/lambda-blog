@@ -3,10 +3,12 @@
   (:refer-clojure :exclude [replace])
   (:require [clj-time.coerce :as c]
             [clj-time.format :as f]
+            [clojure.java.io :refer [reader resource]]
             [clojure.string :refer [escape lower-case replace split]]
             [ring.util.codec :refer [url-encode]])
   (:import [org.apache.commons.validator.routines UrlValidator]
-           [me.xuender.unidecode Unidecode]))
+           [me.xuender.unidecode Unidecode]
+           [java.util Properties]))
 
 (defn- parse [separator path]
   (when path
@@ -100,3 +102,14 @@
                        str
                        subs
                        keyword)))
+
+(defn get-version
+  "Returns current lambda-blog version as specified in Maven pom.properties."
+  []
+  (or (System/getProperty "lambda-blog.version")
+      (let [p (Properties.)]
+        (->> "META-INF/maven/lambda-blog/lambda-blog/pom.properties"
+             resource
+             reader
+             (.load p))
+        (.get p "version"))))
