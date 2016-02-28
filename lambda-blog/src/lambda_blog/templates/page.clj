@@ -2,7 +2,7 @@
   "Generic HTML page templates."
   (:refer-clojure :exclude [meta])
   (:require [lambda-blog.templates.bits :refer [container javascript row text-centered]]
-            [lambda-blog.utils :refer [pathcat]]
+            [lambda-blog.utils :refer [get-version pathcat]]
             [s-html.tags.html :as html]))
 
 (defn- link-or-pathcat [path-to-root link]
@@ -36,7 +36,7 @@
              (html/meta {:name :viewport
                          :content "width=device-width, initial-scale=1.0"})
              (html/meta {:name :generator
-                         :content (str "λ-blog v." (System/getProperty "lambda-blog.version"))})))
+                         :content (str "λ-blog v." (get-version))})))
 
 (defn banner
   "Creates a page banner `header` using configured `banner-template`."
