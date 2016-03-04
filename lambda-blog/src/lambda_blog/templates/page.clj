@@ -19,9 +19,18 @@
                     :href (link-or-pathcat path-to-root %)})
        stylesheets))
 
+(defn- metadata [ent & keys]
+  (reduce (fn [m k]
+            (if-let [v (get ent k)]
+              (cons (html/meta {:name k :content v})
+                    m)
+              m))
+          ()
+          keys))
+
 (defn header
   "Creates an HTML `head` element containing various metadata, `scripts` & `stylesheets`."
-  [{:keys [favicon feed path-to-root scripts stylesheets title]}]
+  [{:keys [favicon feed path-to-root scripts stylesheets title] :as ent}]
   (html/head (html/meta {:charset :utf-8})
              (html/title title)
              (css path-to-root stylesheets)
@@ -36,7 +45,8 @@
              (html/meta {:name :viewport
                          :content "width=device-width, initial-scale=1.0"})
              (html/meta {:name :generator
-                         :content (str "λ-blog v." (get-version))})))
+                         :content (str "λ-blog v." (get-version))})
+             (metadata ent :description :keywords :author)))
 
 (defn banner
   "Creates a page banner `header` using configured `banner-template`."

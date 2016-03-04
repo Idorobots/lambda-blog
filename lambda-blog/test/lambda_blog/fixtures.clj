@@ -44,12 +44,14 @@
              (i {:class [:fa :fa-feed]})
              " Feed"))))
 
+(def description "A static blog generator generator optimized for customizability.")
+
 (defn- banner [{:keys [logo path-to-root url]}]
   (row (div {:class [:col-xs-12 :col-sm-8 :col-md-10]}
             (h1 {:style "font-size: 300%;"}
                 "λ-blog")
             (p {:style "font-size: 150%;"}
-               "A static blog generator generator optimized for customizability."))
+               description))
        (div {:class [:hidden-xs :col-sm-2 :col-md-1 :pull-right]}
             (img {:style "height: 120px;"
                   :src (pathcat path-to-root logo)}))))
@@ -67,6 +69,8 @@
 (def docs {:author "Idorobots"
            :brand "λ-blog"
            :title "λ-blog documentation"
+           :description description
+           :keywords "λ-blog, lambda blog, static site generator, blogging platform, blogging software"
            :url "https://idorobots.github.io/lambda-blog/"
            :output-dir "/target/out/"
            :brand-logo "media/logo.svg"
