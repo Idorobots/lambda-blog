@@ -27,7 +27,7 @@
              (css path-to-root stylesheets)
              (html/link {:rel :alternate
                          :type (:type feed)
-                         :title (str " Feed")
+                         :title (str title " Feed")
                          :href (pathcat path-to-root (:path feed))})
              (html/link {:rel :icon
                          :type "image/png"
