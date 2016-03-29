@@ -4,9 +4,9 @@
   (:require [clojure.edn :refer [read-string]]
             [clojure.stacktrace :refer [print-stack-trace]]
             [clojure.string :refer [replace-first split]]
-            [lambda-blog.utils :refer [escape-subs subs-regex]]
+            [lambda-blog.utils :refer [escape-subs sanitize subs-regex]]
             [markdown.core :refer [md-to-html-string md-to-html-string-with-meta]]
-            [markdown.common :refer [freeze-string]]
+            [markdown.common :refer [freeze-string heading-level heading-text]]
             [markdown.transformers :refer [transformer-vector]]
             [taoensso.timbre :as log]))
 
@@ -34,14 +34,40 @@
           [text state]
           (re-seq subs-regex text)))
 
+;; NOTE Extends default heading transformer with clickable section headers.
+(defn- heading-transformer [text {:keys [code codeblock heading-anchors heading-links] :as state}]
+  (cond (or code codeblock)
+        [text state]
+
+        (heading-level text)
+        (let [h (heading-level text)
+              t (heading-text text)
+              ;; NOTE Not to expand potential formatting in the label.
+              [l s] (freeze-string (sanitize t) state)]
+          [(str "<h" h ">"
+                (if heading-anchors
+                  (str "<a name=\"" l "\"></a>"
+                       (if heading-links
+                         (str "<a href=\"#" l "\">" t "</a>")
+                         t))
+                  t)
+                "</h" h ">")
+           (assoc s :heading true)])
+
+        :else
+        [text state]))
+
 (defn- do-parse [contents args]
   (try (let [{:keys [html metadata]}
              (apply md-to-html-string-with-meta
                     contents
                     (concat [:footnotes? true
                              :heading-anchors true
+                             :heading-links true
                              :reference-links? true
-                             :replacement-transformers (cons subs-transformer transformer-vector)]
+                             :replacement-transformers (concat [subs-transformer
+                                                                heading-transformer]
+                                                               transformer-vector)]
                             ;; NOTE `args` can override all defaults.
                             args))]
          {:metadata (parse-metadata metadata)
