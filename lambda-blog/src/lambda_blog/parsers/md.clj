@@ -34,6 +34,7 @@
           [text state]
           (re-seq subs-regex text)))
 
+;; NOTE Extends default heading transformer with clickable section headers.
 (defn- heading-transformer [text {:keys [code codeblock heading-anchors heading-links] :as state}]
   (cond (or code codeblock)
         [text state]
@@ -41,8 +42,8 @@
         (heading-level text)
         (let [h (heading-level text)
               t (heading-text text)
-              l (sanitize t)]
-          ;; NOTE Clickable section headers.
+              ;; NOTE Not to expand potential formatting in the label.
+              [l s] (freeze-string (sanitize t) state)]
           [(str "<h" h ">"
                 (if heading-anchors
                   (str "<a name=\"" l "\"></a>"
@@ -51,7 +52,7 @@
                          t))
                   t)
                 "</h" h ">")
-           (assoc state :heading true)])
+           (assoc s :heading true)])
 
         :else
         [text state]))
