@@ -64,6 +64,9 @@
 (def additional-features-3 "This is a test of additional [features][test3].\n\n[test3]: # 'test3'")
 
 (deftest can-use-additional-features
+  (is (= (md/parse additional-features-1 :heading-links false)
+         {:metadata {}
+          :contents "<h1><a name=\"test1\"></a>Test1</h1>"}))
   (is (= (md/parse additional-features-1)
          {:metadata {}
           :contents "<h1><a name=\"test1\"></a><a href=\"#test1\">Test1</a></h1>"}))

@@ -34,7 +34,7 @@
           [text state]
           (re-seq subs-regex text)))
 
-(defn- heading-transformer [text {:keys [code codeblock heading-anchors] :as state}]
+(defn- heading-transformer [text {:keys [code codeblock heading-anchors heading-links] :as state}]
   (cond (or code codeblock)
         [text state]
 
@@ -46,7 +46,9 @@
           [(str "<h" h ">"
                 (if heading-anchors
                   (str "<a name=\"" l "\"></a>"
-                       "<a href=\"#" l "\">" t "</a>")
+                       (if heading-links
+                         (str "<a href=\"#" l "\">" t "</a>")
+                         t))
                   t)
                 "</h" h ">")
            (assoc state :heading true)])
@@ -60,6 +62,7 @@
                     contents
                     (concat [:footnotes? true
                              :heading-anchors true
+                             :heading-links true
                              :reference-links? true
                              :replacement-transformers (concat [subs-transformer
                                                                 heading-transformer]
