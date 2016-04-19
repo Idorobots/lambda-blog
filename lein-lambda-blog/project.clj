@@ -1,4 +1,4 @@
-(def version "1.3.0")
+(def version "1.3.1")
 
 (eval ;; NOTE Sue me.
  `(defproject lambda-blog/lein-template ~version
