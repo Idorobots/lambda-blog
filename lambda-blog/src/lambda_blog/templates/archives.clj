@@ -6,9 +6,9 @@
 
 (defn archive-entry
   "Creates a single row of the archives table containing various entry details."
-  [{:keys [path path-to-root summary tags timestamp title]}]
+  [path-to-root {:keys [path summary tags timestamp title]}]
   (tr (td (format-time "YYYY-MM-dd HH:mm" timestamp))
-      (td (a {:href (pathcat path)} title))
+      (td (a {:href (pathcat path-to-root path)} title))
       (td (separate-with " "
                          (map #(a {:class :tag
                                    :href (pathcat path-to-root (:path %))}
@@ -18,7 +18,7 @@
 
 (defn archives
   "Creates an HTML page containing a table of `entries`."
-  [{:keys [entries] :as ent}]
+  [{:keys [entries path-to-root] :as ent}]
   (page
    (fn [_]
      [(-> "Archives" h1 text-centered row panel)
@@ -28,7 +28,7 @@
                              (th (span "Tags"))
                              (th {:class [:hidden-xs :hidden-sm]}
                                  (span "Summary"))))
-                  (tbody (map archive-entry
+                  (tbody (map (partial archive-entry path-to-root)
                               (reverse (sort-by :timestamp entries))))))
       (p {:class [:hidden-xs :hidden-sm]}
          (warning-label "ProTip:")
