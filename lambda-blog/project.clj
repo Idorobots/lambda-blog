@@ -1,18 +1,18 @@
-(defproject lambda-blog/lambda-blog "1.3.0"
+(defproject lambda-blog/lambda-blog "1.3.1"
   :description "A static blog generator."
   :url "https://github.com/Idorobots/lambda-blog"
   :license {:name "MIT License"
             :url "http://www.opensource.org/licenses/mit-license.php"}
   :dependencies [[clj-time "0.11.0"]
-                 [com.taoensso/timbre "4.3.0"]
+                 [com.taoensso/timbre "4.3.1"]
                  [commons-validator "1.5.0"]
-                 [markdown-clj "0.9.86"]
+                 [markdown-clj "0.9.88"]
                  [me.raynes/fs "1.4.6"]
                  [me.xuender/unidecode "0.0.7"]
                  [org.clojure/clojure "1.7.0"]
                  [ring/ring-codec "1.0.0"]
                  [s-html "1.0.1"]]
-  :profiles {:dev {:dependencies [[clj-jgit "0.8.8"]]}}
+  :profiles {:dev {:dependencies [[clj-jgit "0.8.9"]]}}
   :plugins [[jonase/eastwood "0.1.5"]
             [lein-ancient "0.5.4"]
             [lein-cloverage "1.0.2"]
